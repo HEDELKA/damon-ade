@@ -1,0 +1,30 @@
+{
+	"common": {
+		"cancel": "Cancel",
+		"save": "Save",
+		"close": "Close",
+		"delete": "Delete",
+		"create": "Create",
+		"rename": "Rename",
+		"edit": "Edit",
+		"settings": "Settings",
+		"loading": "Loading…",
+		"error": "Error",
+		"retry": "Retry",
+		"confirm": "Confirm",
+		"copy": "Copy",
+		"copied": "Copied",
+		"search": "Search",
+		"name": "Name",
+		"optional": "optional",
+		"language": "Language"
+	},
+	"settings": {
+		"language": {
+			"title": "Language",
+			"description": "Interface language",
+			"en": "English",
+			"ru": "Russian"
+		}
+	}
+}

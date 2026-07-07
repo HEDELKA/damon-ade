@@ -13,6 +13,7 @@ import { electronQueryClient } from "./providers/ElectronTRPCProvider";
 import { routeTree } from "./routeTree.gen";
 
 import "./globals.css";
+import "./i18n";
 
 const rootElement = document.querySelector("app");
 initBootErrorHandling(rootElement);
