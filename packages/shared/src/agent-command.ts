@@ -33,9 +33,15 @@ export const AGENT_PRESET_COMMANDS: Record<AgentType, string[]> = {
 	opencode: ["opencode"],
 	copilot: ["copilot --allow-all"],
 	"cursor-agent": ["cursor-agent"],
-	kimi: ['ANTHROPIC_BASE_URL="https://openrouter.ai/api" ANTHROPIC_AUTH_TOKEN="$OPENROUTER_API_KEY" ANTHROPIC_API_KEY="" claude --model moonshotai/kimi-k2.7-code --dangerously-skip-permissions'],
-	minimax: ['ANTHROPIC_BASE_URL="https://openrouter.ai/api" ANTHROPIC_AUTH_TOKEN="$OPENROUTER_API_KEY" ANTHROPIC_API_KEY="" claude --model minimax/minimax-m3 --dangerously-skip-permissions'],
-	glm: ['ANTHROPIC_BASE_URL="https://openrouter.ai/api" ANTHROPIC_AUTH_TOKEN="$OPENROUTER_API_KEY" ANTHROPIC_API_KEY="" claude --model z-ai/glm-5.2 --dangerously-skip-permissions'],
+	kimi: [
+		'ANTHROPIC_BASE_URL="https://openrouter.ai/api" ANTHROPIC_AUTH_TOKEN="$OPENROUTER_API_KEY" ANTHROPIC_API_KEY="" claude --model moonshotai/kimi-k2.7-code --dangerously-skip-permissions',
+	],
+	minimax: [
+		'ANTHROPIC_BASE_URL="https://openrouter.ai/api" ANTHROPIC_AUTH_TOKEN="$OPENROUTER_API_KEY" ANTHROPIC_API_KEY="" claude --model minimax/minimax-m3 --dangerously-skip-permissions',
+	],
+	glm: [
+		'ANTHROPIC_BASE_URL="https://openrouter.ai/api" ANTHROPIC_AUTH_TOKEN="$OPENROUTER_API_KEY" ANTHROPIC_API_KEY="" claude --model z-ai/glm-5.2 --dangerously-skip-permissions',
+	],
 };
 
 export const AGENT_PRESET_DESCRIPTIONS: Record<AgentType, string> = {
@@ -49,6 +55,60 @@ export const AGENT_PRESET_DESCRIPTIONS: Record<AgentType, string> = {
 	minimax: "MiniMax M3 via Claude Code + OpenRouter",
 	glm: "GLM 5.2 via Claude Code + OpenRouter",
 };
+
+/**
+ * Runtimes whose sessions run the Claude Code CLI under the hood (directly or
+ * via OpenRouter env overrides). Only these support `--session-id` pinning and
+ * `--resume` after a cold restore.
+ */
+export const CLAUDE_BASED_AGENT_TYPES = [
+	"claude",
+	"kimi",
+	"minimax",
+	"glm",
+] as const satisfies readonly AgentType[];
+
+export function isClaudeBasedAgent(agent: AgentType): boolean {
+	return (CLAUDE_BASED_AGENT_TYPES as readonly AgentType[]).includes(agent);
+}
+
+/** Matches the `claude` binary as a standalone command token. */
+const CLAUDE_TOKEN_RE = /(^|\s)claude(?=\s|$)/;
+
+export function commandLaunchesClaude(command: string): boolean {
+	return CLAUDE_TOKEN_RE.test(command);
+}
+
+/**
+ * Insert extra args right after the `claude` binary token of a launch command,
+ * preserving any env-var prefix (e.g. the OpenRouter runtimes). Returns null
+ * when the command does not launch `claude`.
+ */
+export function insertClaudeArgs(
+	command: string,
+	extraArgs: string,
+): string | null {
+	if (!commandLaunchesClaude(command)) return null;
+	return command.replace(CLAUDE_TOKEN_RE, `$1claude ${extraArgs}`);
+}
+
+/**
+ * Build the command that resumes a Claude Code session after a cold restore
+ * (reboot / power loss). When the user configured a custom claude launch
+ * command (terminal preset), its flags are preserved; otherwise falls back to
+ * the stock danger-mode launch.
+ */
+export function buildClaudeResumeCommand(
+	baseCommand: string | null | undefined,
+	sessionId: string,
+): string {
+	const resumeArgs = `--resume ${sessionId}`;
+	if (baseCommand) {
+		const withResume = insertClaudeArgs(baseCommand, resumeArgs);
+		if (withResume) return withResume;
+	}
+	return `claude ${resumeArgs} --dangerously-skip-permissions`;
+}
 
 export interface TaskInput {
 	id: string;
@@ -128,11 +188,23 @@ const AGENT_COMMANDS: Record<
 	"cursor-agent": (prompt, delimiter) =>
 		buildHeredoc(prompt, delimiter, "cursor-agent --yolo"),
 	kimi: (prompt, delimiter) =>
-		buildHeredoc(prompt, delimiter, 'ANTHROPIC_BASE_URL="https://openrouter.ai/api" ANTHROPIC_AUTH_TOKEN="$OPENROUTER_API_KEY" ANTHROPIC_API_KEY="" claude --model moonshotai/kimi-k2.7-code --dangerously-skip-permissions'),
+		buildHeredoc(
+			prompt,
+			delimiter,
+			'ANTHROPIC_BASE_URL="https://openrouter.ai/api" ANTHROPIC_AUTH_TOKEN="$OPENROUTER_API_KEY" ANTHROPIC_API_KEY="" claude --model moonshotai/kimi-k2.7-code --dangerously-skip-permissions',
+		),
 	minimax: (prompt, delimiter) =>
-		buildHeredoc(prompt, delimiter, 'ANTHROPIC_BASE_URL="https://openrouter.ai/api" ANTHROPIC_AUTH_TOKEN="$OPENROUTER_API_KEY" ANTHROPIC_API_KEY="" claude --model minimax/minimax-m3 --dangerously-skip-permissions'),
+		buildHeredoc(
+			prompt,
+			delimiter,
+			'ANTHROPIC_BASE_URL="https://openrouter.ai/api" ANTHROPIC_AUTH_TOKEN="$OPENROUTER_API_KEY" ANTHROPIC_API_KEY="" claude --model minimax/minimax-m3 --dangerously-skip-permissions',
+		),
 	glm: (prompt, delimiter) =>
-		buildHeredoc(prompt, delimiter, 'ANTHROPIC_BASE_URL="https://openrouter.ai/api" ANTHROPIC_AUTH_TOKEN="$OPENROUTER_API_KEY" ANTHROPIC_API_KEY="" claude --model z-ai/glm-5.2 --dangerously-skip-permissions'),
+		buildHeredoc(
+			prompt,
+			delimiter,
+			'ANTHROPIC_BASE_URL="https://openrouter.ai/api" ANTHROPIC_AUTH_TOKEN="$OPENROUTER_API_KEY" ANTHROPIC_API_KEY="" claude --model z-ai/glm-5.2 --dangerously-skip-permissions',
+		),
 };
 
 export function buildAgentPromptCommand({

@@ -101,6 +101,9 @@ const DEFAULT_PRESET_AGENTS = [
 	"copilot",
 	"opencode",
 	"gemini",
+	"kimi",
+	"minimax",
+	"glm",
 ] as const;
 
 const DEFAULT_PRESETS: Omit<TerminalPreset, "id">[] = DEFAULT_PRESET_AGENTS.map(
@@ -723,11 +726,9 @@ export const createSettingsRouter = () => {
 				.input(
 					z.object({
 						provider: z.enum(PROVIDER_IDS),
-						key: z
-							.string()
-							.refine((value) => value.trim().length > 0, {
-								message: "API key must not be empty",
-							}),
+						key: z.string().refine((value) => value.trim().length > 0, {
+							message: "API key must not be empty",
+						}),
 					}),
 				)
 				.mutation(({ input }) => {

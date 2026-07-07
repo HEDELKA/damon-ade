@@ -1,3 +1,7 @@
+import {
+	buildClaudeResumeCommand,
+	commandLaunchesClaude,
+} from "@superset/shared/agent-command";
 import type { FitAddon } from "@xterm/addon-fit";
 import type { Terminal as XTerm } from "@xterm/xterm";
 import { useCallback, useRef, useState } from "react";
@@ -237,11 +241,24 @@ export function useTerminalColdRestore({
 					if (claudeSessionId) {
 						// Synced-from-peer panes stage the command without pressing Enter.
 						const stagedNewline = consumeSyncedPane(paneId) ? "" : "\n";
-						setTimeout(() => {
+						setTimeout(async () => {
+							// Flags come from the user's "claude" terminal preset
+							// (Settings → Terminal) so resume matches the launch config.
+							const claudeBaseCommand =
+								await trpcClient.settings.getTerminalPresets
+									.query()
+									.then(
+										(presets) =>
+											presets
+												.find((p) => p.name.trim().toLowerCase() === "claude")
+												?.commands.find(commandLaunchesClaude) ?? null,
+									)
+									.catch(() => null);
+
 							trpcClient.terminal.write
 								.mutate({
 									paneId,
-									data: `claude --resume ${claudeSessionId} --dangerously-skip-permissions${stagedNewline}`,
+									data: `${buildClaudeResumeCommand(claudeBaseCommand, claudeSessionId)}${stagedNewline}`,
 								})
 								.catch((err) => {
 									console.warn(
