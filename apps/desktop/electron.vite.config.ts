@@ -90,7 +90,7 @@ export default defineConfig({
 		},
 
 		build: {
-			sourcemap: true,
+			sourcemap: !process.env.ADE_DISABLE_SOURCEMAPS,
 			rollupOptions: {
 				input: {
 					index: resolve("src/main/index.ts"),
@@ -236,7 +236,9 @@ export default defineConfig({
 		publicDir: resolve(resources, "public"),
 
 		build: {
-			sourcemap: true,
+			// ADE_DISABLE_SOURCEMAPS=1 skips sourcemaps — the renderer bundle's
+			// rollup sourcemap pass needs >2.5GB heap, which OOMs low-RAM machines.
+			sourcemap: !process.env.ADE_DISABLE_SOURCEMAPS,
 			outDir: resolve(devPath, "renderer"),
 
 			rollupOptions: {
