@@ -111,6 +111,17 @@
 				"dialogTitle": "Select worktree location",
 				"directory": "Directory",
 				"reset": "Reset"
+			},
+			"sections": {
+				"account": "Account",
+				"apiKeys": "API Keys",
+				"appearance": "Appearance",
+				"features": "Features",
+				"integrations": "Integrations",
+				"keyboard": "Keyboard",
+				"notifications": "Notifications",
+				"permissions": "Permissions",
+				"terminal": "Terminal"
 			}
 		},
 		"appearance": {
@@ -119,7 +130,15 @@
 			"font": {
 				"nerdFontsRecommended": "recommended for shell theme icons.",
 				"previewText": "The quick brown fox jumps over the lazy dog.\n0O1lI {}[]() => !== +- @#$%",
-				"reset": "Reset"
+				"reset": "Reset",
+				"editor": {
+					"title": "Editor Font",
+					"description": "Font used in diff views and file editors"
+				},
+				"terminal": {
+					"title": "Terminal Font",
+					"description": "Font used in terminal panels."
+				}
 			},
 			"markdown": {
 				"heading": "Markdown Style",

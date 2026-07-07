@@ -111,6 +111,17 @@
 				"dialogTitle": "Выберите расположение worktree",
 				"directory": "Каталог",
 				"reset": "Сбросить"
+			},
+			"sections": {
+				"account": "Аккаунт",
+				"apiKeys": "API-ключи",
+				"appearance": "Внешний вид",
+				"features": "Функции",
+				"integrations": "Интеграции",
+				"keyboard": "Клавиатура",
+				"notifications": "Уведомления",
+				"permissions": "Разрешения",
+				"terminal": "Терминал"
 			}
 		},
 		"appearance": {
@@ -119,7 +130,15 @@
 			"font": {
 				"nerdFontsRecommended": "рекомендуются для иконок темы оболочки.",
 				"previewText": "Съешь же ещё этих мягких французских булок да выпей чаю.\n0O1lI {}[]() => !== +- @#$%",
-				"reset": "Сбросить"
+				"reset": "Сбросить",
+				"editor": {
+					"title": "Шрифт редактора",
+					"description": "Шрифт для диффов и редакторов файлов"
+				},
+				"terminal": {
+					"title": "Шрифт терминала",
+					"description": "Шрифт для панелей терминала."
+				}
 			},
 			"markdown": {
 				"heading": "Стиль Markdown",

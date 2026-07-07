@@ -1,22 +1,74 @@
 import { execFileSync } from "node:child_process";
+import { accessSync, constants, readdirSync } from "node:fs";
 import os from "node:os";
 import path from "node:path";
 import { getDefaultShell } from "../terminal/env";
 
 /**
- * Finds all paths for a binary on Unix systems using the login shell.
+ * Well-known install locations searched when the login shell doesn't expose
+ * the binary. Covers version managers that only initialize in interactive
+ * shells (nvm adds itself to .bashrc, which non-interactive login shells skip
+ * on Ubuntu) and GUI launches where $SHELL falls back to sh.
+ */
+function wellKnownBinaryPathsUnix(name: string): string[] {
+	const home = os.homedir();
+	const dirs = [
+		path.join(home, ".local", "bin"),
+		path.join(home, "bin"),
+		path.join(home, ".bun", "bin"),
+		path.join(home, ".npm-global", "bin"),
+		"/usr/local/bin",
+		"/usr/bin",
+		"/opt/homebrew/bin",
+	];
+
+	// nvm keeps one bin dir per node version; scan them all (newest last wins
+	// nothing here — first existing match is returned by the caller).
+	try {
+		const nvmVersions = path.join(home, ".nvm", "versions", "node");
+		for (const version of readdirSync(nvmVersions)) {
+			dirs.push(path.join(nvmVersions, version, "bin"));
+		}
+	} catch {
+		// no nvm — fine
+	}
+
+	const found: string[] = [];
+	for (const dir of dirs) {
+		const candidate = path.join(dir, name);
+		try {
+			accessSync(candidate, constants.X_OK);
+			found.push(candidate);
+		} catch {
+			// not here — keep looking
+		}
+	}
+	return found;
+}
+
+/**
+ * Finds all paths for a binary on Unix systems using the login shell,
+ * falling back to well-known install locations when the shell PATH
+ * doesn't include it.
  */
 function findBinaryPathsUnix(name: string): string[] {
-	const shell = getDefaultShell();
-	const result = execFileSync(
-		shell,
-		["-l", "-c", 'which -a -- "$1"', "superset-find-binary", name],
-		{
-			encoding: "utf-8",
-			stdio: ["pipe", "pipe", "ignore"],
-		},
-	);
-	return result.trim().split("\n").filter(Boolean);
+	let shellPaths: string[] = [];
+	try {
+		const shell = getDefaultShell();
+		const result = execFileSync(
+			shell,
+			["-l", "-c", 'which -a -- "$1"', "superset-find-binary", name],
+			{
+				encoding: "utf-8",
+				stdio: ["pipe", "pipe", "ignore"],
+			},
+		);
+		shellPaths = result.trim().split("\n").filter(Boolean);
+	} catch {
+		// which found nothing (non-zero exit) or the shell failed — fall through
+	}
+	if (shellPaths.length > 0) return shellPaths;
+	return wellKnownBinaryPathsUnix(name);
 }
 
 /**
