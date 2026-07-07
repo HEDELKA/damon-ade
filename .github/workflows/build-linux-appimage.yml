@@ -1,0 +1,68 @@
+name: Build Linux AppImage
+
+# Fork-local build: produces an installable AppImage as a workflow artifact.
+# Exists because the renderer bundle needs ~4GB of heap to build, which
+# low-RAM dev machines cannot do reliably. Trimmed copy of the build-linux
+# job in build-desktop.yml, minus release secrets and macOS.
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [feat/configurable-claude-launch, main]
+
+jobs:
+  build-linux:
+    name: Build - Linux (x64)
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Bun
+        uses: oven-sh/setup-bun@v1
+        with:
+          bun-version: "1.3.13"
+
+      - name: Cache dependencies
+        uses: actions/cache@v4
+        with:
+          path: |
+            ~/.bun/install/cache
+          key: ${{ runner.os }}-bun-${{ github.sha }}
+          restore-keys: |
+            ${{ runner.os }}-bun-
+
+      - name: Install dependencies
+        run: bun install --frozen
+
+      - name: Clean dev folder
+        working-directory: apps/desktop
+        run: bun run clean:dev
+
+      - name: Compile app with electron-vite
+        working-directory: apps/desktop
+        env:
+          SUPERSET_WORKSPACE_NAME: superset
+        run: bun run compile:app
+
+      - name: Build Electron app
+        working-directory: apps/desktop
+        run: bun run package -- --publish never --config electron-builder.ts
+
+      - name: Verify Linux AppImage exists
+        working-directory: apps/desktop
+        run: |
+          ls -la release
+          test -n "$(ls -1 release/*.AppImage 2>/dev/null)" || {
+            echo "::error::No AppImage artifact generated in apps/desktop/release"
+            exit 1
+          }
+
+      - name: Upload AppImage artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: ade-linux-appimage
+          path: apps/desktop/release/*.AppImage
+          retention-days: 14
+          if-no-files-found: error
