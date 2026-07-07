@@ -204,7 +204,7 @@ const config: Configuration = {
 		...(existsSync(linuxIconPath) ? { icon: linuxIconPath } : {}),
 		category: "Utility",
 		synopsis: pkg.description,
-		target: ["AppImage"],
+		target: ["AppImage", "deb"],
 		artifactName: `ade-\${version}-\${arch}.\${ext}`,
 	},
 
