@@ -56,10 +56,7 @@ export interface ScaffoldParams {
 	worktreePath?: string;
 }
 
-function sub(
-	template: string,
-	vars: Record<string, string>,
-): string {
+function sub(template: string, vars: Record<string, string>): string {
 	return template.replace(/\{\{(\w+)\}\}/g, (_, k) => vars[k] ?? "");
 }
 
@@ -96,6 +93,20 @@ trust it, and maintain it per the write-back protocol.
 - When you learn something durable about {{user_name}} or the project, save it to
   memory per the write-back protocol.
 - Reusable procedures become skills under {{agent_home}}/skills/, not memory notes.
+
+## GitHub — always through the gh CLI
+- The GitHub CLI (\`gh\`) is your standing tool for ALL GitHub work: pushing new
+  branches, creating and reviewing PRs (\`gh pr\`), issues (\`gh issue\`), releases
+  (\`gh release\`), CI runs (\`gh run\`), and API calls (\`gh api\`). Prefer it over
+  raw \`git\` for anything that talks to the remote.
+- Before your first GitHub action in a session, verify it once: \`gh auth status\`.
+- If \`gh\` is not installed or not authenticated: STOP all GitHub work and insist
+  that {{user_name}} fixes it first — install from https://cli.github.com (Linux:
+  \`sudo apt install gh\`, macOS: \`brew install gh\`), then run \`gh auth login\`
+  interactively. Repeat the request at the start of every session until it is
+  done; do not silently fall back to credential-less pushes.
+- Never ask for, store, or embed tokens/credentials yourself — \`gh auth login\`
+  is the only sanctioned path.
 
 ## Standing preferences
 - (none yet — {{user_name}} will add these, or you will learn them)
@@ -322,7 +333,12 @@ export function regenerateCodexAgentsMd(agentId: string): void {
 	mkdirSync(codexHome, { recursive: true });
 
 	const parts: string[] = [];
-	for (const file of ["AGENT.md", "USER.md", "MEMORY.md", ".writeback-protocol.md"]) {
+	for (const file of [
+		"AGENT.md",
+		"USER.md",
+		"MEMORY.md",
+		".writeback-protocol.md",
+	]) {
 		const p = join(memoryDir, file);
 		if (existsSync(p)) {
 			parts.push(readFileSync(p, "utf8"));
