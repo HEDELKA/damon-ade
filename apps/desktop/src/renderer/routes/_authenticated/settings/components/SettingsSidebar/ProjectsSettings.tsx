@@ -8,6 +8,7 @@ import { cn } from "@superset/ui/utils";
 import { Link, useMatchRoute } from "@tanstack/react-router";
 import { useFeatureFlagEnabled } from "posthog-js/react";
 import { useMemo } from "react";
+import { useTranslation } from "react-i18next";
 import { HiChevronDown, HiChevronRight } from "react-icons/hi2";
 import { electronTrpc } from "renderer/lib/electron-trpc";
 import { getMatchCountBySection } from "../../utils/settings-search";
@@ -17,6 +18,7 @@ interface ProjectsSettingsProps {
 }
 
 export function ProjectsSettings({ searchQuery }: ProjectsSettingsProps) {
+	const { t } = useTranslation();
 	const { data: groups = [] } =
 		electronTrpc.workspaces.getAllGrouped.useQuery();
 	const matchRoute = useMatchRoute();
@@ -40,7 +42,7 @@ export function ProjectsSettings({ searchQuery }: ProjectsSettingsProps) {
 	return (
 		<div className="mb-4">
 			<h2 className="text-xs font-medium text-muted-foreground uppercase tracking-wider px-3 mb-2">
-				Teams
+				{t("settings.sidebar.teams")}
 				{searchQuery && hasProjectMatches && (
 					<span className="ml-2 text-xs bg-accent/50 px-1.5 py-0.5 rounded">
 						{matchCounts?.project ?? 0}
@@ -95,7 +97,9 @@ export function ProjectsSettings({ searchQuery }: ProjectsSettingsProps) {
 												: "text-muted-foreground hover:bg-accent/50 hover:text-accent-foreground",
 										)}
 									>
-										<span className="truncate">General</span>
+										<span className="truncate">
+											{t("settings.sidebar.general")}
+										</span>
 									</Link>
 									{hasCloudAccess && (
 										<Collapsible defaultOpen>
@@ -107,7 +111,9 @@ export function ProjectsSettings({ searchQuery }: ProjectsSettingsProps) {
 														: "text-muted-foreground hover:bg-accent/50 hover:text-accent-foreground",
 												)}
 											>
-												<span className="flex-1 truncate">Cloud</span>
+												<span className="flex-1 truncate">
+													{t("settings.sidebar.cloud")}
+												</span>
 												<HiChevronRight className="h-3 w-3 text-muted-foreground group-data-[state=open]:hidden" />
 												<HiChevronDown className="h-3 w-3 text-muted-foreground group-data-[state=closed]:hidden" />
 											</CollapsibleTrigger>
@@ -124,7 +130,7 @@ export function ProjectsSettings({ searchQuery }: ProjectsSettingsProps) {
 														)}
 													>
 														<span className="truncate">
-															Environment Variables
+															{t("settings.sidebar.environmentVariables")}
 														</span>
 													</Link>
 												</div>

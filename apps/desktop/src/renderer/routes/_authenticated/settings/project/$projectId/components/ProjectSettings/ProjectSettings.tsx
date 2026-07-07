@@ -13,6 +13,7 @@ import { Switch } from "@superset/ui/switch";
 import { cn } from "@superset/ui/utils";
 import type { ReactNode } from "react";
 import { useCallback, useEffect, useRef, useState } from "react";
+import { useTranslation } from "react-i18next";
 import {
 	HiOutlineCog6Tooth,
 	HiOutlineFolderOpen,
@@ -68,6 +69,7 @@ interface ProjectSettingsProps {
 }
 
 export function ProjectSettings({ projectId }: ProjectSettingsProps) {
+	const { t } = useTranslation();
 	const utils = electronTrpc.useUtils();
 	const { data: project } = electronTrpc.projects.get.useQuery({
 		id: projectId,
@@ -129,11 +131,13 @@ export function ProjectSettings({ projectId }: ProjectSettingsProps) {
 				setProjectIcon.mutate({ id: projectId, icon });
 			} catch (err) {
 				toast.error(
-					err instanceof Error ? err.message : "Could not load image",
+					err instanceof Error
+						? err.message
+						: t("settings.project.general.iconLoadError"),
 				);
 			}
 		},
-		[projectId, setProjectIcon],
+		[projectId, setProjectIcon, t],
 	);
 
 	const handleRemoveIcon = useCallback(() => {
@@ -235,14 +239,16 @@ export function ProjectSettings({ projectId }: ProjectSettingsProps) {
 			<div className="space-y-4">
 				<SettingsSection
 					icon={<HiOutlineCog6Tooth className="h-4 w-4" />}
-					title="Branch Prefix"
-					description="Override the default prefix for new agents."
+					title={t("settings.project.general.branchPrefix.title")}
+					description={t("settings.project.general.branchPrefix.description")}
 				>
 					<div className="flex items-center justify-between">
 						<div className="space-y-0.5">
-							<Label className="text-sm font-medium">Branch Prefix</Label>
+							<Label className="text-sm font-medium">
+								{t("settings.project.general.branchPrefix.label")}
+							</Label>
 							<p className="text-xs text-muted-foreground">
-								Preview:{" "}
+								{t("settings.project.general.branchPrefix.preview")}{" "}
 								<code className="bg-muted px-1.5 py-0.5 rounded text-foreground">
 									{previewPrefix
 										? `${previewPrefix}/branch-name`
@@ -274,7 +280,9 @@ export function ProjectSettings({ projectId }: ProjectSettingsProps) {
 							</Select>
 							{currentMode === "custom" && (
 								<Input
-									placeholder="Prefix"
+									placeholder={t(
+										"settings.project.general.branchPrefix.customPlaceholder",
+									)}
 									value={customPrefixInput}
 									onChange={(e) => setCustomPrefixInput(e.target.value)}
 									onBlur={handleCustomPrefixBlur}
@@ -288,15 +296,16 @@ export function ProjectSettings({ projectId }: ProjectSettingsProps) {
 
 				<SettingsSection
 					icon={<HiOutlineCog6Tooth className="h-4 w-4" />}
-					title="Agent Base Branch"
-					description="Set the default base branch for new agents in this repository."
+					title={t("settings.project.general.baseBranch.title")}
+					description={t("settings.project.general.baseBranch.description")}
 				>
 					<div className="flex items-center justify-between gap-4">
 						<div className="space-y-0.5">
-							<Label className="text-sm font-medium">Default Base Branch</Label>
+							<Label className="text-sm font-medium">
+								{t("settings.project.general.baseBranch.label")}
+							</Label>
 							<p className="text-xs text-muted-foreground">
-								Used when creating an agent unless you choose a one-off base
-								branch.
+								{t("settings.project.general.baseBranch.hint")}
 							</p>
 						</div>
 						<Select
@@ -306,18 +315,24 @@ export function ProjectSettings({ projectId }: ProjectSettingsProps) {
 						>
 							<SelectTrigger className="w-[260px]">
 								{isBranchDataLoading ? (
-									<span className="text-muted-foreground">Loading...</span>
+									<span className="text-muted-foreground">
+										{t("settings.project.loading")}
+									</span>
 								) : (
 									<SelectValue />
 								)}
 							</SelectTrigger>
 							<SelectContent>
 								<SelectItem value={REPO_DEFAULT_BASE_BRANCH}>
-									Use repository default ({repoDefaultBranch})
+									{t("settings.project.general.baseBranch.useRepoDefault", {
+										branch: repoDefaultBranch,
+									})}
 								</SelectItem>
 								{workspaceBaseBranchMissing && project.workspaceBaseBranch && (
 									<SelectItem value={project.workspaceBaseBranch}>
-										{project.workspaceBaseBranch} (missing)
+										{t("settings.project.general.baseBranch.branchMissing", {
+											branch: project.workspaceBaseBranch,
+										})}
 									</SelectItem>
 								)}
 								{(branchData?.branches ?? []).map((branch) => (
@@ -330,21 +345,26 @@ export function ProjectSettings({ projectId }: ProjectSettingsProps) {
 					</div>
 					{workspaceBaseBranchMissing && (
 						<p className="text-xs text-destructive">
-							Branch "{project.workspaceBaseBranch}" no longer exists. New
-							agents will fall back to "{repoDefaultBranch}".
+							{t("settings.project.general.baseBranch.branchGone", {
+								branch: project.workspaceBaseBranch,
+								fallback: repoDefaultBranch,
+							})}
 						</p>
 					)}
 				</SettingsSection>
 
 				<SettingsSection
 					icon={<HiOutlineFolderOpen className="h-4 w-4" />}
-					title="Worktree Location"
-					description="Override the global worktree directory for this team."
+					title={t("settings.project.general.worktree.title")}
+					description={t("settings.project.general.worktree.description")}
 				>
 					<WorktreeLocationPicker
 						currentPath={project.worktreeBaseDir}
-						defaultPathLabel={`Using global default: ${globalPath}`}
-						dialogTitle="Select worktree location for this team"
+						defaultPathLabel={t(
+							"settings.project.general.worktree.usingGlobalDefault",
+							{ path: globalPath },
+						)}
+						dialogTitle={t("settings.project.general.worktree.dialogTitle")}
 						defaultBrowsePath={project.worktreeBaseDir ?? globalWorktreeBaseDir}
 						disabled={updateProject.isPending}
 						onSelect={(path) =>
@@ -368,8 +388,8 @@ export function ProjectSettings({ projectId }: ProjectSettingsProps) {
 
 				<SettingsSection
 					icon={<HiOutlinePaintBrush className="h-4 w-4" />}
-					title="Appearance"
-					description="Customize this team's sidebar look."
+					title={t("settings.project.general.appearance.title")}
+					description={t("settings.project.general.appearance.description")}
 				>
 					<div className="flex items-center justify-between">
 						<div className="flex items-center gap-2">
@@ -403,7 +423,7 @@ export function ProjectSettings({ projectId }: ProjectSettingsProps) {
 						</div>
 						<div className="flex items-center gap-2">
 							<Label className="text-sm text-muted-foreground">
-								Hide Image
+								{t("settings.project.general.appearance.hideImage")}
 							</Label>
 							<Switch
 								checked={project.hideImage ?? false}
@@ -420,16 +440,18 @@ export function ProjectSettings({ projectId }: ProjectSettingsProps) {
 					{/* Project Icon */}
 					<div className="flex items-center justify-between">
 						<div className="space-y-0.5">
-							<Label className="text-sm font-medium">Team Icon</Label>
+							<Label className="text-sm font-medium">
+								{t("settings.project.general.appearance.teamIcon")}
+							</Label>
 							<p className="text-xs text-muted-foreground">
-								Upload a custom icon for the sidebar.
+								{t("settings.project.general.appearance.teamIconHint")}
 							</p>
 						</div>
 						<div className="flex items-center gap-2">
 							{project.iconUrl && (
 								<img
 									src={project.iconUrl}
-									alt="Team icon"
+									alt={t("settings.project.general.appearance.teamIconAlt")}
 									className="size-8 rounded object-cover border"
 								/>
 							)}
@@ -450,7 +472,9 @@ export function ProjectSettings({ projectId }: ProjectSettingsProps) {
 								)}
 							>
 								<LuImagePlus className="size-4" />
-								{project.iconUrl ? "Replace" : "Upload"}
+								{project.iconUrl
+									? t("settings.project.general.appearance.replace")
+									: t("settings.project.general.appearance.upload")}
 							</button>
 							{project.iconUrl && (
 								<button
@@ -463,7 +487,7 @@ export function ProjectSettings({ projectId }: ProjectSettingsProps) {
 									)}
 								>
 									<LuTrash2 className="size-4" />
-									Remove
+									{t("settings.project.general.appearance.remove")}
 								</button>
 							)}
 						</div>

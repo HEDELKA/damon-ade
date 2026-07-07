@@ -1,6 +1,7 @@
 import { Button } from "@superset/ui/button";
 import { Input } from "@superset/ui/input";
 import { useCallback, useEffect, useId, useRef, useState } from "react";
+import { useTranslation } from "react-i18next";
 import { HiMiniPlus, HiMiniXMark } from "react-icons/hi2";
 
 interface CommandsEditorProps {
@@ -14,8 +15,11 @@ export function CommandsEditor({
 	commands,
 	onChange,
 	onBlur,
-	placeholder = "Command...",
+	placeholder,
 }: CommandsEditorProps) {
+	const { t } = useTranslation();
+	const resolvedPlaceholder =
+		placeholder ?? t("settings.terminal.commandsEditor.placeholder");
 	const baseId = useId();
 	const inputRefs = useRef<(HTMLInputElement | null)[]>([]);
 	const [focusIndex, setFocusIndex] = useState<number | null>(null);
@@ -64,7 +68,7 @@ export function CommandsEditor({
 						onChange={(e) => handleCommandChange(index, e.target.value)}
 						onBlur={onBlur}
 						className="h-8 px-2 text-sm flex-1 min-w-0"
-						placeholder={placeholder}
+						placeholder={resolvedPlaceholder}
 					/>
 					{commands.length > 1 && (
 						<Button
@@ -72,10 +76,10 @@ export function CommandsEditor({
 							size="sm"
 							onClick={() => handleDeleteCommand(index)}
 							className="h-8 px-2 text-xs hover:bg-destructive/10 hover:text-destructive shrink-0"
-							aria-label="Delete command"
+							aria-label={t("settings.terminal.commandsEditor.deleteAria")}
 						>
 							<HiMiniXMark className="h-3.5 w-3.5" />
-							Delete
+							{t("settings.terminal.commandsEditor.delete")}
 						</Button>
 					)}
 				</div>
@@ -88,7 +92,7 @@ export function CommandsEditor({
 				className="w-fit mt-1"
 			>
 				<HiMiniPlus className="h-3.5 w-3.5" />
-				Add command
+				{t("settings.terminal.commandsEditor.add")}
 			</Button>
 		</div>
 	);

@@ -1,4 +1,5 @@
 import type { ReactNode } from "react";
+import { useTranslation } from "react-i18next";
 import {
 	isItemVisible,
 	SETTING_ITEM_ID,
@@ -35,6 +36,7 @@ interface AppearanceSettingsProps {
 }
 
 export function AppearanceSettings({ visibleItems }: AppearanceSettingsProps) {
+	const { t } = useTranslation();
 	const showTheme = isItemVisible(
 		SETTING_ITEM_ID.APPEARANCE_THEME,
 		visibleItems,
@@ -60,9 +62,11 @@ export function AppearanceSettings({ visibleItems }: AppearanceSettingsProps) {
 	return (
 		<div className="p-6 max-w-4xl w-full">
 			<div className="mb-8">
-				<h2 className="text-xl font-semibold">Appearance</h2>
+				<h2 className="text-xl font-semibold">
+					{t("settings.appearance.title")}
+				</h2>
 				<p className="text-sm text-muted-foreground mt-1">
-					Customize how ADE looks on your device
+					{t("settings.appearance.description")}
 				</p>
 			</div>
 

@@ -1,5 +1,6 @@
 import { Button } from "@superset/ui/button";
 import { Label } from "@superset/ui/label";
+import { useTranslation } from "react-i18next";
 import { LuExternalLink } from "react-icons/lu";
 import { electronTrpc } from "renderer/lib/electron-trpc";
 import {
@@ -23,6 +24,7 @@ function PermissionRow({
 	granted: boolean | undefined;
 	onRequest: () => void;
 }) {
+	const { t } = useTranslation();
 	return (
 		<div className="flex items-center justify-between">
 			<div className="space-y-0.5">
@@ -32,12 +34,12 @@ function PermissionRow({
 			<div className="flex items-center gap-3">
 				{granted && (
 					<span className="text-xs font-medium text-green-500 bg-green-500/10 px-2 py-1 rounded-md">
-						Granted
+						{t("settings.permissions.granted")}
 					</span>
 				)}
 				<Button variant="outline" size="sm" onClick={onRequest}>
 					<LuExternalLink className="h-3.5 w-3.5 mr-1.5" />
-					Edit in System Settings
+					{t("settings.permissions.editButton")}
 				</Button>
 			</div>
 		</div>
@@ -47,6 +49,7 @@ function PermissionRow({
 export function PermissionsSettings({
 	visibleItems,
 }: PermissionsSettingsProps) {
+	const { t } = useTranslation();
 	const { data: status } = electronTrpc.permissions.getStatus.useQuery(
 		undefined,
 		{ refetchInterval: 2000 },
@@ -66,11 +69,11 @@ export function PermissionsSettings({
 	return (
 		<div className="p-6 max-w-4xl w-full">
 			<div className="mb-8">
-				<h2 className="text-xl font-semibold">Permissions</h2>
+				<h2 className="text-xl font-semibold">
+					{t("settings.permissions.title")}
+				</h2>
 				<p className="text-sm text-muted-foreground mt-1">
-					Grant these permissions once to avoid repeated prompts. For persistent
-					directory access, enable Full Disk Access in System Settings for
-					Superset.
+					{t("settings.permissions.description")}
 				</p>
 			</div>
 
@@ -80,8 +83,8 @@ export function PermissionsSettings({
 					visibleItems,
 				) && (
 					<PermissionRow
-						label="Full Disk Access"
-						description="Persistent access to Documents, Downloads, Desktop, and iCloud from terminal sessions"
+						label={t("settings.permissions.fullDiskAccess.label")}
+						description={t("settings.permissions.fullDiskAccess.description")}
 						granted={status?.fullDiskAccess}
 						onRequest={() => requestFDA.mutate()}
 					/>
@@ -92,8 +95,8 @@ export function PermissionsSettings({
 					visibleItems,
 				) && (
 					<PermissionRow
-						label="Accessibility"
-						description="Send keystrokes, manage windows, and control other applications"
+						label={t("settings.permissions.accessibility.label")}
+						description={t("settings.permissions.accessibility.description")}
 						granted={status?.accessibility}
 						onRequest={() => requestA11y.mutate()}
 					/>
@@ -104,8 +107,8 @@ export function PermissionsSettings({
 					visibleItems,
 				) && (
 					<PermissionRow
-						label="Microphone"
-						description="Use voice transcription and push-to-talk features"
+						label={t("settings.permissions.microphone.label")}
+						description={t("settings.permissions.microphone.description")}
 						granted={status?.microphone}
 						onRequest={() => requestMicrophone.mutate()}
 					/>
@@ -116,8 +119,8 @@ export function PermissionsSettings({
 					visibleItems,
 				) && (
 					<PermissionRow
-						label="Automation"
-						description="Run terminal commands and interact with other applications"
+						label={t("settings.permissions.automation.label")}
+						description={t("settings.permissions.automation.description")}
 						granted={undefined}
 						onRequest={() => requestAppleEvents.mutate()}
 					/>
@@ -128,8 +131,8 @@ export function PermissionsSettings({
 					visibleItems,
 				) && (
 					<PermissionRow
-						label="Local Network"
-						description="Discover and connect to development servers on your network"
+						label={t("settings.permissions.localNetwork.label")}
+						description={t("settings.permissions.localNetwork.description")}
 						granted={undefined}
 						onRequest={() => requestLocalNetwork.mutate()}
 					/>

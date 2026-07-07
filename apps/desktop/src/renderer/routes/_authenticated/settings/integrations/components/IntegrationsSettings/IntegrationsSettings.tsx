@@ -11,6 +11,7 @@ import { Skeleton } from "@superset/ui/skeleton";
 import { useLiveQuery } from "@tanstack/react-db";
 import { useFeatureFlagEnabled } from "posthog-js/react";
 import { useCallback, useEffect, useState } from "react";
+import { useTranslation } from "react-i18next";
 import { FaGithub, FaSlack } from "react-icons/fa";
 import { HiCheckCircle, HiOutlineArrowTopRightOnSquare } from "react-icons/hi2";
 import { SiLinear } from "react-icons/si";
@@ -40,6 +41,7 @@ interface GithubInstallation {
 export function IntegrationsSettings({
 	visibleItems,
 }: IntegrationsSettingsProps) {
+	const { t } = useTranslation();
 	const { data: session } = authClient.useSession();
 	const activeOrganizationId = session?.session?.activeOrganizationId;
 	const collections = useCollections();
@@ -114,13 +116,15 @@ export function IntegrationsSettings({
 		return (
 			<div className="p-6 max-w-4xl w-full">
 				<div className="mb-8">
-					<h2 className="text-xl font-semibold">Integrations</h2>
+					<h2 className="text-xl font-semibold">
+						{t("settings.integrations.title")}
+					</h2>
 					<p className="text-sm text-muted-foreground mt-1">
-						Connect external services to sync data
+						{t("settings.integrations.descriptionShort")}
 					</p>
 				</div>
 				<p className="text-muted-foreground">
-					You need to be part of an organization to use integrations.
+					{t("settings.integrations.needOrg")}
 				</p>
 			</div>
 		);
@@ -129,9 +133,11 @@ export function IntegrationsSettings({
 	return (
 		<div className="p-6 max-w-4xl w-full">
 			<div className="mb-8">
-				<h2 className="text-xl font-semibold">Integrations</h2>
+				<h2 className="text-xl font-semibold">
+					{t("settings.integrations.title")}
+				</h2>
 				<p className="text-sm text-muted-foreground mt-1">
-					Connect external services to sync data with your organization
+					{t("settings.integrations.description")}
 				</p>
 			</div>
 
@@ -139,7 +145,7 @@ export function IntegrationsSettings({
 				{showLinear && (
 					<IntegrationCard
 						name="Linear"
-						description="Sync issues bidirectionally with Linear"
+						description={t("settings.integrations.linear.description")}
 						icon={<SiLinear className="size-6" />}
 						isConnected={isLinearConnected}
 						connectedOrgName={linearConnection?.externalOrgName}
@@ -150,7 +156,7 @@ export function IntegrationsSettings({
 				{showGithub && (
 					<IntegrationCard
 						name="GitHub"
-						description="Connect repos and sync pull requests"
+						description={t("settings.integrations.github.description")}
 						icon={<FaGithub className="size-6" />}
 						isConnected={isGithubConnected}
 						connectedOrgName={githubInstallation?.accountLogin}
@@ -162,7 +168,7 @@ export function IntegrationsSettings({
 				{showSlack && (
 					<IntegrationCard
 						name="Slack"
-						description="Manage tasks from Slack conversations"
+						description={t("settings.integrations.slack.description")}
 						icon={<FaSlack className="size-6" />}
 						isConnected={isSlackConnected}
 						connectedOrgName={slackConnection?.externalOrgName}
@@ -172,14 +178,14 @@ export function IntegrationsSettings({
 			</div>
 
 			<p className="mt-6 text-xs text-muted-foreground">
-				Manage integrations in the web app to connect and configure services.{" "}
+				{t("settings.integrations.manageHint")}{" "}
 				<a
 					href={`${COMPANY.DOCS_URL}/integrations`}
 					target="_blank"
 					rel="noopener noreferrer"
 					className="inline-flex items-center gap-1 text-primary hover:underline"
 				>
-					Learn more
+					{t("settings.integrations.learnMore")}
 					<HiOutlineArrowTopRightOnSquare className="h-3 w-3" />
 				</a>
 			</p>
@@ -208,6 +214,7 @@ function IntegrationCard({
 	onManage,
 	comingSoon,
 }: IntegrationCardProps) {
+	const { t } = useTranslation();
 	return (
 		<Card>
 			<CardHeader className="pb-3">
@@ -224,12 +231,16 @@ function IntegrationCard({
 								) : isConnected ? (
 									<Badge variant="default" className="gap-1">
 										<HiCheckCircle className="size-3" />
-										Connected
+										{t("settings.integrations.connected")}
 									</Badge>
 								) : comingSoon ? (
-									<Badge variant="outline">Coming Soon</Badge>
+									<Badge variant="outline">
+										{t("settings.integrations.comingSoon")}
+									</Badge>
 								) : (
-									<Badge variant="secondary">Not Connected</Badge>
+									<Badge variant="secondary">
+										{t("settings.integrations.notConnected")}
+									</Badge>
 								)}
 							</div>
 							<CardDescription className="mt-0.5">
@@ -245,14 +256,17 @@ function IntegrationCard({
 						className="gap-2"
 					>
 						<HiOutlineArrowTopRightOnSquare className="size-4" />
-						{isConnected ? "Manage" : "Connect"}
+						{isConnected
+							? t("settings.integrations.manage")
+							: t("settings.integrations.connect")}
 					</Button>
 				</div>
 			</CardHeader>
 			{isConnected && connectedOrgName && (
 				<CardContent className="pt-0">
 					<p className="text-sm text-muted-foreground">
-						Connected to <span className="font-medium">{connectedOrgName}</span>
+						{t("settings.integrations.connectedTo")}{" "}
+						<span className="font-medium">{connectedOrgName}</span>
 					</p>
 				</CardContent>
 			)}

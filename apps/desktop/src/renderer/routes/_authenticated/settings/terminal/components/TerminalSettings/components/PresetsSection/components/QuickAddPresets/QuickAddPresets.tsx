@@ -1,5 +1,6 @@
 import { Button } from "@superset/ui/button";
 import { Tooltip, TooltipContent, TooltipTrigger } from "@superset/ui/tooltip";
+import { useTranslation } from "react-i18next";
 import { HiOutlineCheck } from "react-icons/hi2";
 import { getPresetIcon } from "renderer/assets/app-icons/preset-icons";
 import type { PresetTemplate } from "../../constants";
@@ -19,10 +20,11 @@ export function QuickAddPresets({
 	isTemplateAdded,
 	onAddTemplate,
 }: QuickAddPresetsProps) {
+	const { t } = useTranslation();
 	return (
 		<div className="flex flex-wrap gap-2">
 			<span className="text-xs text-muted-foreground mr-1 self-center">
-				Quick add:
+				{t("settings.terminal.presets.quickAdd.label")}
 			</span>
 			{templates.map((template) => {
 				const alreadyAdded = isTemplateAdded(template);
@@ -50,7 +52,12 @@ export function QuickAddPresets({
 							</Button>
 						</TooltipTrigger>
 						<TooltipContent side="bottom" showArrow={false}>
-							{alreadyAdded ? "Already added" : template.preset.description}
+							{alreadyAdded
+								? t("settings.terminal.presets.quickAdd.alreadyAdded")
+								: t(
+										`settings.terminal.presets.quickAdd.descriptions.${template.name}`,
+										{ defaultValue: template.preset.description },
+									)}
 						</TooltipContent>
 					</Tooltip>
 				);

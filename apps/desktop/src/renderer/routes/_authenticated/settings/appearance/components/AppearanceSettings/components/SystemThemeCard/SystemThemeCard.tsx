@@ -1,4 +1,5 @@
 import { cn } from "@superset/ui/utils";
+import { useTranslation } from "react-i18next";
 import { HiCheck } from "react-icons/hi2";
 import { darkTheme, lightTheme } from "shared/themes";
 
@@ -11,6 +12,7 @@ export function SystemThemeCard({
 	isSelected,
 	onSelect,
 }: SystemThemeCardProps) {
+	const { t } = useTranslation();
 	const darkTerminal = darkTheme.terminal;
 	const lightTerminal = lightTheme.terminal;
 
@@ -115,9 +117,11 @@ export function SystemThemeCard({
 			{/* Theme Info */}
 			<div className="p-3 bg-card border-t flex items-center justify-between">
 				<div>
-					<div className="text-sm font-medium">System</div>
+					<div className="text-sm font-medium">
+						{t("settings.appearance.theme.system.name")}
+					</div>
 					<div className="text-xs text-muted-foreground">
-						Follows OS preference
+						{t("settings.appearance.theme.system.description")}
 					</div>
 				</div>
 				{isSelected && (

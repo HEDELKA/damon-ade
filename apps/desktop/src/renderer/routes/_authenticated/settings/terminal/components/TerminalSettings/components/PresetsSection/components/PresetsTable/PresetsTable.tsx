@@ -1,5 +1,6 @@
 import type { TerminalPreset } from "@superset/local-db";
 import type { RefObject } from "react";
+import { useTranslation } from "react-i18next";
 import { PresetRow } from "../../../PresetRow";
 
 interface PresetsTableProps {
@@ -19,14 +20,23 @@ export function PresetsTable({
 	onLocalReorder,
 	onPersistReorder,
 }: PresetsTableProps) {
+	const { t } = useTranslation();
 	return (
 		<div className="rounded-lg border border-border overflow-hidden">
 			<div className="flex items-center gap-4 py-2 px-4 bg-accent/10 border-b border-border text-xs font-medium text-muted-foreground uppercase tracking-wider">
 				<div className="w-6 shrink-0" />
-				<div className="flex-1 min-w-0">Preset</div>
-				<div className="flex-[1.2] min-w-0">Commands</div>
-				<div className="w-32 shrink-0">Mode</div>
-				<div className="w-36 shrink-0">Auto-run</div>
+				<div className="flex-1 min-w-0">
+					{t("settings.terminal.presets.table.preset")}
+				</div>
+				<div className="flex-[1.2] min-w-0">
+					{t("settings.terminal.presets.table.commands")}
+				</div>
+				<div className="w-32 shrink-0">
+					{t("settings.terminal.presets.table.mode")}
+				</div>
+				<div className="w-36 shrink-0">
+					{t("settings.terminal.presets.table.autoRun")}
+				</div>
 			</div>
 
 			<div
@@ -35,7 +45,7 @@ export function PresetsTable({
 			>
 				{isLoading ? (
 					<div className="py-8 text-center text-sm text-muted-foreground">
-						Loading presets...
+						{t("settings.terminal.presets.table.loading")}
 					</div>
 				) : presets.length > 0 ? (
 					presets.map((preset, index) => (
@@ -51,7 +61,7 @@ export function PresetsTable({
 					))
 				) : (
 					<div className="py-8 text-center text-sm text-muted-foreground">
-						No presets yet. Click "Add Preset" to create your first preset.
+						{t("settings.terminal.presets.table.empty")}
 					</div>
 				)}
 			</div>

@@ -3,7 +3,9 @@ import { Label } from "@superset/ui/label";
 import { Switch } from "@superset/ui/switch";
 import { cn } from "@superset/ui/utils";
 import { useCallback, useEffect, useRef, useState } from "react";
+import { useTranslation } from "react-i18next";
 import { HiCheck, HiPlay, HiPlus, HiStop } from "react-icons/hi2";
+import i18n from "renderer/i18n";
 import { electronTrpc } from "renderer/lib/electron-trpc";
 import { electronTrpcClient } from "renderer/lib/trpc-client";
 import {
@@ -20,7 +22,7 @@ import {
 } from "../../../utils/settings-search";
 
 function formatDuration(seconds: number): string {
-	return `${seconds}s`;
+	return i18n.t("settings.ringtones.durationSeconds", { seconds });
 }
 
 interface RingtoneCardProps {
@@ -120,6 +122,7 @@ interface RingtonesSettingsProps {
 }
 
 export function RingtonesSettings({ visibleItems }: RingtonesSettingsProps) {
+	const { t } = useTranslation();
 	const showNotification = isItemVisible(
 		SETTING_ITEM_ID.RINGTONES_NOTIFICATION,
 		visibleItems,
@@ -257,9 +260,11 @@ export function RingtonesSettings({ visibleItems }: RingtonesSettingsProps) {
 	return (
 		<div className="p-6 max-w-4xl w-full">
 			<div className="mb-8">
-				<h2 className="text-xl font-semibold">Notifications</h2>
+				<h2 className="text-xl font-semibold">
+					{t("settings.ringtones.title")}
+				</h2>
 				<p className="text-sm text-muted-foreground mt-1">
-					Choose the notification sound for completed tasks
+					{t("settings.ringtones.subtitle")}
 				</p>
 			</div>
 
@@ -272,10 +277,10 @@ export function RingtonesSettings({ visibleItems }: RingtonesSettingsProps) {
 								htmlFor="notification-sounds"
 								className="text-sm font-medium"
 							>
-								Notification sounds
+								{t("settings.ringtones.soundsLabel")}
 							</Label>
 							<p className="text-xs text-muted-foreground">
-								Play a sound when tasks complete
+								{t("settings.ringtones.soundsDescription")}
 							</p>
 						</div>
 						<Switch
@@ -291,7 +296,9 @@ export function RingtonesSettings({ visibleItems }: RingtonesSettingsProps) {
 				{showNotification && !isMuted && (
 					<div>
 						<div className="mb-4 flex items-center justify-between gap-2">
-							<h3 className="text-sm font-medium">Notification Sound</h3>
+							<h3 className="text-sm font-medium">
+								{t("settings.ringtones.sectionTitle")}
+							</h3>
 							<Button
 								type="button"
 								size="sm"
@@ -300,7 +307,9 @@ export function RingtonesSettings({ visibleItems }: RingtonesSettingsProps) {
 								disabled={importCustomRingtone.isPending}
 							>
 								<HiPlus className="mr-1.5 h-3.5 w-3.5" />
-								{customRingtone ? "Replace Custom Audio" : "Add Custom Audio"}
+								{customRingtone
+									? t("settings.ringtones.replaceCustom")
+									: t("settings.ringtones.addCustom")}
 							</Button>
 						</div>
 						<div className="grid grid-cols-2 lg:grid-cols-3 gap-4">
@@ -322,8 +331,7 @@ export function RingtonesSettings({ visibleItems }: RingtonesSettingsProps) {
 				{showNotification && !isMuted && (
 					<div className="pt-6 border-t">
 						<p className="text-sm text-muted-foreground">
-							Click the play button to preview a sound. Use Add Custom Audio to
-							import your own .mp3, .wav, or .ogg file.
+							{t("settings.ringtones.tip")}
 						</p>
 					</div>
 				)}

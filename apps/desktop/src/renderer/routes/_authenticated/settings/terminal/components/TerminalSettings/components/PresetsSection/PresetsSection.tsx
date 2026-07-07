@@ -2,6 +2,7 @@ import type { ExecutionMode, TerminalPreset } from "@superset/local-db";
 import { Button } from "@superset/ui/button";
 import { Label } from "@superset/ui/label";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { useTranslation } from "react-i18next";
 import { HiOutlinePlus } from "react-icons/hi2";
 import { useIsDarkTheme } from "renderer/assets/app-icons/preset-icons";
 import { usePresets } from "renderer/react-query/presets";
@@ -28,6 +29,7 @@ export function PresetsSection({
 	editingPresetId: editingPresetIdFromRoute,
 	onEditingPresetIdChange,
 }: PresetsSectionProps) {
+	const { t } = useTranslation();
 	const isDark = useIsDarkTheme();
 	const {
 		presets: serverPresets,
@@ -360,10 +362,11 @@ export function PresetsSection({
 		<div className="space-y-4">
 			<div className="flex items-center justify-between">
 				<div className="space-y-0.5">
-					<Label className="text-sm font-medium">Terminal Presets</Label>
+					<Label className="text-sm font-medium">
+						{t("settings.terminal.presets.title")}
+					</Label>
 					<p className="text-xs text-muted-foreground">
-						Presets let you quickly launch terminals with pre-configured
-						commands.
+						{t("settings.terminal.presets.description")}
 					</p>
 				</div>
 				{showPresets && (
@@ -374,7 +377,7 @@ export function PresetsSection({
 						onClick={handleAddRow}
 					>
 						<HiOutlinePlus className="h-4 w-4" />
-						Add Preset
+						{t("settings.terminal.presets.addPreset")}
 					</Button>
 				)}
 			</div>
@@ -400,7 +403,7 @@ export function PresetsSection({
 						onPersistReorder={handlePersistReorder}
 					/>
 					<p className="text-xs text-muted-foreground">
-						Click a preset row to edit details.
+						{t("settings.terminal.presets.editHint")}
 					</p>
 				</>
 			)}

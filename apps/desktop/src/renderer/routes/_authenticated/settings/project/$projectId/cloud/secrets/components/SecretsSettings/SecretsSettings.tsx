@@ -1,6 +1,7 @@
 import { Button } from "@superset/ui/button";
 import { useLiveQuery } from "@tanstack/react-db";
 import { useCallback, useEffect, useMemo, useState } from "react";
+import { useTranslation } from "react-i18next";
 import { HiOutlineCloud } from "react-icons/hi2";
 import { apiTrpcClient } from "renderer/lib/api-trpc-client";
 import { authClient } from "renderer/lib/auth-client";
@@ -23,6 +24,7 @@ interface EditingSecret {
 }
 
 export function SecretsSettings({ projectId }: SecretsSettingsProps) {
+	const { t } = useTranslation();
 	const utils = electronTrpc.useUtils();
 	const collections = useCollections();
 	const { data: project } = electronTrpc.projects.get.useQuery({
@@ -118,7 +120,9 @@ export function SecretsSettings({ projectId }: SecretsSettingsProps) {
 	return (
 		<div className="p-6 max-w-4xl w-full select-text">
 			<div className="mb-8">
-				<h2 className="text-xl font-semibold">Environment Variables</h2>
+				<h2 className="text-xl font-semibold">
+					{t("settings.project.secrets.title")}
+				</h2>
 			</div>
 
 			<div className="space-y-6">
@@ -133,14 +137,14 @@ export function SecretsSettings({ projectId }: SecretsSettingsProps) {
 				) : (
 					<SettingsSection
 						icon={<HiOutlineCloud className="h-4 w-4" />}
-						title="Cloud Team"
-						description="Link this team to a cloud team for sandboxes and environment variables."
+						title={t("settings.project.secrets.cloudTeam.title")}
+						description={t("settings.project.secrets.cloudTeam.description")}
 					>
 						<div className="flex items-center justify-between">
 							<p className="text-sm text-muted-foreground">
 								{linkToNeon.isPending
-									? "Connecting..."
-									: "Not connected to a cloud team."}
+									? t("settings.project.secrets.connecting")
+									: t("settings.project.secrets.notConnected")}
 							</p>
 							{!linkToNeon.isPending && (
 								<Button
@@ -149,7 +153,9 @@ export function SecretsSettings({ projectId }: SecretsSettingsProps) {
 									disabled={isCreatingCloud || !project.githubOwner}
 									onClick={handleCreateCloudProject}
 								>
-									{isCreatingCloud ? "Connecting..." : "Connect to Cloud"}
+									{isCreatingCloud
+										? t("settings.project.secrets.connecting")
+										: t("settings.project.secrets.connect")}
 								</Button>
 							)}
 						</div>

@@ -1,13 +1,18 @@
+import i18n from "renderer/i18n";
+
 const ENV_LINE = /^(?:export\s+)?[a-zA-Z_]\w*\s*=/;
-const INVALID = {
-	ok: false as const,
-	error: "Please upload a valid .env file.",
-};
+
+function invalid(): { ok: false; error: string } {
+	return {
+		ok: false,
+		error: i18n.t("settings.project.secrets.envFile.invalid"),
+	};
+}
 
 export function validateEnvContent(
 	text: string,
 ): { ok: true } | { ok: false; error: string } {
-	if (text.includes("\0")) return INVALID;
+	if (text.includes("\0")) return invalid();
 
 	const lines = text.split("\n");
 	let kvCount = 0;
@@ -18,7 +23,7 @@ export function validateEnvContent(
 		i++;
 
 		if (!line || line.startsWith("#")) continue;
-		if (!ENV_LINE.test(line)) return INVALID;
+		if (!ENV_LINE.test(line)) return invalid();
 		kvCount++;
 
 		// Skip multiline quoted values
@@ -32,7 +37,7 @@ export function validateEnvContent(
 		}
 	}
 
-	if (kvCount === 0) return INVALID;
+	if (kvCount === 0) return invalid();
 	return { ok: true };
 }
 

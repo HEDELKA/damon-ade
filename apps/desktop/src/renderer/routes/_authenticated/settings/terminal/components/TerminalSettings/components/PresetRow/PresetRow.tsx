@@ -1,6 +1,7 @@
 import { Badge } from "@superset/ui/badge";
 import { useEffect, useRef } from "react";
 import { useDrag, useDrop } from "react-dnd";
+import { useTranslation } from "react-i18next";
 import { LuGripVertical } from "react-icons/lu";
 import type { TerminalPreset } from "renderer/routes/_authenticated/settings/presets/types";
 
@@ -23,6 +24,7 @@ export function PresetRow({
 	onLocalReorder,
 	onPersistReorder,
 }: PresetRowProps) {
+	const { t } = useTranslation();
 	const rowRef = useRef<HTMLButtonElement>(null);
 	const dragHandleRef = useRef<HTMLDivElement>(null);
 
@@ -73,15 +75,15 @@ export function PresetRow({
 	const modeLabel =
 		modeValue === "new-tab"
 			? preset.commands.length > 1
-				? "Tab per command"
-				: "New tab"
+				? t("settings.terminal.presets.row.mode.tabPerCommand")
+				: t("settings.terminal.presets.row.mode.newTab")
 			: modeValue === "new-tab-split-pane"
 				? preset.commands.length > 1
-					? "New tab + panes"
-					: "New tab"
+					? t("settings.terminal.presets.row.mode.newTabPanes")
+					: t("settings.terminal.presets.row.mode.newTab")
 				: preset.commands.length > 1
-					? "Single tab + panes"
-					: "Split pane";
+					? t("settings.terminal.presets.row.mode.singleTabPanes")
+					: t("settings.terminal.presets.row.mode.splitPane");
 	const commandsToShow = preset.commands.length > 0 ? preset.commands : [""];
 
 	return (
@@ -102,7 +104,7 @@ export function PresetRow({
 
 			<div className="flex-1 min-w-0">
 				<div className="text-sm font-medium truncate">
-					{preset.name.trim() || "Untitled preset"}
+					{preset.name.trim() || t("settings.terminal.presets.row.untitled")}
 				</div>
 				{preset.description?.trim() ? (
 					<div className="text-xs text-muted-foreground truncate">
@@ -117,7 +119,7 @@ export function PresetRow({
 						key={`${preset.id}-command-${index}`}
 						className="text-xs font-mono text-muted-foreground truncate"
 					>
-						{command.trim() || "Empty command"}
+						{command.trim() || t("settings.terminal.presets.row.emptyCommand")}
 					</div>
 				))}
 			</div>
@@ -129,12 +131,12 @@ export function PresetRow({
 			<div className="w-36 shrink-0 flex items-center justify-start gap-1.5 pt-0.5">
 				{isWorkspaceCreation ? (
 					<Badge variant="secondary" className="text-[10px]">
-						Agent
+						{t("settings.terminal.presets.row.badge.agent")}
 					</Badge>
 				) : null}
 				{isNewTab ? (
 					<Badge variant="secondary" className="text-[10px]">
-						Tab
+						{t("settings.terminal.presets.row.badge.tab")}
 					</Badge>
 				) : null}
 			</div>

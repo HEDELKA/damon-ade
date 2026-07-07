@@ -12,6 +12,7 @@ import { Kbd, KbdGroup } from "@superset/ui/kbd";
 import { toast } from "@superset/ui/sonner";
 import { createFileRoute } from "@tanstack/react-router";
 import { useEffect, useMemo, useState } from "react";
+import { useTranslation } from "react-i18next";
 import { HiMagnifyingGlass } from "react-icons/hi2";
 import { electronTrpc } from "renderer/lib/electron-trpc";
 import {
@@ -54,6 +55,7 @@ function HotkeyRow({
 	onStartRecording: () => void;
 	onReset: () => void;
 }) {
+	const { t } = useTranslation();
 	const display = useHotkeyDisplay(id);
 
 	return (
@@ -71,7 +73,9 @@ function HotkeyRow({
 					className="h-7 px-3 rounded-md border border-border bg-accent/20 text-xs text-foreground hover:bg-accent/40 transition-colors"
 				>
 					{isRecording ? (
-						<span className="text-xs text-muted-foreground">Recording…</span>
+						<span className="text-xs text-muted-foreground">
+							{t("settings.keyboard.recording")}
+						</span>
 					) : (
 						<KbdGroup>
 							{display.map((key) => (
@@ -81,7 +85,7 @@ function HotkeyRow({
 					)}
 				</button>
 				<Button variant="ghost" size="sm" onClick={onReset}>
-					Reset
+					{t("settings.keyboard.reset")}
 				</Button>
 			</div>
 		</div>
@@ -93,6 +97,7 @@ export const Route = createFileRoute("/_authenticated/settings/keyboard/")({
 });
 
 function KeyboardShortcutsPage() {
+	const { t } = useTranslation();
 	const [searchQuery, setSearchQuery] = useState("");
 	const [recordingId, setRecordingId] = useState<HotkeyId | null>(null);
 	const [pendingConflict, setPendingConflict] = useState<{
@@ -156,7 +161,7 @@ function KeyboardShortcutsPage() {
 			if (!captured) return;
 
 			if (isTerminalReservedHotkey(captured)) {
-				toast.error("That shortcut is reserved by the terminal.");
+				toast.error(t("settings.keyboard.toast.terminalReserved"));
 				setRecordingId(null);
 				return;
 			}
@@ -169,7 +174,7 @@ function KeyboardShortcutsPage() {
 			}
 
 			if (isOsReservedHotkey(captured, platform)) {
-				toast.warning("This shortcut may be reserved by your OS.");
+				toast.warning(t("settings.keyboard.toast.osReserved"));
 			}
 
 			setHotkey(recordingId, captured);
@@ -180,7 +185,7 @@ function KeyboardShortcutsPage() {
 		return () => {
 			window.removeEventListener("keydown", handleKeyDown, { capture: true });
 		};
-	}, [recordingId, platform, setHotkey]);
+	}, [recordingId, platform, setHotkey, t]);
 
 	const handleStartRecording = (id: HotkeyId) => {
 		setRecordingId((current) => (current === id ? null : id));
@@ -191,16 +196,16 @@ function KeyboardShortcutsPage() {
 			const result = await exportMutation.mutateAsync();
 			if ("canceled" in result && result.canceled) return;
 			if ("error" in result) {
-				toast.error("Failed to export shortcuts", {
+				toast.error(t("settings.keyboard.toast.exportFailed"), {
 					description: result.error,
 				});
 				return;
 			}
-			toast.success("Keyboard shortcuts exported", {
+			toast.success(t("settings.keyboard.toast.exported"), {
 				description: result.path,
 			});
 		} catch (error) {
-			toast.error("Failed to export shortcuts", {
+			toast.error(t("settings.keyboard.toast.exportFailed"), {
 				description: error instanceof Error ? error.message : undefined,
 			});
 		}
@@ -211,7 +216,7 @@ function KeyboardShortcutsPage() {
 			const result = await importMutation.mutateAsync();
 			if ("canceled" in result && result.canceled) return;
 			if ("error" in result) {
-				toast.error("Failed to import shortcuts", {
+				toast.error(t("settings.keyboard.toast.importFailed"), {
 					description: result.error,
 				});
 				return;
@@ -222,7 +227,7 @@ function KeyboardShortcutsPage() {
 				summary: result.summary,
 			});
 		} catch (error) {
-			toast.error("Failed to import shortcuts", {
+			toast.error(t("settings.keyboard.toast.importFailed"), {
 				description: error instanceof Error ? error.message : undefined,
 			});
 		}
@@ -231,7 +236,7 @@ function KeyboardShortcutsPage() {
 	const handleConfirmImport = () => {
 		if (!pendingImport) return;
 		replaceHotkeysState(pendingImport.state);
-		toast.success("Keyboard shortcuts imported");
+		toast.success(t("settings.keyboard.toast.imported"));
 		setPendingImport(null);
 	};
 
@@ -242,7 +247,7 @@ function KeyboardShortcutsPage() {
 			[pendingConflict.id]: pendingConflict.keys,
 		});
 		if (isOsReservedHotkey(pendingConflict.keys, platform)) {
-			toast.warning("This shortcut may be reserved by your OS.");
+			toast.warning(t("settings.keyboard.toast.osReserved"));
 		}
 		setPendingConflict(null);
 	};
@@ -252,23 +257,25 @@ function KeyboardShortcutsPage() {
 			{/* Header */}
 			<div className="mb-6 flex items-start justify-between gap-4">
 				<div>
-					<h2 className="text-lg font-semibold">Keyboard Shortcuts</h2>
+					<h2 className="text-lg font-semibold">
+						{t("settings.keyboard.title")}
+					</h2>
 					<p className="text-sm text-muted-foreground mt-1">
-						Customize keyboard shortcuts for your workflow. Press{" "}
+						{t("settings.keyboard.introBefore")}
 						<KbdGroup>
 							{showHotkeysDisplay.map((key) => (
 								<Kbd key={key}>{key}</Kbd>
 							))}
-						</KbdGroup>{" "}
-						to open this page anytime.
+						</KbdGroup>
+						{t("settings.keyboard.introAfter")}
 					</p>
 				</div>
 				<div className="flex items-center gap-2">
 					<Button variant="outline" size="sm" onClick={handleImport}>
-						Import
+						{t("settings.keyboard.import")}
 					</Button>
 					<Button variant="outline" size="sm" onClick={handleExport}>
-						Export
+						{t("settings.keyboard.export")}
 					</Button>
 					<Button
 						variant="ghost"
@@ -278,7 +285,7 @@ function KeyboardShortcutsPage() {
 							resetAllHotkeys();
 						}}
 					>
-						Reset all
+						{t("settings.keyboard.resetAll")}
 					</Button>
 				</div>
 			</div>
@@ -288,7 +295,7 @@ function KeyboardShortcutsPage() {
 				<HiMagnifyingGlass className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
 				<Input
 					type="text"
-					placeholder="Search"
+					placeholder={t("settings.keyboard.searchPlaceholder")}
 					value={searchQuery}
 					onChange={(e) => setSearchQuery(e.target.value)}
 					className="pl-9 bg-accent/30 border-transparent focus:border-accent"
@@ -309,10 +316,10 @@ function KeyboardShortcutsPage() {
 							<div className="rounded-lg border border-border overflow-hidden">
 								<div className="flex items-center justify-between py-2 px-4 bg-accent/10 border-b border-border">
 									<span className="text-xs font-medium text-muted-foreground uppercase tracking-wider">
-										Command
+										{t("settings.keyboard.command")}
 									</span>
 									<span className="text-xs font-medium text-muted-foreground uppercase tracking-wider">
-										Shortcut
+										{t("settings.keyboard.shortcut")}
 									</span>
 								</div>
 								<div className="divide-y divide-border">
@@ -337,7 +344,7 @@ function KeyboardShortcutsPage() {
 					(cat) => (filteredHotkeysByCategory[cat] ?? []).length === 0,
 				) && (
 					<div className="py-8 text-center text-sm text-muted-foreground">
-						No shortcuts found matching "{searchQuery}"
+						{t("settings.keyboard.noResults", { query: searchQuery })}
 					</div>
 				)}
 			</div>
@@ -350,21 +357,21 @@ function KeyboardShortcutsPage() {
 				<AlertDialogContent className="max-w-[380px] gap-0 p-0">
 					<AlertDialogHeader className="px-4 pt-4 pb-2">
 						<AlertDialogTitle className="font-medium">
-							Shortcut already in use
+							{t("settings.keyboard.conflict.title")}
 						</AlertDialogTitle>
 						<AlertDialogDescription asChild>
 							<div className="text-muted-foreground space-y-1.5">
 								<span className="block">
 									{pendingConflict
-										? `${formatHotkeyText(
-												pendingConflict.keys,
-												platform,
-											)} is already assigned to “${
-												HOTKEYS[pendingConflict.conflictId].label
-											}”.`
+										? t("settings.keyboard.conflict.assigned", {
+												keys: formatHotkeyText(pendingConflict.keys, platform),
+												label: HOTKEYS[pendingConflict.conflictId].label,
+											})
 										: ""}
 								</span>
-								<span className="block">Would you like to reassign it?</span>
+								<span className="block">
+									{t("settings.keyboard.conflict.reassignQuestion")}
+								</span>
 							</div>
 						</AlertDialogDescription>
 					</AlertDialogHeader>
@@ -374,14 +381,14 @@ function KeyboardShortcutsPage() {
 							size="sm"
 							onClick={() => setPendingConflict(null)}
 						>
-							Cancel
+							{t("settings.keyboard.cancel")}
 						</Button>
 						<Button
 							variant="secondary"
 							size="sm"
 							onClick={handleConflictReassign}
 						>
-							Reassign
+							{t("settings.keyboard.conflict.reassign")}
 						</Button>
 					</AlertDialogFooter>
 				</AlertDialogContent>
@@ -395,17 +402,20 @@ function KeyboardShortcutsPage() {
 				<AlertDialogContent className="max-w-[420px] gap-0 p-0">
 					<AlertDialogHeader className="px-4 pt-4 pb-2">
 						<AlertDialogTitle className="font-medium">
-							Import keyboard shortcuts?
+							{t("settings.keyboard.importDialog.title")}
 						</AlertDialogTitle>
 						<AlertDialogDescription asChild>
 							<div className="text-muted-foreground space-y-1.5">
 								<span className="block">
-									This will replace your shortcuts on all platforms.
+									{t("settings.keyboard.importDialog.replaceWarning")}
 								</span>
 								{pendingImport && (
 									<span className="block">
-										{pendingImport.summary.assigned} assigned,{" "}
-										{pendingImport.summary.disabled} disabled on {platform}.
+										{t("settings.keyboard.importDialog.summary", {
+											assigned: pendingImport.summary.assigned,
+											disabled: pendingImport.summary.disabled,
+											platform,
+										})}
 									</span>
 								)}
 							</div>
@@ -417,10 +427,10 @@ function KeyboardShortcutsPage() {
 							size="sm"
 							onClick={() => setPendingImport(null)}
 						>
-							Cancel
+							{t("settings.keyboard.cancel")}
 						</Button>
 						<Button variant="secondary" size="sm" onClick={handleConfirmImport}>
-							Import
+							{t("settings.keyboard.import")}
 						</Button>
 					</AlertDialogFooter>
 				</AlertDialogContent>

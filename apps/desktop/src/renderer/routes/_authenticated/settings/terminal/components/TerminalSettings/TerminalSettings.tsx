@@ -1,4 +1,5 @@
 import type { ReactNode } from "react";
+import { useTranslation } from "react-i18next";
 import {
 	isItemVisible,
 	SETTING_ITEM_ID,
@@ -40,6 +41,7 @@ export function TerminalSettings({
 	editingPresetId,
 	onEditingPresetIdChange,
 }: TerminalSettingsProps) {
+	const { t } = useTranslation();
 	const showPresets = isItemVisible(
 		SETTING_ITEM_ID.TERMINAL_PRESETS,
 		visibleItems,
@@ -60,9 +62,11 @@ export function TerminalSettings({
 	return (
 		<div className="p-6 max-w-7xl w-full">
 			<div className="mb-8">
-				<h2 className="text-xl font-semibold">Terminal</h2>
+				<h2 className="text-xl font-semibold">
+					{t("settings.terminal.title")}
+				</h2>
 				<p className="text-sm text-muted-foreground mt-1">
-					Configure terminal behavior and presets
+					{t("settings.terminal.description")}
 				</p>
 			</div>
 

@@ -12,6 +12,7 @@ import {
 import { toast } from "@superset/ui/sonner";
 import { cn } from "@superset/ui/utils";
 import { useState } from "react";
+import { useTranslation } from "react-i18next";
 import { LuCopy, LuExternalLink } from "react-icons/lu";
 import jetbrainsIcon from "renderer/assets/app-icons/jetbrains.svg";
 import vscodeIcon from "renderer/assets/app-icons/vscode.svg";
@@ -28,6 +29,7 @@ interface ClickablePathProps {
 }
 
 export function ClickablePath({ path, className }: ClickablePathProps) {
+	const { t } = useTranslation();
 	const [isOpen, setIsOpen] = useState(false);
 	const utils = electronTrpc.useUtils();
 	// Uses global default editor (no project context on the settings page).
@@ -39,12 +41,23 @@ export function ClickablePath({ path, className }: ClickablePathProps) {
 		onSuccess: () => {
 			utils.settings.getDefaultEditor.invalidate();
 		},
-		onError: (error) => toast.error(`Failed to open: ${error.message}`),
+		onError: (error) =>
+			toast.error(
+				t("settings.sidebar.clickablePath.openFailed", {
+					error: error.message,
+				}),
+			),
 	});
 
 	const copyPath = electronTrpc.external.copyPath.useMutation({
-		onSuccess: () => toast.success("Path copied to clipboard"),
-		onError: (error) => toast.error(`Failed to copy path: ${error.message}`),
+		onSuccess: () =>
+			toast.success(t("settings.sidebar.clickablePath.pathCopied")),
+		onError: (error) =>
+			toast.error(
+				t("settings.sidebar.clickablePath.copyFailed", {
+					error: error.message,
+				}),
+			),
 	});
 
 	const handleOpenIn = (app: ExternalApp) => {
@@ -84,7 +97,7 @@ export function ClickablePath({ path, className }: ClickablePathProps) {
 						<span>{app.label}</span>
 						{app.id === defaultApp && (
 							<span className="ml-auto text-xs text-muted-foreground">
-								Default
+								{t("settings.sidebar.clickablePath.default")}
 							</span>
 						)}
 					</DropdownMenuItem>
@@ -109,7 +122,7 @@ export function ClickablePath({ path, className }: ClickablePathProps) {
 								<span>{app.label}</span>
 								{app.id === defaultApp && (
 									<span className="ml-auto text-xs text-muted-foreground">
-										Default
+										{t("settings.sidebar.clickablePath.default")}
 									</span>
 								)}
 							</DropdownMenuItem>
@@ -136,7 +149,7 @@ export function ClickablePath({ path, className }: ClickablePathProps) {
 								<span>{app.label}</span>
 								{app.id === defaultApp && (
 									<span className="ml-auto text-xs text-muted-foreground">
-										Default
+										{t("settings.sidebar.clickablePath.default")}
 									</span>
 								)}
 							</DropdownMenuItem>
@@ -149,7 +162,7 @@ export function ClickablePath({ path, className }: ClickablePathProps) {
 					className="flex items-center gap-2"
 				>
 					<LuCopy className="size-4" />
-					<span>Copy path</span>
+					<span>{t("settings.sidebar.clickablePath.copyPath")}</span>
 				</DropdownMenuItem>
 			</DropdownMenuContent>
 		</DropdownMenu>

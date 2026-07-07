@@ -1,6 +1,7 @@
 import { Button } from "@superset/ui/button";
 import { Input } from "@superset/ui/input";
 import { useCallback, useEffect, useState } from "react";
+import { useTranslation } from "react-i18next";
 import { electronTrpc } from "renderer/lib/electron-trpc";
 import { MONACO_EDITOR_OPTIONS } from "renderer/providers/MonacoProvider";
 import {
@@ -14,16 +15,16 @@ const DEFAULT_EDITOR_FONT_SIZE = MONACO_EDITOR_OPTIONS.fontSize;
 
 const VARIANT_CONFIG = {
 	editor: {
-		title: "Editor Font",
-		description: "Font used in diff views and file editors",
+		titleKey: "settings.appearance.font.editor.title",
+		descriptionKey: "settings.appearance.font.editor.description",
 		defaultFamily: DEFAULT_EDITOR_FONT_FAMILY,
 		defaultSize: DEFAULT_EDITOR_FONT_SIZE,
 		familyKey: "editorFontFamily",
 		sizeKey: "editorFontSize",
 	},
 	terminal: {
-		title: "Terminal Font",
-		description: "Font used in terminal panels.",
+		titleKey: "settings.appearance.font.terminal.title",
+		descriptionKey: "settings.appearance.font.terminal.description",
 		defaultFamily: DEFAULT_TERMINAL_FONT_FAMILY,
 		defaultSize: DEFAULT_TERMINAL_FONT_SIZE,
 		familyKey: "terminalFontFamily",
@@ -36,6 +37,7 @@ interface FontSettingSectionProps {
 }
 
 export function FontSettingSection({ variant }: FontSettingSectionProps) {
+	const { t } = useTranslation();
 	const config = VARIANT_CONFIG[variant];
 
 	const utils = electronTrpc.useUtils();
@@ -105,9 +107,9 @@ export function FontSettingSection({ variant }: FontSettingSectionProps) {
 
 	return (
 		<div>
-			<h3 className="text-sm font-medium mb-1">{config.title}</h3>
+			<h3 className="text-sm font-medium mb-1">{t(config.titleKey)}</h3>
 			<p className="text-sm text-muted-foreground mb-3">
-				{config.description}
+				{t(config.descriptionKey)}
 				{variant === "terminal" && (
 					<>
 						{" "}
@@ -119,7 +121,7 @@ export function FontSettingSection({ variant }: FontSettingSectionProps) {
 						>
 							Nerd Fonts
 						</a>{" "}
-						recommended for shell theme icons.
+						{t("settings.appearance.font.nerdFontsRecommended")}
 					</>
 				)}
 			</p>
@@ -162,7 +164,7 @@ export function FontSettingSection({ variant }: FontSettingSectionProps) {
 							setFontSizeDraft(null);
 						}}
 					>
-						Reset
+						{t("settings.appearance.font.reset")}
 					</Button>
 				)}
 			</div>

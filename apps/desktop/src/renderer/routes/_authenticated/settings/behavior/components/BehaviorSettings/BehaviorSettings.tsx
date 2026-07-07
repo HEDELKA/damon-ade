@@ -10,6 +10,7 @@ import {
 } from "@superset/ui/select";
 import { Switch } from "@superset/ui/switch";
 import { useEffect, useState } from "react";
+import { useTranslation } from "react-i18next";
 import { electronTrpc } from "renderer/lib/electron-trpc";
 import { resolveBranchPrefix, sanitizeSegment } from "shared/utils/branch";
 import {
@@ -28,6 +29,7 @@ interface BehaviorSettingsProps {
 }
 
 export function BehaviorSettings({ visibleItems }: BehaviorSettingsProps) {
+	const { t } = useTranslation();
 	const showConfirmQuit = isItemVisible(
 		SETTING_ITEM_ID.BEHAVIOR_CONFIRM_QUIT,
 		visibleItems,
@@ -283,9 +285,11 @@ export function BehaviorSettings({ visibleItems }: BehaviorSettingsProps) {
 	return (
 		<div className="p-6 max-w-4xl w-full">
 			<div className="mb-8">
-				<h2 className="text-xl font-semibold">Features</h2>
+				<h2 className="text-xl font-semibold">
+					{t("settings.behavior.title")}
+				</h2>
 				<p className="text-sm text-muted-foreground mt-1">
-					Configure app features and preferences
+					{t("settings.behavior.subtitle")}
 				</p>
 			</div>
 
@@ -294,10 +298,10 @@ export function BehaviorSettings({ visibleItems }: BehaviorSettingsProps) {
 					<div className="flex items-center justify-between">
 						<div className="space-y-0.5">
 							<Label htmlFor="confirm-on-quit" className="text-sm font-medium">
-								Confirm before quitting
+								{t("settings.behavior.confirmQuit.label")}
 							</Label>
 							<p className="text-xs text-muted-foreground">
-								Show a confirmation dialog when quitting the app
+								{t("settings.behavior.confirmQuit.description")}
 							</p>
 						</div>
 						<Switch
@@ -316,11 +320,10 @@ export function BehaviorSettings({ visibleItems }: BehaviorSettingsProps) {
 								htmlFor="delete-local-branch"
 								className="text-sm font-medium"
 							>
-								Delete local branch on agent removal
+								{t("settings.behavior.deleteLocalBranch.label")}
 							</Label>
 							<p className="text-xs text-muted-foreground">
-								Also delete the local git branch when deleting a worktree
-								agent
+								{t("settings.behavior.deleteLocalBranch.description")}
 							</p>
 						</div>
 						<Switch
@@ -335,9 +338,11 @@ export function BehaviorSettings({ visibleItems }: BehaviorSettingsProps) {
 				{showBranchPrefix && (
 					<div className="flex items-center justify-between">
 						<div className="space-y-0.5">
-							<Label className="text-sm font-medium">Branch Prefix</Label>
+							<Label className="text-sm font-medium">
+								{t("settings.behavior.branchPrefix.label")}
+							</Label>
 							<p className="text-xs text-muted-foreground">
-								Preview:{" "}
+								{t("settings.behavior.branchPrefix.previewLabel")}{" "}
 								<code className="bg-muted px-1.5 py-0.5 rounded text-foreground">
 									{previewPrefix
 										? `${previewPrefix}/branch-name`
@@ -371,7 +376,9 @@ export function BehaviorSettings({ visibleItems }: BehaviorSettingsProps) {
 							</Select>
 							{branchPrefix?.mode === "custom" && (
 								<Input
-									placeholder="Prefix"
+									placeholder={t(
+										"settings.behavior.branchPrefix.customPlaceholder",
+									)}
 									value={customPrefixInput}
 									onChange={(e) => setCustomPrefixInput(e.target.value)}
 									onBlur={handleCustomPrefixBlur}
@@ -386,9 +393,11 @@ export function BehaviorSettings({ visibleItems }: BehaviorSettingsProps) {
 				{showFileOpenMode && (
 					<div className="flex items-center justify-between">
 						<div className="space-y-0.5">
-							<Label className="text-sm font-medium">File open mode</Label>
+							<Label className="text-sm font-medium">
+								{t("settings.behavior.fileOpenMode.label")}
+							</Label>
 							<p className="text-xs text-muted-foreground">
-								Choose how files open when no preview pane exists
+								{t("settings.behavior.fileOpenMode.description")}
 							</p>
 						</div>
 						<Select
@@ -402,8 +411,12 @@ export function BehaviorSettings({ visibleItems }: BehaviorSettingsProps) {
 								<SelectValue />
 							</SelectTrigger>
 							<SelectContent>
-								<SelectItem value="split-pane">Split pane</SelectItem>
-								<SelectItem value="new-tab">New tab</SelectItem>
+								<SelectItem value="split-pane">
+									{t("settings.behavior.fileOpenMode.splitPane")}
+								</SelectItem>
+								<SelectItem value="new-tab">
+									{t("settings.behavior.fileOpenMode.newTab")}
+								</SelectItem>
 							</SelectContent>
 						</Select>
 					</div>
@@ -413,10 +426,10 @@ export function BehaviorSettings({ visibleItems }: BehaviorSettingsProps) {
 					<div className="flex items-center justify-between">
 						<div className="space-y-0.5">
 							<Label htmlFor="resource-monitor" className="text-sm font-medium">
-								Resource monitor
+								{t("settings.behavior.resourceMonitor.label")}
 							</Label>
 							<p className="text-xs text-muted-foreground">
-								Show CPU and memory usage in the top bar
+								{t("settings.behavior.resourceMonitor.description")}
 							</p>
 						</div>
 						<Switch
@@ -439,11 +452,10 @@ export function BehaviorSettings({ visibleItems }: BehaviorSettingsProps) {
 								htmlFor="open-links-in-app"
 								className="text-sm font-medium"
 							>
-								Open links in app browser
+								{t("settings.behavior.openLinksInApp.label")}
 							</Label>
 							<p className="text-xs text-muted-foreground">
-								Open links from chat and terminal in the built-in browser
-								instead of your default browser
+								{t("settings.behavior.openLinksInApp.description")}
 							</p>
 						</div>
 						<Switch
@@ -459,13 +471,18 @@ export function BehaviorSettings({ visibleItems }: BehaviorSettingsProps) {
 
 				{showWorktreeLocation && (
 					<div className="space-y-0.5">
-						<Label className="text-sm font-medium">Worktree location</Label>
+						<Label className="text-sm font-medium">
+							{t("settings.behavior.worktreeLocation.label")}
+						</Label>
 						<p className="text-xs text-muted-foreground">
-							Base directory for new worktrees
+							{t("settings.behavior.worktreeLocation.description")}
 						</p>
 						<WorktreeLocationPicker
 							currentPath={worktreeBaseDir}
-							defaultPathLabel={`Default (${defaultWorktreePath})`}
+							defaultPathLabel={t(
+								"settings.behavior.worktreeLocation.defaultLabel",
+								{ path: defaultWorktreePath },
+							)}
 							defaultBrowsePath={worktreeBaseDir}
 							disabled={
 								isWorktreeBaseDirLoading || setWorktreeBaseDir.isPending
@@ -480,10 +497,10 @@ export function BehaviorSettings({ visibleItems }: BehaviorSettingsProps) {
 					<div className="flex items-center justify-between">
 						<div className="space-y-0.5">
 							<Label htmlFor="telemetry" className="text-sm font-medium">
-								Send anonymous usage data
+								{t("settings.behavior.telemetry.label")}
 							</Label>
 							<p className="text-xs text-muted-foreground">
-								Help improve ADE by sending anonymous usage data
+								{t("settings.behavior.telemetry.description")}
 							</p>
 						</div>
 						<Switch

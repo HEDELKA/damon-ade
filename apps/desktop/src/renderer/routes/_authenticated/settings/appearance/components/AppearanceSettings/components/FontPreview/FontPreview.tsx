@@ -1,5 +1,4 @@
-const FONT_PREVIEW_TEXT =
-	"The quick brown fox jumps over the lazy dog.\n0O1lI {}[]() => !== +- @#$%";
+import { useTranslation } from "react-i18next";
 
 export function FontPreview({
 	fontFamily,
@@ -10,6 +9,7 @@ export function FontPreview({
 	fontSize: number;
 	variant: "editor" | "terminal";
 }) {
+	const { t } = useTranslation();
 	const isTerminal = variant === "terminal";
 	return (
 		<div
@@ -23,7 +23,7 @@ export function FontPreview({
 				whiteSpace: "pre-wrap",
 			}}
 		>
-			{FONT_PREVIEW_TEXT}
+			{t("settings.appearance.font.previewText")}
 		</div>
 	);
 }

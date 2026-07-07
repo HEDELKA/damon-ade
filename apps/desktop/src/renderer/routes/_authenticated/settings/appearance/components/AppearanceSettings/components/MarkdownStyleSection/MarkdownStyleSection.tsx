@@ -5,6 +5,7 @@ import {
 	SelectTrigger,
 	SelectValue,
 } from "@superset/ui/select";
+import { useTranslation } from "react-i18next";
 import {
 	type MarkdownStyle,
 	useMarkdownStyle,
@@ -12,14 +13,17 @@ import {
 } from "renderer/stores";
 
 export function MarkdownStyleSection() {
+	const { t } = useTranslation();
 	const markdownStyle = useMarkdownStyle();
 	const setMarkdownStyle = useSetMarkdownStyle();
 
 	return (
 		<div>
-			<h3 className="text-sm font-medium mb-2">Markdown Style</h3>
+			<h3 className="text-sm font-medium mb-2">
+				{t("settings.appearance.markdown.heading")}
+			</h3>
 			<p className="text-sm text-muted-foreground mb-4">
-				Rendering style for markdown files when viewing rendered content
+				{t("settings.appearance.markdown.description")}
 			</p>
 			<Select
 				value={markdownStyle}
@@ -29,13 +33,14 @@ export function MarkdownStyleSection() {
 					<SelectValue />
 				</SelectTrigger>
 				<SelectContent>
-					<SelectItem value="default">Default</SelectItem>
+					<SelectItem value="default">
+						{t("settings.appearance.markdown.default")}
+					</SelectItem>
 					<SelectItem value="tufte">Tufte</SelectItem>
 				</SelectContent>
 			</Select>
 			<p className="text-xs text-muted-foreground mt-2">
-				Tufte style uses elegant serif typography inspired by Edward Tufte's
-				books
+				{t("settings.appearance.markdown.hint")}
 			</p>
 		</div>
 	);

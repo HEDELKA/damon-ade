@@ -8,6 +8,7 @@ import {
 	SelectValue,
 } from "@superset/ui/select";
 import { useCallback, useEffect, useMemo, useState } from "react";
+import { useTranslation } from "react-i18next";
 import {
 	HiArrowsUpDown,
 	HiMagnifyingGlass,
@@ -27,12 +28,6 @@ interface Secret {
 }
 
 type SortOrder = "last-updated" | "name" | "type";
-
-const SORT_OPTIONS: { value: SortOrder; label: string }[] = [
-	{ value: "last-updated", label: "Last Updated" },
-	{ value: "name", label: "Name" },
-	{ value: "type", label: "Type" },
-];
 
 function sortSecrets(secrets: Secret[], order: SortOrder): Secret[] {
 	return [...secrets].sort((a, b) => {
@@ -64,6 +59,15 @@ export function EnvironmentVariablesList({
 	onAdd,
 	onEdit,
 }: EnvironmentVariablesListProps) {
+	const { t } = useTranslation();
+	const SORT_OPTIONS: { value: SortOrder; label: string }[] = [
+		{
+			value: "last-updated",
+			label: t("settings.project.secrets.sort.lastUpdated"),
+		},
+		{ value: "name", label: t("settings.project.secrets.sort.name") },
+		{ value: "type", label: t("settings.project.secrets.sort.type") },
+	];
 	const [secrets, setSecrets] = useState<Secret[]>([]);
 	const [isLoading, setIsLoading] = useState(true);
 	const [searchQuery, setSearchQuery] = useState("");
@@ -101,7 +105,7 @@ export function EnvironmentVariablesList({
 			<div className="flex items-center justify-end">
 				<Button size="sm" onClick={onAdd}>
 					<HiOutlinePlus className="h-4 w-4 mr-1.5" />
-					Add Environment Variable
+					{t("settings.project.secrets.add.title")}
 				</Button>
 			</div>
 
@@ -110,7 +114,7 @@ export function EnvironmentVariablesList({
 					<div className="relative flex-1">
 						<HiMagnifyingGlass className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
 						<Input
-							placeholder="Search by key name..."
+							placeholder={t("settings.project.secrets.searchPlaceholder")}
 							value={searchQuery}
 							onChange={(e) => setSearchQuery(e.target.value)}
 							className="pl-9"
@@ -137,13 +141,13 @@ export function EnvironmentVariablesList({
 
 			{isLoading ? (
 				<div className="text-sm text-muted-foreground py-8 text-center">
-					Loading...
+					{t("settings.project.loading")}
 				</div>
 			) : filteredAndSorted.length === 0 ? (
 				<div className="text-sm text-muted-foreground py-8 text-center border rounded-md">
 					{secrets.length === 0
-						? "No environment variables yet"
-						: "No matching variables"}
+						? t("settings.project.secrets.empty")
+						: t("settings.project.secrets.noMatch")}
 				</div>
 			) : (
 				<div className="border rounded-md">

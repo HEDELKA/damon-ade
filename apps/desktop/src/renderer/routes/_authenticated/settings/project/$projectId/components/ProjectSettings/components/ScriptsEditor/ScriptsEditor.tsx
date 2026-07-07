@@ -1,6 +1,7 @@
 import { Button } from "@superset/ui/button";
 import { cn } from "@superset/ui/utils";
 import { useCallback, useEffect, useRef, useState } from "react";
+import { useTranslation } from "react-i18next";
 import { HiArrowTopRightOnSquare, HiDocumentArrowUp } from "react-icons/hi2";
 import { electronTrpc } from "renderer/lib/electron-trpc";
 import { EXTERNAL_LINKS } from "shared/constants";
@@ -44,6 +45,7 @@ function ScriptTextarea({
 	value,
 	onChange,
 }: ScriptTextareaProps) {
+	const { t } = useTranslation();
 	const [isDragOver, setIsDragOver] = useState(false);
 	const fileInputRef = useRef<HTMLInputElement>(null);
 
@@ -109,7 +111,7 @@ function ScriptTextarea({
 			{/* biome-ignore lint/a11y/useSemanticElements: Drop zone wrapper for drag-and-drop functionality */}
 			<div
 				role="region"
-				aria-label={`${title} script editor with file drop support`}
+				aria-label={t("settings.project.scripts.editorAriaLabel", { title })}
 				className={cn(
 					"relative rounded-lg border transition-colors",
 					isDragOver
@@ -131,7 +133,7 @@ function ScriptTextarea({
 					<div className="absolute inset-0 flex items-center justify-center bg-primary/10 rounded-lg pointer-events-none">
 						<div className="flex items-center gap-2 text-primary text-sm font-medium">
 							<HiDocumentArrowUp className="h-5 w-5" />
-							Drop to import
+							{t("settings.project.scripts.dropToImport")}
 						</div>
 					</div>
 				)}
@@ -144,7 +146,7 @@ function ScriptTextarea({
 				className="gap-1.5 text-muted-foreground"
 			>
 				<HiDocumentArrowUp className="h-3.5 w-3.5" />
-				Import file
+				{t("settings.project.scripts.importFile")}
 			</Button>
 			<input
 				ref={fileInputRef}
@@ -158,6 +160,7 @@ function ScriptTextarea({
 }
 
 export function ScriptsEditor({ projectId, className }: ScriptsEditorProps) {
+	const { t } = useTranslation();
 	const utils = electronTrpc.useUtils();
 
 	const { data: configData, isLoading } =
@@ -216,9 +219,11 @@ export function ScriptsEditor({ projectId, className }: ScriptsEditorProps) {
 		<div className={cn("space-y-5", className)}>
 			<div className="flex items-start justify-between">
 				<div className="space-y-1">
-					<h3 className="text-base font-semibold text-foreground">Scripts</h3>
+					<h3 className="text-base font-semibold text-foreground">
+						{t("settings.project.scripts.title")}
+					</h3>
 					<p className="text-sm text-muted-foreground">
-						Automate your agent lifecycle with setup and teardown scripts.
+						{t("settings.project.scripts.description")}
 					</p>
 				</div>
 				<div className="flex gap-2 shrink-0">
@@ -228,7 +233,7 @@ export function ScriptsEditor({ projectId, className }: ScriptsEditorProps) {
 							target="_blank"
 							rel="noopener noreferrer"
 						>
-							Get started with setup scripts
+							{t("settings.project.scripts.getStarted")}
 							<HiArrowTopRightOnSquare className="h-3.5 w-3.5" />
 						</a>
 					</Button>
@@ -238,24 +243,26 @@ export function ScriptsEditor({ projectId, className }: ScriptsEditorProps) {
 							onClick={handleSave}
 							disabled={updateConfigMutation.isPending}
 						>
-							{updateConfigMutation.isPending ? "Saving..." : "Save"}
+							{updateConfigMutation.isPending
+								? t("settings.project.saving")
+								: t("settings.project.save")}
 						</Button>
 					)}
 				</div>
 			</div>
 
 			<ScriptTextarea
-				title="Setup"
-				description="Runs when a new agent is created."
-				placeholder="e.g. bun install && bun run dev"
+				title={t("settings.project.scripts.setup.title")}
+				description={t("settings.project.scripts.setup.description")}
+				placeholder={t("settings.project.scripts.setup.placeholder")}
 				value={setupContent}
 				onChange={handleSetupChange}
 			/>
 
 			<ScriptTextarea
-				title="Teardown"
-				description="Runs when an agent is deleted."
-				placeholder="e.g. docker compose down"
+				title={t("settings.project.scripts.teardown.title")}
+				description={t("settings.project.scripts.teardown.description")}
+				placeholder={t("settings.project.scripts.teardown.placeholder")}
 				value={teardownContent}
 				onChange={handleTeardownChange}
 			/>

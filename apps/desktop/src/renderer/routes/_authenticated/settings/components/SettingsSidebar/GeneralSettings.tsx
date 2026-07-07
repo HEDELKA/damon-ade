@@ -1,5 +1,6 @@
 import { cn } from "@superset/ui/utils";
 import { Link, useMatchRoute } from "@tanstack/react-router";
+import { useTranslation } from "react-i18next";
 import {
 	HiOutlineBell,
 	HiOutlineCommandLine,
@@ -32,68 +33,69 @@ type SettingsRoute =
 const GENERAL_SECTIONS: {
 	id: SettingsRoute;
 	section: SettingsSection;
-	label: string;
+	labelKey: string;
 	icon: React.ReactNode;
 	macOnly?: boolean;
 }[] = [
 	{
 		id: "/settings/account",
 		section: "account",
-		label: "Account",
+		labelKey: "settings.sidebar.sections.account",
 		icon: <HiOutlineUser className="h-4 w-4" />,
 	},
 	{
 		id: "/settings/appearance",
 		section: "appearance",
-		label: "Appearance",
+		labelKey: "settings.sidebar.sections.appearance",
 		icon: <HiOutlinePaintBrush className="h-4 w-4" />,
 	},
 	{
 		id: "/settings/ringtones",
 		section: "ringtones",
-		label: "Notifications",
+		labelKey: "settings.sidebar.sections.notifications",
 		icon: <HiOutlineBell className="h-4 w-4" />,
 	},
 	{
 		id: "/settings/keyboard",
 		section: "keyboard",
-		label: "Keyboard",
+		labelKey: "settings.sidebar.sections.keyboard",
 		icon: <LuKeyboard className="h-4 w-4" />,
 	},
 	{
 		id: "/settings/behavior",
 		section: "behavior",
-		label: "Features",
+		labelKey: "settings.sidebar.sections.features",
 		icon: <HiOutlineSparkles className="h-4 w-4" />,
 	},
 	{
 		id: "/settings/terminal",
 		section: "terminal",
-		label: "Terminal",
+		labelKey: "settings.sidebar.sections.terminal",
 		icon: <HiOutlineCommandLine className="h-4 w-4" />,
 	},
 	{
 		id: "/settings/integrations",
 		section: "integrations",
-		label: "Integrations",
+		labelKey: "settings.sidebar.sections.integrations",
 		icon: <HiOutlinePuzzlePiece className="h-4 w-4" />,
 	},
 	{
 		id: "/settings/api-keys",
 		section: "apikeys",
-		label: "API Keys",
+		labelKey: "settings.sidebar.sections.apiKeys",
 		icon: <HiOutlineKey className="h-4 w-4" />,
 	},
 	{
 		id: "/settings/permissions",
 		section: "permissions",
-		label: "Permissions",
+		labelKey: "settings.sidebar.sections.permissions",
 		icon: <HiOutlineShieldCheck className="h-4 w-4" />,
 		macOnly: true,
 	},
 ];
 
 export function GeneralSettings({ matchCounts }: GeneralSettingsProps) {
+	const { t } = useTranslation();
 	const matchRoute = useMatchRoute();
 	const { data: platform } = electronTrpc.window.getPlatform.useQuery();
 	const isMac = platform === "darwin";
@@ -114,7 +116,7 @@ export function GeneralSettings({ matchCounts }: GeneralSettingsProps) {
 	return (
 		<div className="mb-4">
 			<h2 className="text-xs font-medium text-muted-foreground uppercase tracking-wider px-3 mb-2">
-				General
+				{t("settings.sidebar.general")}
 			</h2>
 			<nav className="flex flex-col gap-0.5">
 				{filteredSections.map((section) => {
@@ -133,7 +135,7 @@ export function GeneralSettings({ matchCounts }: GeneralSettingsProps) {
 							)}
 						>
 							{section.icon}
-							<span className="flex-1">{section.label}</span>
+							<span className="flex-1">{t(section.labelKey)}</span>
 							{count !== undefined && count > 0 && (
 								<span className="text-xs text-muted-foreground bg-accent/50 px-1.5 py-0.5 rounded">
 									{count}

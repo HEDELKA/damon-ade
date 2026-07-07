@@ -14,6 +14,7 @@ import { Textarea } from "@superset/ui/textarea";
 import { Tooltip, TooltipContent, TooltipTrigger } from "@superset/ui/tooltip";
 import { cn } from "@superset/ui/utils";
 import { useCallback, useEffect, useRef, useState } from "react";
+import { useTranslation } from "react-i18next";
 import {
 	HiOutlineArrowDownTray,
 	HiOutlineQuestionMarkCircle,
@@ -63,6 +64,7 @@ export function AddSecretSheet({
 	organizationId,
 	onSaved,
 }: AddSecretSheetProps) {
+	const { t } = useTranslation();
 	const [entries, setEntries] = useState<SecretEntry[]>([createEmptyEntry()]);
 	const [sensitive, setSensitive] = useState(true);
 	const [isSaving, setIsSaving] = useState(false);
@@ -74,10 +76,9 @@ export function AddSecretSheet({
 	const handleOpenChange = (nextOpen: boolean) => {
 		if (!nextOpen && hasContent) {
 			alert.destructive({
-				title: "Discard unsaved changes?",
-				description:
-					"You have unsaved environment variables. Are you sure you want to close?",
-				confirmText: "Discard",
+				title: t("settings.project.secrets.discard.title"),
+				description: t("settings.project.secrets.discard.description"),
+				confirmText: t("settings.project.secrets.discard.confirm"),
 				onConfirm: () => onOpenChange(false),
 			});
 			return;
@@ -133,24 +134,27 @@ export function AddSecretSheet({
 		}
 	};
 
-	const handleFileImport = useCallback((content: string) => {
-		const parsed = toSecretEntries(parseEnvContent(content));
-		if (parsed.length === 0) {
-			toast.error("No valid environment variables found in file");
-			return;
-		}
-		setEntries((prev) => {
-			const hasExisting = prev.some((e) => e.key || e.value);
-			return hasExisting ? [...prev, ...parsed] : parsed;
-		});
-	}, []);
+	const handleFileImport = useCallback(
+		(content: string) => {
+			const parsed = toSecretEntries(parseEnvContent(content));
+			if (parsed.length === 0) {
+				toast.error(t("settings.project.secrets.errors.noValidVars"));
+				return;
+			}
+			setEntries((prev) => {
+				const hasExisting = prev.some((e) => e.key || e.value);
+				return hasExisting ? [...prev, ...parsed] : parsed;
+			});
+		},
+		[t],
+	);
 
 	const MAX_FILE_SIZE = 256 * 1024; // 256 KB
 
 	const validateAndReadFile = useCallback(
 		(file: File) => {
 			if (file.size > MAX_FILE_SIZE) {
-				toast.error("File too large. Maximum size is 256 KB.");
+				toast.error(t("settings.project.secrets.errors.fileTooLarge"));
 				return;
 			}
 
@@ -168,11 +172,11 @@ export function AddSecretSheet({
 				handleFileImport(text);
 			};
 			reader.onerror = () => {
-				toast.error("Failed to read file.");
+				toast.error(t("settings.project.secrets.errors.readFailed"));
 			};
 			reader.readAsText(file);
 		},
-		[handleFileImport],
+		[handleFileImport, t],
 	);
 
 	const handleDrop = useCallback(
@@ -212,14 +216,18 @@ export function AddSecretSheet({
 			}
 			toast.success(
 				validEntries.length === 1
-					? `Added ${validEntries[0].key.trim()}`
-					: `Added ${validEntries.length} environment variables`,
+					? t("settings.project.secrets.addedOne", {
+							key: validEntries[0].key.trim(),
+						})
+					: t("settings.project.secrets.addedMany", {
+							count: validEntries.length,
+						}),
 			);
 			onSaved();
 			onOpenChange(false);
 		} catch (err) {
 			console.error("[secrets/upsert] Failed to save:", err);
-			toast.error("Failed to save environment variables");
+			toast.error(t("settings.project.secrets.errors.saveFailed"));
 		} finally {
 			setIsSaving(false);
 		}
@@ -239,10 +247,9 @@ export function AddSecretSheet({
 				onDrop={handleDrop}
 			>
 				<SheetHeader className="p-6 pb-4">
-					<SheetTitle>Add Environment Variable</SheetTitle>
+					<SheetTitle>{t("settings.project.secrets.add.title")}</SheetTitle>
 					<SheetDescription>
-						Add one or more environment variables. You can also drag and drop a
-						.env file.
+						{t("settings.project.secrets.add.description")}
 					</SheetDescription>
 				</SheetHeader>
 
@@ -256,10 +263,10 @@ export function AddSecretSheet({
 						{/* Column headers */}
 						<div className="flex items-center gap-2">
 							<span className="flex-1 text-xs font-medium text-muted-foreground">
-								Key
+								{t("settings.project.secrets.key")}
 							</span>
 							<span className="flex-1 text-xs font-medium text-muted-foreground">
-								Value
+								{t("settings.project.secrets.value")}
 							</span>
 							{/* spacer for trash button */}
 							<div className="w-8 shrink-0" />
@@ -268,7 +275,7 @@ export function AddSecretSheet({
 						{entries.map((entry, index) => (
 							<div key={entry.id} className="flex items-start gap-2">
 								<Input
-									placeholder="CLIENT_KEY..."
+									placeholder={t("settings.project.secrets.keyPlaceholder")}
 									value={entry.key}
 									onChange={(e) => updateEntry(index, "key", e.target.value)}
 									onPaste={(e) => handleKeyPaste(index, e)}
@@ -303,20 +310,21 @@ export function AddSecretSheet({
 							onClick={addEntry}
 						>
 							<HiPlus className="h-3.5 w-3.5" />
-							Add Another
+							{t("settings.project.secrets.addAnother")}
 						</Button>
 
 						<div className="flex items-center gap-2 pt-2">
 							<Switch checked={sensitive} onCheckedChange={setSensitive} />
-							<span className="text-sm text-muted-foreground">Sensitive</span>
+							<span className="text-sm text-muted-foreground">
+								{t("settings.project.secrets.sensitive")}
+							</span>
 							<Tooltip>
 								<TooltipTrigger asChild>
 									<HiOutlineQuestionMarkCircle className="h-3.5 w-3.5 text-muted-foreground cursor-help" />
 								</TooltipTrigger>
 								<TooltipContent side="right">
 									<p className="max-w-[200px] text-xs">
-										Sensitive values are encrypted and cannot be revealed in the
-										UI after saving.
+										{t("settings.project.secrets.sensitiveTooltip")}
 									</p>
 								</TooltipContent>
 							</Tooltip>
@@ -334,10 +342,10 @@ export function AddSecretSheet({
 							onClick={() => fileInputRef.current?.click()}
 						>
 							<HiOutlineArrowDownTray className="h-3.5 w-3.5" />
-							Import .env
+							{t("settings.project.secrets.importEnv")}
 						</Button>
 						<span className="text-xs text-muted-foreground">
-							or paste .env contents in Key input
+							{t("settings.project.secrets.pasteHint")}
 						</span>
 						<input
 							ref={fileInputRef}
@@ -348,7 +356,9 @@ export function AddSecretSheet({
 						/>
 					</div>
 					<Button onClick={handleSave} disabled={isSaving || !hasValidEntries}>
-						{isSaving ? "Saving..." : "Save"}
+						{isSaving
+							? t("settings.project.saving")
+							: t("settings.project.save")}
 					</Button>
 				</div>
 			</SheetContent>

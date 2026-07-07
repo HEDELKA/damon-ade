@@ -2,6 +2,7 @@ import { COMPANY } from "@superset/shared/constants";
 import { Button } from "@superset/ui/button";
 import { toast } from "@superset/ui/sonner";
 import { type ChangeEvent, useRef, useState } from "react";
+import { useTranslation } from "react-i18next";
 import {
 	HiOutlineArrowDownTray,
 	HiOutlineArrowTopRightOnSquare,
@@ -24,6 +25,7 @@ import { ThemeCard } from "../ThemeCard";
 const MAX_THEME_FILE_SIZE = 256 * 1024; // 256 KB
 
 export function ThemeSection() {
+	const { t } = useTranslation();
 	const fileInputRef = useRef<HTMLInputElement>(null);
 	const [isImporting, setIsImporting] = useState(false);
 	const activeThemeId = useThemeId();
@@ -39,8 +41,8 @@ export function ThemeSection() {
 		event.target.value = "";
 		if (!file) return;
 		if (file.size > MAX_THEME_FILE_SIZE) {
-			toast.error("Theme file too large", {
-				description: "Maximum size is 256 KB.",
+			toast.error(t("settings.appearance.theme.toast.tooLargeTitle"), {
+				description: t("settings.appearance.theme.toast.tooLargeDescription"),
 			});
 			return;
 		}
@@ -51,7 +53,7 @@ export function ThemeSection() {
 			const parsed = parseThemeConfigFile(content);
 
 			if (!parsed.ok) {
-				toast.error("Failed to import theme file", {
+				toast.error(t("settings.appearance.theme.toast.importFailedTitle"), {
 					description: parsed.error,
 				});
 				return;
@@ -61,36 +63,40 @@ export function ThemeSection() {
 			const totalImported = summary.added + summary.updated;
 
 			if (totalImported === 0) {
-				toast.error("No themes were imported", {
+				toast.error(t("settings.appearance.theme.toast.noThemesTitle"), {
 					description:
 						summary.skipped > 0
-							? "All themes used reserved IDs (built-in or system)."
-							: "The file did not contain any importable themes.",
+							? t("settings.appearance.theme.toast.reservedIds")
+							: t("settings.appearance.theme.toast.noImportable"),
 				});
 				return;
 			}
 
 			toast.success(
-				totalImported === 1
-					? "Imported 1 custom theme"
-					: `Imported ${totalImported} custom themes`,
+				t("settings.appearance.theme.toast.imported", {
+					count: totalImported,
+				}),
 				{
 					description:
 						summary.updated > 0
-							? `${summary.updated} existing theme${summary.updated === 1 ? "" : "s"} updated`
+							? t("settings.appearance.theme.toast.updated", {
+									count: summary.updated,
+								})
 							: undefined,
 				},
 			);
 
 			if (parsed.issues.length > 0) {
-				toast.warning("Some themes were skipped", {
+				toast.warning(t("settings.appearance.theme.toast.skippedTitle"), {
 					description: parsed.issues[0],
 				});
 			}
 		} catch (error) {
-			toast.error("Failed to import theme file", {
+			toast.error(t("settings.appearance.theme.toast.importFailedTitle"), {
 				description:
-					error instanceof Error ? error.message : "Unable to read file",
+					error instanceof Error
+						? error.message
+						: t("settings.appearance.theme.toast.unableToRead"),
 			});
 		} finally {
 			setIsImporting(false);
@@ -125,7 +131,9 @@ export function ThemeSection() {
 	return (
 		<div>
 			<div className="mb-4 flex flex-wrap items-center justify-between gap-2">
-				<h3 className="text-sm font-medium">Theme</h3>
+				<h3 className="text-sm font-medium">
+					{t("settings.appearance.theme.heading")}
+				</h3>
 				<div className="flex flex-wrap items-center gap-2 justify-end">
 					<input
 						ref={fileInputRef}
@@ -142,7 +150,9 @@ export function ThemeSection() {
 						disabled={isImporting}
 					>
 						<HiOutlineArrowUpTray className="mr-1.5 h-4 w-4" />
-						{isImporting ? "Importing..." : "Import Theme"}
+						{isImporting
+							? t("settings.appearance.theme.importing")
+							: t("settings.appearance.theme.import")}
 					</Button>
 					<Button
 						type="button"
@@ -151,7 +161,7 @@ export function ThemeSection() {
 						onClick={handleDownloadBaseTheme}
 					>
 						<HiOutlineArrowDownTray className="mr-1.5 h-4 w-4" />
-						Download Base File
+						{t("settings.appearance.theme.downloadBase")}
 					</Button>
 					<a
 						href={`${COMPANY.DOCS_URL}/custom-themes`}
@@ -159,7 +169,7 @@ export function ThemeSection() {
 						rel="noopener noreferrer"
 						className="inline-flex items-center gap-1 text-xs text-muted-foreground hover:text-foreground hover:underline"
 					>
-						Theme docs
+						{t("settings.appearance.theme.docs")}
 						<HiOutlineArrowTopRightOnSquare className="h-3 w-3" />
 					</a>
 				</div>

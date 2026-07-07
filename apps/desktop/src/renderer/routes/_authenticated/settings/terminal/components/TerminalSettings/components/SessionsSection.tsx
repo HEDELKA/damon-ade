@@ -10,9 +10,11 @@ import { Button } from "@superset/ui/button";
 import { Label } from "@superset/ui/label";
 import { toast } from "@superset/ui/sonner";
 import { useMemo, useState } from "react";
+import { useTranslation } from "react-i18next";
 import { electronTrpc } from "renderer/lib/electron-trpc";
 
 export function SessionsSection() {
+	const { t } = useTranslation();
 	const utils = electronTrpc.useUtils();
 
 	const { data: daemonSessions } =
@@ -55,13 +57,28 @@ export function SessionsSection() {
 			},
 			onSuccess: (result) => {
 				if (result.remainingCount > 0) {
-					toast.warning("Some sessions could not be killed", {
-						description: `${result.killedCount} terminated, ${result.remainingCount} remaining`,
-					});
+					toast.warning(
+						t("settings.terminal.sessions.toast.killAllSomeFailedTitle"),
+						{
+							description: t(
+								"settings.terminal.sessions.toast.killAllSomeFailedDescription",
+								{
+									killed: result.killedCount,
+									remaining: result.remainingCount,
+								},
+							),
+						},
+					);
 				} else {
-					toast.success("Killed all terminal sessions", {
-						description: `${result.killedCount} sessions terminated`,
-					});
+					toast.success(
+						t("settings.terminal.sessions.toast.killAllSuccessTitle"),
+						{
+							description: t(
+								"settings.terminal.sessions.toast.killAllSuccessDescription",
+								{ count: result.killedCount },
+							),
+						},
+					);
 				}
 			},
 			onError: (error, _vars, context) => {
@@ -71,7 +88,7 @@ export function SessionsSection() {
 						context.previous,
 					);
 				}
-				toast.error("Failed to kill sessions", {
+				toast.error(t("settings.terminal.sessions.toast.killAllErrorTitle"), {
 					description: error.message,
 				});
 			},
@@ -85,11 +102,13 @@ export function SessionsSection() {
 	const clearTerminalHistory =
 		electronTrpc.terminal.clearTerminalHistory.useMutation({
 			onSuccess: () => {
-				toast.success("Cleared terminal history");
+				toast.success(
+					t("settings.terminal.sessions.toast.clearHistorySuccess"),
+				);
 				utils.terminal.listDaemonSessions.invalidate();
 			},
 			onError: (error) => {
-				toast.error("Failed to clear terminal history", {
+				toast.error(t("settings.terminal.sessions.toast.clearHistoryError"), {
 					description: error.message,
 				});
 			},
@@ -97,11 +116,11 @@ export function SessionsSection() {
 
 	const killDaemonSession = electronTrpc.terminal.kill.useMutation({
 		onSuccess: () => {
-			toast.success("Killed terminal session");
+			toast.success(t("settings.terminal.sessions.toast.killSessionSuccess"));
 			utils.terminal.listDaemonSessions.invalidate();
 		},
 		onError: (error) => {
-			toast.error("Failed to kill session", {
+			toast.error(t("settings.terminal.sessions.toast.killSessionError"), {
 				description: error.message,
 			});
 		},
@@ -109,16 +128,23 @@ export function SessionsSection() {
 
 	const restartDaemon = electronTrpc.terminal.restartDaemon.useMutation({
 		onSuccess: () => {
-			toast.success("Daemon restarted", {
-				description:
-					"All sessions killed and daemon restarted. The app will use a fresh daemon.",
-			});
+			toast.success(
+				t("settings.terminal.sessions.toast.restartDaemonSuccessTitle"),
+				{
+					description: t(
+						"settings.terminal.sessions.toast.restartDaemonSuccessDescription",
+					),
+				},
+			);
 			utils.terminal.listDaemonSessions.invalidate();
 		},
 		onError: (error) => {
-			toast.error("Failed to restart daemon", {
-				description: error.message,
-			});
+			toast.error(
+				t("settings.terminal.sessions.toast.restartDaemonErrorTitle"),
+				{
+					description: error.message,
+				},
+			);
 		},
 	});
 
@@ -132,22 +158,25 @@ export function SessionsSection() {
 			<div className="rounded-md border border-border/60 p-4 space-y-3">
 				<div className="space-y-0.5">
 					<div className="flex items-center justify-between">
-						<Label className="text-sm font-medium">Manage sessions</Label>
+						<Label className="text-sm font-medium">
+							{t("settings.terminal.sessions.manage")}
+						</Label>
 						<Button
 							variant="ghost"
 							size="sm"
 							onClick={() => utils.terminal.listDaemonSessions.invalidate()}
 						>
-							Refresh
+							{t("settings.terminal.sessions.refresh")}
 						</Button>
 					</div>
 					<p className="text-xs text-muted-foreground">
-						Daemon sessions running: {aliveSessions.length}
+						{t("settings.terminal.sessions.running", {
+							count: aliveSessions.length,
+						})}
 					</p>
 					{aliveSessions.length >= 20 && (
 						<p className="text-xs text-muted-foreground/70">
-							Large numbers of persistent terminals can increase CPU/memory
-							usage. Consider killing old sessions if you notice slowdowns.
+							{t("settings.terminal.sessions.highUsageWarning")}
 						</p>
 					)}
 				</div>
@@ -161,7 +190,7 @@ export function SessionsSection() {
 						}
 						onClick={() => setConfirmKillAllOpen(true)}
 					>
-						Kill all sessions
+						{t("settings.terminal.sessions.killAll")}
 					</Button>
 					<Button
 						variant="secondary"
@@ -171,7 +200,7 @@ export function SessionsSection() {
 						}
 						onClick={() => setConfirmClearHistoryOpen(true)}
 					>
-						Clear terminal history
+						{t("settings.terminal.sessions.clearHistory")}
 					</Button>
 					<Button
 						variant="outline"
@@ -179,7 +208,7 @@ export function SessionsSection() {
 						disabled={restartDaemon.isPending}
 						onClick={() => setConfirmRestartDaemonOpen(true)}
 					>
-						Restart daemon
+						{t("settings.terminal.sessions.restartDaemon")}
 					</Button>
 					<Button
 						variant="ghost"
@@ -187,7 +216,9 @@ export function SessionsSection() {
 						disabled={aliveSessions.length === 0}
 						onClick={() => setShowSessionList((v) => !v)}
 					>
-						{showSessionList ? "Hide sessions" : "Show sessions"}
+						{showSessionList
+							? t("settings.terminal.sessions.hideSessions")
+							: t("settings.terminal.sessions.showSessions")}
 					</Button>
 				</div>
 
@@ -198,17 +229,23 @@ export function SessionsSection() {
 								<thead className="sticky top-0 bg-background">
 									<tr className="text-muted-foreground">
 										<th className="px-2 py-2 text-left font-medium">
-											Agent
+											{t("settings.terminal.sessions.table.agent")}
 										</th>
-										<th className="px-2 py-2 text-left font-medium">Session</th>
-										<th className="px-2 py-2 text-right font-medium">
-											Clients
-										</th>
-										<th className="px-2 py-2 text-right font-medium">PID</th>
 										<th className="px-2 py-2 text-left font-medium">
-											Last attached
+											{t("settings.terminal.sessions.table.session")}
 										</th>
-										<th className="px-2 py-2 text-right font-medium">Action</th>
+										<th className="px-2 py-2 text-right font-medium">
+											{t("settings.terminal.sessions.table.clients")}
+										</th>
+										<th className="px-2 py-2 text-right font-medium">
+											{t("settings.terminal.sessions.table.pid")}
+										</th>
+										<th className="px-2 py-2 text-left font-medium">
+											{t("settings.terminal.sessions.table.lastAttached")}
+										</th>
+										<th className="px-2 py-2 text-right font-medium">
+											{t("settings.terminal.sessions.table.action")}
+										</th>
 									</tr>
 								</thead>
 								<tbody className="divide-y divide-border/60">
@@ -240,7 +277,7 @@ export function SessionsSection() {
 														})
 													}
 												>
-													Kill
+													{t("settings.terminal.sessions.kill")}
 												</Button>
 											</td>
 										</tr>
@@ -259,17 +296,15 @@ export function SessionsSection() {
 				<AlertDialogContent className="max-w-[520px] gap-0 p-0">
 					<AlertDialogHeader className="px-4 pt-4 pb-2">
 						<AlertDialogTitle className="font-medium">
-							Kill all terminal sessions?
+							{t("settings.terminal.sessions.dialog.killAllTitle")}
 						</AlertDialogTitle>
 						<AlertDialogDescription asChild>
 							<div className="text-muted-foreground space-y-1.5">
 								<span className="block">
-									This will terminate all persistent terminal processes (builds,
-									tests, agents, etc.).
+									{t("settings.terminal.sessions.dialog.killAllLine1")}
 								</span>
 								<span className="block">
-									You can't undo this action. Terminal panes will show "Process
-									exited" and can be restarted.
+									{t("settings.terminal.sessions.dialog.killAllLine2")}
 								</span>
 							</div>
 						</AlertDialogDescription>
@@ -280,7 +315,7 @@ export function SessionsSection() {
 							size="sm"
 							onClick={() => setConfirmKillAllOpen(false)}
 						>
-							Cancel
+							{t("settings.terminal.sessions.dialog.cancel")}
 						</Button>
 						<Button
 							variant="destructive"
@@ -291,7 +326,7 @@ export function SessionsSection() {
 								killAllDaemonSessions.mutate();
 							}}
 						>
-							Kill all
+							{t("settings.terminal.sessions.dialog.killAllConfirm")}
 						</Button>
 					</AlertDialogFooter>
 				</AlertDialogContent>
@@ -304,17 +339,15 @@ export function SessionsSection() {
 				<AlertDialogContent className="max-w-[520px] gap-0 p-0">
 					<AlertDialogHeader className="px-4 pt-4 pb-2">
 						<AlertDialogTitle className="font-medium">
-							Clear terminal history?
+							{t("settings.terminal.sessions.dialog.clearHistoryTitle")}
 						</AlertDialogTitle>
 						<AlertDialogDescription asChild>
 							<div className="text-muted-foreground space-y-1.5">
 								<span className="block">
-									This deletes the saved scrollback used for reboot/crash
-									recovery.
+									{t("settings.terminal.sessions.dialog.clearHistoryLine1")}
 								</span>
 								<span className="block">
-									Running terminal processes continue, but older output may no
-									longer be available after restarting the app.
+									{t("settings.terminal.sessions.dialog.clearHistoryLine2")}
 								</span>
 							</div>
 						</AlertDialogDescription>
@@ -325,7 +358,7 @@ export function SessionsSection() {
 							size="sm"
 							onClick={() => setConfirmClearHistoryOpen(false)}
 						>
-							Cancel
+							{t("settings.terminal.sessions.dialog.cancel")}
 						</Button>
 						<Button
 							variant="secondary"
@@ -336,7 +369,7 @@ export function SessionsSection() {
 								clearTerminalHistory.mutate();
 							}}
 						>
-							Clear history
+							{t("settings.terminal.sessions.dialog.clearHistoryConfirm")}
 						</Button>
 					</AlertDialogFooter>
 				</AlertDialogContent>
@@ -351,12 +384,12 @@ export function SessionsSection() {
 				<AlertDialogContent className="max-w-[520px] gap-0 p-0">
 					<AlertDialogHeader className="px-4 pt-4 pb-2">
 						<AlertDialogTitle className="font-medium">
-							Kill terminal session?
+							{t("settings.terminal.sessions.dialog.killSessionTitle")}
 						</AlertDialogTitle>
 						<AlertDialogDescription asChild>
 							<div className="text-muted-foreground space-y-1.5">
 								<span className="block">
-									This will terminate the session and its underlying process.
+									{t("settings.terminal.sessions.dialog.killSessionLine1")}
 								</span>
 								{pendingKillSession && (
 									<span className="block font-mono text-xs">
@@ -373,7 +406,7 @@ export function SessionsSection() {
 							size="sm"
 							onClick={() => setPendingKillSession(null)}
 						>
-							Cancel
+							{t("settings.terminal.sessions.dialog.cancel")}
 						</Button>
 						<Button
 							variant="destructive"
@@ -386,7 +419,7 @@ export function SessionsSection() {
 								killDaemonSession.mutate({ paneId: sessionId });
 							}}
 						>
-							Kill
+							{t("settings.terminal.sessions.kill")}
 						</Button>
 					</AlertDialogFooter>
 				</AlertDialogContent>
@@ -399,16 +432,15 @@ export function SessionsSection() {
 				<AlertDialogContent className="max-w-[520px] gap-0 p-0">
 					<AlertDialogHeader className="px-4 pt-4 pb-2">
 						<AlertDialogTitle className="font-medium">
-							Restart terminal daemon?
+							{t("settings.terminal.sessions.dialog.restartDaemonTitle")}
 						</AlertDialogTitle>
 						<AlertDialogDescription asChild>
 							<div className="text-muted-foreground space-y-1.5">
 								<span className="block">
-									This will kill all running sessions and restart the terminal
-									daemon. The app will restart terminals with a fresh daemon.
+									{t("settings.terminal.sessions.dialog.restartDaemonLine1")}
 								</span>
 								<span className="block">
-									Use this to fix terminals that are stuck or unresponsive.
+									{t("settings.terminal.sessions.dialog.restartDaemonLine2")}
 								</span>
 							</div>
 						</AlertDialogDescription>
@@ -419,7 +451,7 @@ export function SessionsSection() {
 							size="sm"
 							onClick={() => setConfirmRestartDaemonOpen(false)}
 						>
-							Cancel
+							{t("settings.terminal.sessions.dialog.cancel")}
 						</Button>
 						<Button
 							variant="default"
@@ -430,7 +462,7 @@ export function SessionsSection() {
 								restartDaemon.mutate(undefined, {});
 							}}
 						>
-							Restart daemon
+							{t("settings.terminal.sessions.dialog.restartDaemonConfirm")}
 						</Button>
 					</AlertDialogFooter>
 				</AlertDialogContent>
