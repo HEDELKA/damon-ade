@@ -78,12 +78,13 @@ export function useAgentSession() {
 				return addTab(id, { initialCwd: cwd });
 			}
 
-			let commands = resolveRuntimeCommands(runtime, terminalPresets);
+			const baseCommands = resolveRuntimeCommands(runtime, terminalPresets);
+			let commands = baseCommands;
 			let pinnedSessionId: string | null = null;
 
 			if (isClaudeBasedAgent(runtime)) {
 				const sessionId = crypto.randomUUID();
-				const result = pinClaudeSessionId(commands, sessionId);
+				const result = pinClaudeSessionId(baseCommands, sessionId);
 				commands = result.commands;
 				if (result.pinned) pinnedSessionId = sessionId;
 			}
@@ -99,12 +100,14 @@ export function useAgentSession() {
 			const opened = openPreset(id, preset, { target: "new-tab" });
 
 			if (pinnedSessionId && opened?.paneId) {
-				// Record the pinned id so cold restore can `claude --resume` it.
+				// Record the pinned id and the un-pinned launch command so cold
+				// restore can rebuild `claude --resume` with the same flags/env.
 				trpcClient.terminal.setClaudeSessionId
 					.mutate({
 						paneId: opened.paneId,
 						workspaceId: id,
 						claudeSessionId: pinnedSessionId,
+						claudeLaunchCommand: baseCommands.find(commandLaunchesClaude),
 					})
 					.catch((error) => {
 						console.warn(

@@ -59,6 +59,8 @@ export interface SessionMetadata {
 	endedAt?: string;
 	exitCode?: number;
 	claudeSessionId?: string;
+	/** Exact command that launched this pane's Claude session (with flags/env). */
+	claudeLaunchCommand?: string;
 }
 
 // =============================================================================
@@ -169,6 +171,9 @@ export class HistoryWriter {
 			const prev = JSON.parse(existing) as Partial<SessionMetadata>;
 			if (prev.claudeSessionId && !this.metadata.claudeSessionId) {
 				this.metadata.claudeSessionId = prev.claudeSessionId;
+			}
+			if (prev.claudeLaunchCommand && !this.metadata.claudeLaunchCommand) {
+				this.metadata.claudeLaunchCommand = prev.claudeLaunchCommand;
 			}
 		} catch {
 			// meta.json doesn't exist or is invalid — that's fine, fresh start
@@ -534,6 +539,7 @@ export class HistoryReader {
 		cwd: string;
 		endedAt?: string;
 		claudeSessionId?: string;
+		claudeLaunchCommand?: string;
 	} | null> {
 		try {
 			const content = await fs.readFile(this.metaPath, "utf8");
@@ -545,6 +551,7 @@ export class HistoryReader {
 				cwd: metadata.cwd,
 				endedAt: metadata.endedAt,
 				claudeSessionId: metadata.claudeSessionId,
+				claudeLaunchCommand: metadata.claudeLaunchCommand,
 			};
 		} catch {
 			return null;
@@ -593,6 +600,7 @@ export async function writeClaudeSessionIdToHistory(
 	workspaceId: string,
 	paneId: string,
 	claudeSessionId: string,
+	claudeLaunchCommand?: string,
 ): Promise<void> {
 	const dir = getHistoryDir(workspaceId, paneId);
 	const metaPath = getMetadataPath(workspaceId, paneId);
@@ -607,10 +615,18 @@ export async function writeClaudeSessionIdToHistory(
 		// meta.json doesn't exist or is invalid — start fresh.
 	}
 
-	// No-op if the value already matches to avoid needless writes.
-	if (meta.claudeSessionId === claudeSessionId) return;
+	// No-op if the values already match to avoid needless writes.
+	if (
+		meta.claudeSessionId === claudeSessionId &&
+		(!claudeLaunchCommand || meta.claudeLaunchCommand === claudeLaunchCommand)
+	) {
+		return;
+	}
 
 	meta.claudeSessionId = claudeSessionId;
+	if (claudeLaunchCommand) {
+		meta.claudeLaunchCommand = claudeLaunchCommand;
+	}
 	// Ensure required fields exist with sane defaults so the JSON satisfies
 	// SessionMetadata for downstream readers.
 	if (typeof meta.cwd !== "string") meta.cwd = homedir();

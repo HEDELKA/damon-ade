@@ -69,6 +69,12 @@ export interface SessionResult {
 	 * Extracted from "claude --resume <id>" or "Resume this session with:" patterns.
 	 */
 	claudeSessionId?: string;
+	/**
+	 * Exact command that launched the pane's Claude session (with flags/env),
+	 * recorded at spawn time. Used to rebuild the resume command after reboot
+	 * so OpenRouter-proxied models resume with the same backend and flags.
+	 */
+	claudeLaunchCommand?: string;
 	/** Snapshot from daemon (if using daemon mode) */
 	snapshot?: {
 		snapshotAnsi: string;

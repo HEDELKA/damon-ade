@@ -15,6 +15,7 @@ export interface ColdRestoreInfo {
 	scrollback: string;
 	previousCwd: string | undefined;
 	claudeSessionId: string | undefined;
+	claudeLaunchCommand: string | undefined;
 	cols: number;
 	rows: number;
 }

@@ -25,6 +25,7 @@ export type CreateOrAttachResult = {
 	isColdRestore?: boolean;
 	previousCwd?: string;
 	claudeSessionId?: string;
+	claudeLaunchCommand?: string;
 	snapshot?: {
 		snapshotAnsi: string;
 		rehydrateSequences: string;
@@ -54,6 +55,7 @@ export interface ColdRestoreState {
 	cwd: string | null;
 	scrollback: string;
 	claudeSessionId: string | null;
+	claudeLaunchCommand: string | null;
 }
 
 /**

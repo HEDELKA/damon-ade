@@ -336,6 +336,7 @@ export class DaemonTerminalManager extends EventEmitter {
 						isColdRestore: true,
 						previousCwd: stickyRestore.previousCwd,
 						claudeSessionId: stickyRestore.claudeSessionId,
+						claudeLaunchCommand: stickyRestore.claudeLaunchCommand,
 						snapshot: {
 							snapshotAnsi: stickyRestore.scrollback,
 							rehydrateSequences: "",
@@ -477,11 +478,13 @@ export class DaemonTerminalManager extends EventEmitter {
 			// Warm attaches (isNew=false) skip this so we don't type claude --resume into an
 			// already-running shell.
 			let previousClaudeSessionId: string | undefined;
+			let previousClaudeLaunchCommand: string | undefined;
 			if (response.isNew) {
 				try {
 					const reader = new HistoryReader(workspaceId, paneId);
 					const prevMeta = await reader.readMetadata();
 					previousClaudeSessionId = prevMeta?.claudeSessionId;
+					previousClaudeLaunchCommand = prevMeta?.claudeLaunchCommand;
 				} catch {
 					// meta.json doesn't exist or invalid — no previous session to auto-resume
 				}
@@ -492,6 +495,7 @@ export class DaemonTerminalManager extends EventEmitter {
 				scrollback: "",
 				wasRecovered: response.wasRecovered,
 				claudeSessionId: previousClaudeSessionId,
+				claudeLaunchCommand: previousClaudeLaunchCommand,
 				snapshot: {
 					snapshotAnsi: response.snapshot.snapshotAnsi,
 					rehydrateSequences: response.snapshot.rehydrateSequences,
@@ -544,11 +548,13 @@ export class DaemonTerminalManager extends EventEmitter {
 		// Fall back to scrollback scanning if not stored
 		const claudeSessionId =
 			metadata.claudeSessionId || this.extractClaudeSessionId(scrollback);
+		const claudeLaunchCommand = metadata.claudeLaunchCommand;
 
 		this.coldRestoreInfo.set(paneId, {
 			scrollback,
 			previousCwd: metadata.cwd,
 			claudeSessionId,
+			claudeLaunchCommand,
 			cols: metadata.cols || cols,
 			rows: metadata.rows || rows,
 		});
@@ -567,6 +573,7 @@ export class DaemonTerminalManager extends EventEmitter {
 			isColdRestore: true,
 			previousCwd: metadata.cwd,
 			claudeSessionId,
+			claudeLaunchCommand,
 			snapshot: {
 				snapshotAnsi: scrollback,
 				rehydrateSequences: "",
@@ -582,7 +589,8 @@ export class DaemonTerminalManager extends EventEmitter {
 	private extractClaudeSessionId(scrollback: string): string | undefined {
 		// Strip ANSI escape sequences for cleaner matching
 		const plain = scrollback.replace(/\x1b\[[0-9;]*[a-zA-Z]/g, "");
-		const UUID_RE = "[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}";
+		const UUID_RE =
+			"[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}";
 
 		// Pattern 1: `claude --resume <uuid>` — explicit resume command
 		const resumeMatch = plain.match(
