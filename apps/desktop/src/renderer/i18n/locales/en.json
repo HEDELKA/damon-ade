@@ -25,6 +25,517 @@
 			"description": "Interface language",
 			"en": "English",
 			"ru": "Russian"
+		},
+		"account": {
+			"avatar": "Avatar",
+			"avatarHint": "Recommended size is 256x256px",
+			"description": "Manage your account settings",
+			"email": "Email",
+			"name": "Name",
+			"namePlaceholder": "Your name",
+			"profile": "Profile",
+			"signOut": "Sign Out",
+			"signOutButton": "Sign Out",
+			"signOutDescription": "Sign out of your ADE account on this device.",
+			"title": "Account",
+			"toast": {
+				"avatarFailed": "Failed to update avatar",
+				"avatarUpdated": "Avatar updated!",
+				"nameFailed": "Failed to update name",
+				"nameUpdated": "Name updated!",
+				"signedOut": "Signed out"
+			},
+			"unableToLoad": "Unable to load user info"
+		},
+		"apiKeys": {
+			"cancel": "Cancel",
+			"copied": "Copied to clipboard!",
+			"description": "Manage API keys for MCP server access and external integrations.",
+			"done": "Done",
+			"empty": "No API keys yet",
+			"emptyHint": "Generate a key to use with MCP servers",
+			"generateButton": "Generate New API Key",
+			"generateDialog": {
+				"description": "Create a new API key for external integrations like Claude Desktop or Claude Code.",
+				"title": "Generate API Key"
+			},
+			"generateKey": "Generate Key",
+			"generating": "Generating...",
+			"keyNameHint": "Give your key a descriptive name to remember where it's used.",
+			"keyNameLabel": "Key Name",
+			"keyNamePlaceholder": "e.g., Claude Desktop",
+			"learnMore": "Learn more",
+			"never": "Never",
+			"newKeyDialog": {
+				"description": "Copy your API key now. You won't be able to see it again!",
+				"title": "API Key Generated",
+				"warning": "Make sure to copy this key now. For security reasons, it will not be displayed again."
+			},
+			"revoke": {
+				"confirm": "Revoke",
+				"description": "Are you sure you want to revoke \"{{name}}\"? This action cannot be undone.",
+				"title": "Revoke API Key"
+			},
+			"table": {
+				"created": "Created",
+				"key": "Key",
+				"lastUsed": "Last Used",
+				"name": "Name"
+			},
+			"title": "API Keys",
+			"toast": {
+				"revoked": "API key revoked"
+			},
+			"unnamedKey": "Unnamed Key",
+			"yourKeys": "Your API Keys",
+			"yourKeysDescription": "API keys allow external applications like Claude Desktop or Claude Code to interact with ADE on your behalf."
+		},
+		"sidebar": {
+			"back": "Back",
+			"clickablePath": {
+				"copyFailed": "Failed to copy path: {{error}}",
+				"copyPath": "Copy path",
+				"default": "Default",
+				"openFailed": "Failed to open: {{error}}",
+				"pathCopied": "Path copied to clipboard"
+			},
+			"cloud": "Cloud",
+			"documentation": "Documentation",
+			"environmentVariables": "Environment Variables",
+			"general": "General",
+			"searchPlaceholder": "Search settings...",
+			"teams": "Teams",
+			"title": "Settings",
+			"worktreePicker": {
+				"browse": "Browse...",
+				"dialogTitle": "Select worktree location",
+				"directory": "Directory",
+				"reset": "Reset"
+			}
+		},
+		"appearance": {
+			"title": "Appearance",
+			"description": "Customize how ADE looks on your device",
+			"font": {
+				"nerdFontsRecommended": "recommended for shell theme icons.",
+				"previewText": "The quick brown fox jumps over the lazy dog.\n0O1lI {}[]() => !== +- @#$%",
+				"reset": "Reset"
+			},
+			"markdown": {
+				"heading": "Markdown Style",
+				"description": "Rendering style for markdown files when viewing rendered content",
+				"default": "Default",
+				"hint": "Tufte style uses elegant serif typography inspired by Edward Tufte's books"
+			},
+			"theme": {
+				"heading": "Theme",
+				"import": "Import Theme",
+				"importing": "Importing...",
+				"downloadBase": "Download Base File",
+				"docs": "Theme docs",
+				"system": {
+					"name": "System",
+					"description": "Follows OS preference"
+				},
+				"toast": {
+					"tooLargeTitle": "Theme file too large",
+					"tooLargeDescription": "Maximum size is 256 KB.",
+					"importFailedTitle": "Failed to import theme file",
+					"noThemesTitle": "No themes were imported",
+					"reservedIds": "All themes used reserved IDs (built-in or system).",
+					"noImportable": "The file did not contain any importable themes.",
+					"imported": "Imported {{count}} custom themes",
+					"updated": "{{count}} existing themes updated",
+					"skippedTitle": "Some themes were skipped",
+					"unableToRead": "Unable to read file"
+				}
+			}
+		},
+		"behavior": {
+			"title": "Features",
+			"subtitle": "Configure app features and preferences",
+			"confirmQuit": {
+				"label": "Confirm before quitting",
+				"description": "Show a confirmation dialog when quitting the app"
+			},
+			"deleteLocalBranch": {
+				"label": "Delete local branch on agent removal",
+				"description": "Also delete the local git branch when deleting a worktree agent"
+			},
+			"branchPrefix": {
+				"label": "Branch Prefix",
+				"previewLabel": "Preview:",
+				"customPlaceholder": "Prefix"
+			},
+			"fileOpenMode": {
+				"label": "File open mode",
+				"description": "Choose how files open when no preview pane exists",
+				"splitPane": "Split pane",
+				"newTab": "New tab"
+			},
+			"resourceMonitor": {
+				"label": "Resource monitor",
+				"description": "Show CPU and memory usage in the top bar"
+			},
+			"openLinksInApp": {
+				"label": "Open links in app browser",
+				"description": "Open links from chat and terminal in the built-in browser instead of your default browser"
+			},
+			"worktreeLocation": {
+				"label": "Worktree location",
+				"description": "Base directory for new worktrees",
+				"defaultLabel": "Default ({{path}})"
+			},
+			"telemetry": {
+				"label": "Send anonymous usage data",
+				"description": "Help improve ADE by sending anonymous usage data"
+			}
+		},
+		"ringtones": {
+			"title": "Notifications",
+			"subtitle": "Choose the notification sound for completed tasks",
+			"soundsLabel": "Notification sounds",
+			"soundsDescription": "Play a sound when tasks complete",
+			"sectionTitle": "Notification Sound",
+			"addCustom": "Add Custom Audio",
+			"replaceCustom": "Replace Custom Audio",
+			"durationSeconds": "{{seconds}}s",
+			"tip": "Click the play button to preview a sound. Use Add Custom Audio to import your own .mp3, .wav, or .ogg file."
+		},
+		"integrations": {
+			"comingSoon": "Coming Soon",
+			"connect": "Connect",
+			"connected": "Connected",
+			"connectedTo": "Connected to",
+			"description": "Connect external services to sync data with your organization",
+			"descriptionShort": "Connect external services to sync data",
+			"github": {
+				"description": "Connect repos and sync pull requests"
+			},
+			"learnMore": "Learn more",
+			"linear": {
+				"description": "Sync issues bidirectionally with Linear"
+			},
+			"manage": "Manage",
+			"manageHint": "Manage integrations in the web app to connect and configure services.",
+			"needOrg": "You need to be part of an organization to use integrations.",
+			"notConnected": "Not Connected",
+			"slack": {
+				"description": "Manage tasks from Slack conversations"
+			},
+			"title": "Integrations"
+		},
+		"keyboard": {
+			"cancel": "Cancel",
+			"command": "Command",
+			"conflict": {
+				"assigned": "{{keys}} is already assigned to “{{label}}”.",
+				"reassign": "Reassign",
+				"reassignQuestion": "Would you like to reassign it?",
+				"title": "Shortcut already in use"
+			},
+			"export": "Export",
+			"import": "Import",
+			"importDialog": {
+				"replaceWarning": "This will replace your shortcuts on all platforms.",
+				"summary": "{{assigned}} assigned, {{disabled}} disabled on {{platform}}.",
+				"title": "Import keyboard shortcuts?"
+			},
+			"introAfter": " to open this page anytime.",
+			"introBefore": "Customize keyboard shortcuts for your workflow. Press ",
+			"noResults": "No shortcuts found matching \"{{query}}\"",
+			"recording": "Recording…",
+			"reset": "Reset",
+			"resetAll": "Reset all",
+			"searchPlaceholder": "Search",
+			"shortcut": "Shortcut",
+			"title": "Keyboard Shortcuts",
+			"toast": {
+				"exportFailed": "Failed to export shortcuts",
+				"exported": "Keyboard shortcuts exported",
+				"importFailed": "Failed to import shortcuts",
+				"imported": "Keyboard shortcuts imported",
+				"osReserved": "This shortcut may be reserved by your OS.",
+				"terminalReserved": "That shortcut is reserved by the terminal."
+			}
+		},
+		"permissions": {
+			"accessibility": {
+				"description": "Send keystrokes, manage windows, and control other applications",
+				"label": "Accessibility"
+			},
+			"automation": {
+				"description": "Run terminal commands and interact with other applications",
+				"label": "Automation"
+			},
+			"description": "Grant these permissions once to avoid repeated prompts. For persistent directory access, enable Full Disk Access in System Settings for Superset.",
+			"editButton": "Edit in System Settings",
+			"fullDiskAccess": {
+				"description": "Persistent access to Documents, Downloads, Desktop, and iCloud from terminal sessions",
+				"label": "Full Disk Access"
+			},
+			"granted": "Granted",
+			"localNetwork": {
+				"description": "Discover and connect to development servers on your network",
+				"label": "Local Network"
+			},
+			"microphone": {
+				"description": "Use voice transcription and push-to-talk features",
+				"label": "Microphone"
+			},
+			"title": "Permissions"
+		},
+		"project": {
+			"loading": "Loading...",
+			"save": "Save",
+			"saving": "Saving...",
+			"general": {
+				"iconLoadError": "Could not load image",
+				"appearance": {
+					"title": "Appearance",
+					"description": "Customize this team's sidebar look.",
+					"hideImage": "Hide Image",
+					"teamIcon": "Team Icon",
+					"teamIconAlt": "Team icon",
+					"teamIconHint": "Upload a custom icon for the sidebar.",
+					"replace": "Replace",
+					"upload": "Upload",
+					"remove": "Remove"
+				},
+				"baseBranch": {
+					"title": "Agent Base Branch",
+					"description": "Set the default base branch for new agents in this repository.",
+					"label": "Default Base Branch",
+					"hint": "Used when creating an agent unless you choose a one-off base branch.",
+					"useRepoDefault": "Use repository default ({{branch}})",
+					"branchMissing": "{{branch}} (missing)",
+					"branchGone": "Branch \"{{branch}}\" no longer exists. New agents will fall back to \"{{fallback}}\"."
+				},
+				"branchPrefix": {
+					"title": "Branch Prefix",
+					"description": "Override the default prefix for new agents.",
+					"label": "Branch Prefix",
+					"preview": "Preview:",
+					"customPlaceholder": "Prefix"
+				},
+				"worktree": {
+					"title": "Worktree Location",
+					"description": "Override the global worktree directory for this team.",
+					"dialogTitle": "Select worktree location for this team",
+					"usingGlobalDefault": "Using global default: {{path}}"
+				}
+			},
+			"scripts": {
+				"title": "Scripts",
+				"description": "Automate your agent lifecycle with setup and teardown scripts.",
+				"dropToImport": "Drop to import",
+				"editorAriaLabel": "{{title}} script editor with file drop support",
+				"getStarted": "Get started with setup scripts",
+				"importFile": "Import file",
+				"setup": {
+					"title": "Setup",
+					"description": "Runs when a new agent is created.",
+					"placeholder": "e.g. bun install && bun run dev"
+				},
+				"teardown": {
+					"title": "Teardown",
+					"description": "Runs when an agent is deleted.",
+					"placeholder": "e.g. docker compose down"
+				}
+			},
+			"secrets": {
+				"title": "Environment Variables",
+				"add": {
+					"title": "Add Environment Variable",
+					"description": "Add one or more environment variables. You can also drag and drop a .env file."
+				},
+				"addAnother": "Add Another",
+				"addedMany": "Added {{count}} environment variables",
+				"addedOn": "Added {{date}}",
+				"addedOne": "Added {{key}}",
+				"cancel": "Cancel",
+				"clickToCopy": "Click to copy",
+				"cloudTeam": {
+					"title": "Cloud Team",
+					"description": "Link this team to a cloud team for sandboxes and environment variables."
+				},
+				"connect": "Connect to Cloud",
+				"connecting": "Connecting...",
+				"copied": "Copied!",
+				"deleteAction": "Delete",
+				"deleteConfirm": "Delete environment variable \"{{key}}\"?",
+				"discard": {
+					"confirm": "Discard",
+					"description": "You have unsaved environment variables. Are you sure you want to close?",
+					"title": "Discard unsaved changes?"
+				},
+				"edit": {
+					"description": "Update the value for",
+					"title": "Edit Environment Variable"
+				},
+				"editAction": "Edit",
+				"empty": "No environment variables yet",
+				"emptyValue": "Empty",
+				"enterNewValue": "Enter new value",
+				"envFile": {
+					"invalid": "Please upload a valid .env file."
+				},
+				"errors": {
+					"fileTooLarge": "File too large. Maximum size is 256 KB.",
+					"noValidVars": "No valid environment variables found in file",
+					"readFailed": "Failed to read file.",
+					"saveFailed": "Failed to save environment variables",
+					"updateFailed": "Failed to update environment variable"
+				},
+				"importEnv": "Import .env",
+				"key": "Key",
+				"keyPlaceholder": "CLIENT_KEY...",
+				"noMatch": "No matching variables",
+				"notConnected": "Not connected to a cloud team.",
+				"pasteHint": "or paste .env contents in Key input",
+				"searchPlaceholder": "Search by key name...",
+				"sensitive": "Sensitive",
+				"sensitiveTooltip": "Sensitive values are encrypted and cannot be revealed in the UI after saving.",
+				"sort": {
+					"lastUpdated": "Last Updated",
+					"name": "Name",
+					"type": "Type"
+				},
+				"updated": "Updated {{key}}",
+				"value": "Value"
+			}
+		},
+		"terminal": {
+			"title": "Terminal",
+			"description": "Configure terminal behavior and presets",
+			"commandsEditor": {
+				"add": "Add command",
+				"delete": "Delete",
+				"deleteAria": "Delete command",
+				"placeholder": "Command..."
+			},
+			"linkBehavior": {
+				"label": "Terminal file links",
+				"description": "Choose how to open file paths when Cmd+clicking in the terminal",
+				"externalEditor": "External editor",
+				"fileViewer": "File viewer"
+			},
+			"presets": {
+				"title": "Terminal Presets",
+				"description": "Presets let you quickly launch terminals with pre-configured commands.",
+				"addPreset": "Add Preset",
+				"editHint": "Click a preset row to edit details.",
+				"labelTooltipAria": "About {{label}}",
+				"editor": {
+					"editTitle": "Edit Preset",
+					"subtitle": "Configure commands and advanced launch options.",
+					"nameLabel": "Name",
+					"nameTooltip": "The preset name shown in your presets list and launch surfaces.",
+					"namePlaceholder": "e.g. Dev Server",
+					"descriptionLabel": "Description",
+					"descriptionTooltip": "Optional context to explain what this preset is for.",
+					"descriptionPlaceholder": "e.g. Starts the dev server (optional)",
+					"directoryLabel": "Directory",
+					"directoryTooltip": "Working directory for commands. Use an agent-relative path like ./apps/web.",
+					"directoryPlaceholder": "e.g. ./src (optional)",
+					"commandsLabel": "Commands",
+					"commandsTooltip": "Each row is one command. Add multiple commands to run a grouped preset.",
+					"commandsPlaceholder": "e.g. bun run dev",
+					"launchModeLabel": "Launch Mode",
+					"launchModeTooltip": "Controls whether commands open in the current tab, one new tab with panes, or one new tab per command.",
+					"multiSplitPane": "Open all commands in current tab using split panes",
+					"multiNewTab": "Open each command in its own new tab",
+					"multiNewTabSplitPane": "Open all commands in a new tab using split panes",
+					"singleCurrentTab": "Open in current tab",
+					"singleNewTab": "Open in new tab",
+					"autoRunLabel": "Auto-run",
+					"autoRunTooltip": "Choose when this preset should run automatically.",
+					"autoRunWorkspaceLabel": "When creating an agent",
+					"autoRunWorkspaceDescription": "Automatically launch this preset for new agents.",
+					"autoRunTabLabel": "When opening a new tab",
+					"autoRunTabDescription": "Automatically launch this preset for new tabs.",
+					"delete": "Delete Preset",
+					"done": "Done"
+				},
+				"quickAdd": {
+					"label": "Quick add:",
+					"alreadyAdded": "Already added"
+				},
+				"row": {
+					"untitled": "Untitled preset",
+					"emptyCommand": "Empty command",
+					"badge": {
+						"agent": "Agent",
+						"tab": "Tab"
+					},
+					"mode": {
+						"tabPerCommand": "Tab per command",
+						"newTab": "New tab",
+						"newTabPanes": "New tab + panes",
+						"singleTabPanes": "Single tab + panes",
+						"splitPane": "Split pane"
+					}
+				},
+				"table": {
+					"preset": "Preset",
+					"commands": "Commands",
+					"mode": "Mode",
+					"autoRun": "Auto-run",
+					"loading": "Loading presets...",
+					"empty": "No presets yet. Click \"Add Preset\" to create your first preset."
+				}
+			},
+			"sessions": {
+				"manage": "Manage sessions",
+				"refresh": "Refresh",
+				"running": "Daemon sessions running: {{count}}",
+				"highUsageWarning": "Large numbers of persistent terminals can increase CPU/memory usage. Consider killing old sessions if you notice slowdowns.",
+				"killAll": "Kill all sessions",
+				"clearHistory": "Clear terminal history",
+				"restartDaemon": "Restart daemon",
+				"hideSessions": "Hide sessions",
+				"showSessions": "Show sessions",
+				"kill": "Kill",
+				"table": {
+					"agent": "Agent",
+					"session": "Session",
+					"clients": "Clients",
+					"pid": "PID",
+					"lastAttached": "Last attached",
+					"action": "Action"
+				},
+				"dialog": {
+					"cancel": "Cancel",
+					"killAllTitle": "Kill all terminal sessions?",
+					"killAllLine1": "This will terminate all persistent terminal processes (builds, tests, agents, etc.).",
+					"killAllLine2": "You can't undo this action. Terminal panes will show \"Process exited\" and can be restarted.",
+					"killAllConfirm": "Kill all",
+					"clearHistoryTitle": "Clear terminal history?",
+					"clearHistoryLine1": "This deletes the saved scrollback used for reboot/crash recovery.",
+					"clearHistoryLine2": "Running terminal processes continue, but older output may no longer be available after restarting the app.",
+					"clearHistoryConfirm": "Clear history",
+					"killSessionTitle": "Kill terminal session?",
+					"killSessionLine1": "This will terminate the session and its underlying process.",
+					"restartDaemonTitle": "Restart terminal daemon?",
+					"restartDaemonLine1": "This will kill all running sessions and restart the terminal daemon. The app will restart terminals with a fresh daemon.",
+					"restartDaemonLine2": "Use this to fix terminals that are stuck or unresponsive.",
+					"restartDaemonConfirm": "Restart daemon"
+				},
+				"toast": {
+					"killAllSomeFailedTitle": "Some sessions could not be killed",
+					"killAllSomeFailedDescription": "{{killed}} terminated, {{remaining}} remaining",
+					"killAllSuccessTitle": "Killed all terminal sessions",
+					"killAllSuccessDescription": "{{count}} sessions terminated",
+					"killAllErrorTitle": "Failed to kill sessions",
+					"clearHistorySuccess": "Cleared terminal history",
+					"clearHistoryError": "Failed to clear terminal history",
+					"killSessionSuccess": "Killed terminal session",
+					"killSessionError": "Failed to kill session",
+					"restartDaemonSuccessTitle": "Daemon restarted",
+					"restartDaemonSuccessDescription": "All sessions killed and daemon restarted. The app will use a fresh daemon.",
+					"restartDaemonErrorTitle": "Failed to restart daemon"
+				}
+			}
 		}
 	},
 	"binaryInstall": {
