@@ -12,6 +12,7 @@ import { Label } from "@superset/ui/label";
 import { toast } from "@superset/ui/sonner";
 import { Tooltip, TooltipContent, TooltipTrigger } from "@superset/ui/tooltip";
 import { useRef, useState } from "react";
+import { useTranslation } from "react-i18next";
 import { electronTrpc } from "renderer/lib/electron-trpc";
 import {
 	useCloseWorkspace,
@@ -35,6 +36,7 @@ export function DeleteWorkspaceDialog({
 	open,
 	onOpenChange,
 }: DeleteWorkspaceDialogProps) {
+	const { t } = useTranslation();
 	const isBranch = workspaceType === "branch";
 	const deleteWorkspace = useDeleteWorkspace();
 	const closeWorkspace = useCloseWorkspace();
@@ -83,19 +85,19 @@ export function DeleteWorkspaceDialog({
 		onOpenChange(false);
 
 		toast.promise(closeWorkspace.mutateAsync({ id: workspaceId }), {
-			loading: "Hiding...",
+			loading: t("rail.toast.hiding"),
 			success: (result) => {
 				if (result.terminalWarning) {
 					setTimeout(() => {
-						toast.warning("Terminal warning", {
+						toast.warning(t("rail.toast.terminalWarning"), {
 							description: result.terminalWarning,
 						});
 					}, 100);
 				}
-				return "Agent hidden";
+				return t("rail.toast.agentHidden");
 			},
 			error: (error) =>
-				error instanceof Error ? error.message : "Failed to hide",
+				error instanceof Error ? error.message : t("rail.toast.hideFailed"),
 		});
 	};
 
@@ -140,13 +142,12 @@ export function DeleteWorkspaceDialog({
 				>
 					<AlertDialogHeader className="px-4 pt-4 pb-2">
 						<AlertDialogTitle className="font-medium">
-							Close agent "{workspaceName}"?
+							{t("rail.deleteAgentDialog.closeTitle", { name: workspaceName })}
 						</AlertDialogTitle>
 						<AlertDialogDescription asChild>
 							<div className="text-muted-foreground space-y-1.5">
 								<span className="block">
-									This will close the agent and kill any active terminals.
-									Your branch and commits will remain in the repository.
+									{t("rail.deleteAgentDialog.closeBody")}
 								</span>
 							</div>
 						</AlertDialogDescription>
@@ -159,7 +160,7 @@ export function DeleteWorkspaceDialog({
 							className="h-7 px-3 text-xs"
 							onClick={() => onOpenChange(false)}
 						>
-							Cancel
+							{t("common.cancel")}
 						</Button>
 						<Button
 							ref={closeActionButtonRef}
@@ -168,7 +169,7 @@ export function DeleteWorkspaceDialog({
 							className="h-7 px-3 text-xs"
 							onClick={handleClose}
 						>
-							Close
+							{t("common.close")}
 						</Button>
 					</AlertDialogFooter>
 				</AlertDialogContent>
@@ -186,18 +187,17 @@ export function DeleteWorkspaceDialog({
 			>
 				<AlertDialogHeader className="px-4 pt-4 pb-2">
 					<AlertDialogTitle className="font-medium">
-						Remove agent "{workspaceName}"?
+						{t("rail.deleteAgentDialog.removeTitle", { name: workspaceName })}
 					</AlertDialogTitle>
 					<AlertDialogDescription asChild>
 						<div className="text-muted-foreground space-y-1.5">
 							{isLoading ? (
-								"Checking status..."
+								t("rail.deleteAgentDialog.checkingStatus")
 							) : !canDelete ? (
 								<span className="text-destructive">{reason}</span>
 							) : (
 								<span className="block">
-									Deleting will permanently remove the worktree. You can hide
-									instead to keep files on disk.
+									{t("rail.deleteAgentDialog.removeBody")}
 								</span>
 							)}
 						</div>
@@ -208,10 +208,10 @@ export function DeleteWorkspaceDialog({
 					<div className="px-4 pb-2">
 						<div className="text-xs text-yellow-700 dark:text-yellow-400 bg-yellow-50 dark:bg-yellow-500/10 border border-yellow-200 dark:border-yellow-500/20 rounded-md px-2.5 py-1.5">
 							{hasChanges && hasUnpushedCommits
-								? "Has uncommitted changes and unpushed commits"
+								? t("rail.deleteAgentDialog.hasChangesAndCommits")
 								: hasChanges
-									? "Has uncommitted changes"
-									: "Has unpushed commits"}
+									? t("rail.deleteAgentDialog.hasChanges")
+									: t("rail.deleteAgentDialog.hasCommits")}
 						</div>
 					</div>
 				)}
@@ -230,7 +230,7 @@ export function DeleteWorkspaceDialog({
 								htmlFor="delete-local-branch"
 								className="text-xs text-muted-foreground cursor-pointer select-none"
 							>
-								Also delete local branch
+								{t("rail.deleteAgentDialog.alsoDeleteBranch")}
 							</Label>
 						</div>
 					</div>
@@ -243,7 +243,7 @@ export function DeleteWorkspaceDialog({
 						className="h-7 px-3 text-xs"
 						onClick={() => onOpenChange(false)}
 					>
-						Cancel
+						{t("common.cancel")}
 					</Button>
 					<Button
 						ref={closeActionButtonRef}
@@ -252,7 +252,7 @@ export function DeleteWorkspaceDialog({
 						className="h-7 px-3 text-xs"
 						onClick={handleClose}
 					>
-						Hide
+						{t("rail.deleteAgentDialog.hide")}
 					</Button>
 					<Tooltip delayDuration={400}>
 						<TooltipTrigger asChild>
@@ -263,11 +263,11 @@ export function DeleteWorkspaceDialog({
 								onClick={handleDelete}
 								disabled={!canDelete || isLoading}
 							>
-								Delete
+								{t("common.delete")}
 							</Button>
 						</TooltipTrigger>
 						<TooltipContent side="top" className="text-xs max-w-[200px]">
-							Permanently delete agent and git worktree from disk.
+							{t("rail.deleteAgentDialog.deleteTooltip")}
 						</TooltipContent>
 					</Tooltip>
 				</AlertDialogFooter>

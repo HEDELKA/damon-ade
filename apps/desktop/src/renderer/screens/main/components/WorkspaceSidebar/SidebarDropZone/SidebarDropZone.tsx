@@ -2,6 +2,7 @@ import { cn } from "@superset/ui/utils";
 import { useNavigate } from "@tanstack/react-router";
 import { AnimatePresence, motion } from "framer-motion";
 import { type ReactNode, useCallback, useEffect, useState } from "react";
+import { useTranslation } from "react-i18next";
 import { LuFolderPlus, LuLoader, LuX } from "react-icons/lu";
 import { useOpenProject } from "renderer/react-query/projects";
 
@@ -11,6 +12,7 @@ interface SidebarDropZoneProps {
 }
 
 export function SidebarDropZone({ children, className }: SidebarDropZoneProps) {
+	const { t } = useTranslation();
 	const navigate = useNavigate();
 	const [isDragOver, setIsDragOver] = useState(false);
 	const [error, setError] = useState<string | null>(null);
@@ -85,12 +87,12 @@ export function SidebarDropZone({ children, className }: SidebarDropZoneProps) {
 			try {
 				filePath = window.webUtils.getPathForFile(firstFile);
 			} catch {
-				setError("Could not get path from dropped item");
+				setError(t("rail.dropzone.pathError"));
 				return;
 			}
 
 			if (!filePath) {
-				setError("Could not get path from dropped item");
+				setError(t("rail.dropzone.pathError"));
 				return;
 			}
 
@@ -103,10 +105,14 @@ export function SidebarDropZone({ children, className }: SidebarDropZoneProps) {
 					});
 				}
 			} catch (err) {
-				setError(err instanceof Error ? err.message : "Failed to open team");
+				setError(
+					err instanceof Error
+						? err.message
+						: t("rail.dropzone.openTeamFailed"),
+				);
 			}
 		},
-		[openFromPath, isPending, navigate],
+		[openFromPath, isPending, navigate, t],
 	);
 
 	return (
@@ -140,10 +146,10 @@ export function SidebarDropZone({ children, className }: SidebarDropZoneProps) {
 							</div>
 							<div className="text-center">
 								<p className="text-sm font-medium text-primary">
-									Drop to add team
+									{t("rail.dropzone.dropToAdd")}
 								</p>
 								<p className="text-xs text-muted-foreground mt-1">
-									Release to open folder
+									{t("rail.dropzone.releaseToOpen")}
 								</p>
 							</div>
 						</motion.div>
@@ -161,7 +167,7 @@ export function SidebarDropZone({ children, className }: SidebarDropZoneProps) {
 						<div className="flex flex-col items-center gap-3">
 							<LuLoader className="h-5 w-5 text-muted-foreground animate-spin" />
 							<span className="text-sm text-muted-foreground">
-								Adding team...
+								{t("rail.dropzone.addingTeam")}
 							</span>
 						</div>
 					</motion.div>
@@ -180,7 +186,7 @@ export function SidebarDropZone({ children, className }: SidebarDropZoneProps) {
 							type="button"
 							onClick={() => setError(null)}
 							className="shrink-0 rounded p-0.5 hover:bg-destructive/20 transition-colors"
-							aria-label="Dismiss error"
+							aria-label={t("rail.dropzone.dismissError")}
 						>
 							<LuX className="h-3.5 w-3.5" />
 						</button>

@@ -11,6 +11,7 @@ import { toast } from "@superset/ui/sonner";
 import { useNavigate } from "@tanstack/react-router";
 import type { ChangeEvent } from "react";
 import { useEffect, useRef, useState } from "react";
+import { useTranslation } from "react-i18next";
 import { downscaleImageToDataUrl } from "renderer/lib/downscale-image";
 import { electronTrpc } from "renderer/lib/electron-trpc";
 import {
@@ -28,6 +29,7 @@ export function NewCategoryModal() {
 	const closeModal = useCloseNewCategoryModal();
 	const navigate = useNavigate();
 	const utils = electronTrpc.useUtils();
+	const { t } = useTranslation();
 
 	const [name, setName] = useState("");
 	const [photoDataUrl, setPhotoDataUrl] = useState<string | null>(null);
@@ -53,7 +55,11 @@ export function NewCategoryModal() {
 		try {
 			setPhotoDataUrl(await downscaleImageToDataUrl(file));
 		} catch (err) {
-			toast.error(err instanceof Error ? err.message : "Could not load image");
+			toast.error(
+				err instanceof Error
+					? err.message
+					: t("newTeamDialog.toast.imageLoadFailed"),
+			);
 		}
 	};
 
@@ -76,10 +82,12 @@ export function NewCategoryModal() {
 			// /welcome before the new category is in cache); /workspaces renders
 			// the rail unconditionally.
 			navigate({ to: "/workspaces" });
-			toast.success(`Category "${name.trim()}" created`);
+			toast.success(t("newTeamDialog.toast.created", { name: name.trim() }));
 		} catch (err) {
 			toast.error(
-				err instanceof Error ? err.message : "Failed to create category",
+				err instanceof Error
+					? err.message
+					: t("newTeamDialog.toast.createFailed"),
 			);
 		}
 	};
@@ -88,7 +96,7 @@ export function NewCategoryModal() {
 		<Dialog modal open={isOpen} onOpenChange={(open) => !open && closeModal()}>
 			<DialogContent className="sm:max-w-[420px]">
 				<DialogHeader>
-					<DialogTitle>New category</DialogTitle>
+					<DialogTitle>{t("newTeamDialog.title")}</DialogTitle>
 				</DialogHeader>
 
 				<div className="flex items-center gap-3 py-2">
@@ -98,19 +106,23 @@ export function NewCategoryModal() {
 						className="size-12 shrink-0 rounded overflow-hidden bg-muted flex items-center justify-center text-xs text-muted-foreground border border-border"
 					>
 						{photoDataUrl ? (
-							<img src={photoDataUrl} alt="" className="size-full object-cover" />
+							<img
+								src={photoDataUrl}
+								alt=""
+								className="size-full object-cover"
+							/>
 						) : (
-							"Photo"
+							t("newTeamDialog.photo")
 						)}
 					</button>
 					<div className="flex-1">
-						<Label htmlFor="category-name">Name</Label>
+						<Label htmlFor="category-name">{t("common.name")}</Label>
 						<Input
 							id="category-name"
 							ref={nameInputRef}
 							value={name}
 							onChange={(e) => setName(e.target.value)}
-							placeholder="e.g. Newsletter"
+							placeholder={t("newTeamDialog.namePlaceholder")}
 							onKeyDown={(e) => {
 								if (e.key === "Enter" && canCreate) handleCreate();
 							}}
@@ -127,10 +139,12 @@ export function NewCategoryModal() {
 
 				<div className="flex justify-end gap-2">
 					<Button variant="ghost" onClick={() => closeModal()}>
-						Cancel
+						{t("common.cancel")}
 					</Button>
 					<Button onClick={handleCreate} disabled={!canCreate}>
-						{createCategory.isPending ? "Creating…" : "Create category"}
+						{createCategory.isPending
+							? t("newTeamDialog.creating")
+							: t("newTeamDialog.createTeam")}
 					</Button>
 				</div>
 			</DialogContent>

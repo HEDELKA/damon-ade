@@ -1,5 +1,6 @@
 import { Tooltip, TooltipContent, TooltipTrigger } from "@superset/ui/tooltip";
 import { useMemo } from "react";
+import { useTranslation } from "react-i18next";
 import { LuPlus } from "react-icons/lu";
 import { useWorkspaceShortcuts } from "renderer/hooks/useWorkspaceShortcuts";
 import { useOpenNewCategoryModal } from "renderer/stores/new-category-modal";
@@ -18,6 +19,7 @@ export function WorkspaceSidebar({
 }: WorkspaceSidebarProps) {
 	const { groups } = useWorkspaceShortcuts();
 	const openNewCategory = useOpenNewCategoryModal();
+	const { t } = useTranslation();
 
 	// Calculate shortcut base indices for each project group using cumulative offsets
 	const projectShortcutIndices = useMemo(
@@ -37,7 +39,7 @@ export function WorkspaceSidebar({
 			{!isCollapsed && (
 				<div className="flex items-center justify-between px-3 h-10 shrink-0">
 					<span className="text-xs font-medium text-muted-foreground uppercase tracking-wide">
-						Teams
+						{t("rail.teams")}
 					</span>
 					<Tooltip>
 						<TooltipTrigger asChild>
@@ -45,12 +47,12 @@ export function WorkspaceSidebar({
 								type="button"
 								onClick={() => openNewCategory()}
 								className="flex items-center justify-center size-6 rounded hover:bg-muted text-muted-foreground hover:text-foreground"
-								aria-label="New team"
+								aria-label={t("rail.newTeam")}
 							>
 								<LuPlus className="size-4" />
 							</button>
 						</TooltipTrigger>
-						<TooltipContent side="right">New team</TooltipContent>
+						<TooltipContent side="right">{t("rail.newTeam")}</TooltipContent>
 					</Tooltip>
 				</div>
 			)}
@@ -74,13 +76,13 @@ export function WorkspaceSidebar({
 
 				{groups.length === 0 && !isCollapsed && (
 					<div className="flex flex-col items-center justify-center h-32 text-muted-foreground text-sm px-4 text-center">
-						<span>No teams yet</span>
+						<span>{t("rail.noTeamsYet")}</span>
 						<button
 							type="button"
 							onClick={() => openNewCategory()}
 							className="text-xs mt-2 text-foreground underline underline-offset-2"
 						>
-							Create your first team
+							{t("rail.createFirstTeam")}
 						</button>
 					</div>
 				)}

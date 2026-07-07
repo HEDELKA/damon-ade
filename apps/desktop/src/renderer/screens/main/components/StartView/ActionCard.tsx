@@ -1,3 +1,4 @@
+import { useTranslation } from "react-i18next";
 import type { IconType } from "react-icons";
 
 interface ActionCardProps {
@@ -15,6 +16,7 @@ export function ActionCard({
 	disabled = false,
 	isLoading = false,
 }: ActionCardProps) {
+	const { t } = useTranslation();
 	return (
 		<button
 			type="button"
@@ -32,7 +34,7 @@ export function ActionCard({
 					disabled ? "text-muted-foreground/50" : "text-foreground"
 				}`}
 			>
-				{isLoading ? "Opening..." : label}
+				{isLoading ? t("startScreen.opening") : label}
 			</span>
 		</button>
 	);

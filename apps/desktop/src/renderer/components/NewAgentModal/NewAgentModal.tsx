@@ -1,4 +1,4 @@
-import { AGENT_RUNTIMES } from "@superset/local-db";
+import type { AGENT_RUNTIMES } from "@superset/local-db";
 import {
 	type AgentBinary,
 	type CheckedBinary,
@@ -27,6 +27,7 @@ import { Textarea } from "@superset/ui/textarea";
 import { useNavigate } from "@tanstack/react-router";
 import type { ChangeEvent } from "react";
 import { useEffect, useRef, useState } from "react";
+import { useTranslation } from "react-i18next";
 import { HiArrowPath } from "react-icons/hi2";
 import { BinaryInstallDialog } from "renderer/components/BinaryInstallDialog/BinaryInstallDialog";
 import { downscaleImageToDataUrl } from "renderer/lib/downscale-image";
@@ -55,6 +56,7 @@ const RUNTIME_CHOICES = ["claude", "codex", "opencode"] as const;
  */
 export function NewAgentModal() {
 	const navigate = useNavigate();
+	const { t } = useTranslation();
 	const isOpen = useNewWorkspaceModalOpen();
 	const closeModal = useCloseNewWorkspaceModal();
 	const categoryId = usePreSelectedProjectId();
@@ -74,7 +76,8 @@ export function NewAgentModal() {
 	const nameInputRef = useRef<HTMLInputElement>(null);
 
 	const createAgent = electronTrpc.workspaces.createAgent.useMutation();
-	const setWorkspaceIcon = electronTrpc.workspaces.setWorkspaceIcon.useMutation();
+	const setWorkspaceIcon =
+		electronTrpc.workspaces.setWorkspaceIcon.useMutation();
 
 	// biome-ignore lint/correctness/useExhaustiveDependencies: reset each open
 	useEffect(() => {
@@ -97,7 +100,11 @@ export function NewAgentModal() {
 		try {
 			setPhotoDataUrl(await downscaleImageToDataUrl(file));
 		} catch (err) {
-			toast.error(err instanceof Error ? err.message : "Could not load image");
+			toast.error(
+				err instanceof Error
+					? err.message
+					: t("newAgentDialog.toast.imageLoadFailed"),
+			);
 		}
 	};
 
@@ -144,23 +151,21 @@ export function NewAgentModal() {
 				to: "/workspace/$workspaceId",
 				params: { workspaceId: result.workspace.id },
 			});
-			toast.success(`Agent "${name.trim()}" created`);
+			toast.success(t("newAgentDialog.toast.created", { name: name.trim() }));
 		} catch (err) {
 			toast.error(
-				err instanceof Error ? err.message : "Failed to create agent",
+				err instanceof Error
+					? err.message
+					: t("newAgentDialog.toast.createFailed"),
 			);
 		}
 	};
 
 	return (
-		<Dialog
-			modal
-			open={isOpen}
-			onOpenChange={(open) => !open && closeModal()}
-		>
+		<Dialog modal open={isOpen} onOpenChange={(open) => !open && closeModal()}>
 			<DialogContent className="sm:max-w-[440px]">
 				<DialogHeader>
-					<DialogTitle>New agent</DialogTitle>
+					<DialogTitle>{t("newAgentDialog.title")}</DialogTitle>
 				</DialogHeader>
 
 				<div className="flex flex-col gap-4 py-2">
@@ -177,17 +182,17 @@ export function NewAgentModal() {
 									className="size-full object-cover"
 								/>
 							) : (
-								"Photo"
+								t("newAgentDialog.photo")
 							)}
 						</button>
 						<div className="flex-1">
-							<Label htmlFor="agent-name">Name</Label>
+							<Label htmlFor="agent-name">{t("common.name")}</Label>
 							<Input
 								id="agent-name"
 								ref={nameInputRef}
 								value={name}
 								onChange={(e) => setName(e.target.value)}
-								placeholder="e.g. Scout"
+								placeholder={t("newAgentDialog.namePlaceholder")}
 								onKeyDown={(e) => {
 									if (e.key === "Enter" && canCreate) handleCreate();
 								}}
@@ -203,20 +208,20 @@ export function NewAgentModal() {
 					/>
 
 					<div className="flex flex-col gap-1.5">
-						<Label htmlFor="agent-role">Role</Label>
+						<Label htmlFor="agent-role">{t("newAgentDialog.role")}</Label>
 						<Textarea
 							id="agent-role"
 							value={role}
 							onChange={(e) => setRole(e.target.value)}
 							rows={2}
 							maxLength={280}
-							placeholder="What is this agent? (optional — you can also just talk with the agent and shape it together)"
+							placeholder={t("newAgentDialog.rolePlaceholder")}
 							className="resize-none"
 						/>
 					</div>
 
 					<div className="flex flex-col gap-1.5">
-						<Label>Runtime</Label>
+						<Label>{t("newAgentDialog.runtime")}</Label>
 						<Select
 							value={runtime}
 							onValueChange={(v) =>
@@ -237,7 +242,7 @@ export function NewAgentModal() {
 												{AGENT_LABELS[r]}
 												{missing && (
 													<span className="text-xs text-muted-foreground">
-														· not installed
+														· {t("newAgentDialog.notInstalled")}
 													</span>
 												)}
 											</span>
@@ -248,21 +253,22 @@ export function NewAgentModal() {
 						</Select>
 						{runtimeMissing && (
 							<p className="text-xs text-muted-foreground">
-								{AGENT_LABELS[runtime]}'s CLI isn't installed — the agent will be
-								created, but you'll need it to run sessions.{" "}
+								{t("newAgentDialog.runtimeMissing", {
+									runtime: AGENT_LABELS[runtime],
+								})}{" "}
 								<button
 									type="button"
 									className="text-foreground underline underline-offset-2 hover:no-underline"
 									onClick={() => setInstallBinary(runtimeBinary)}
 								>
-									Install
+									{t("newAgentDialog.install")}
 								</button>
 							</p>
 						)}
 					</div>
 
 					<div className="flex flex-col gap-1.5">
-						<Label>Repository</Label>
+						<Label>{t("newAgentDialog.repository")}</Label>
 						<RadioGroup
 							value={repoMode}
 							onValueChange={(v) => setRepoMode(v as RepoMode)}
@@ -271,19 +277,19 @@ export function NewAgentModal() {
 							<div className="flex items-center gap-2">
 								<RadioGroupItem value="init" id="repo-init" />
 								<Label htmlFor="repo-init" className="font-normal">
-									New empty repo
+									{t("newAgentDialog.repoInit")}
 								</Label>
 							</div>
 							<div className="flex items-center gap-2">
 								<RadioGroupItem value="clone" id="repo-clone" />
 								<Label htmlFor="repo-clone" className="font-normal">
-									Clone from URL
+									{t("newAgentDialog.repoClone")}
 								</Label>
 							</div>
 							<div className="flex items-center gap-2">
 								<RadioGroupItem value="local" id="repo-local" />
 								<Label htmlFor="repo-local" className="font-normal">
-									Clone from local path
+									{t("newAgentDialog.repoLocal")}
 								</Label>
 							</div>
 						</RadioGroup>
@@ -306,10 +312,11 @@ export function NewAgentModal() {
 
 				{gitMissing && (
 					<div className="flex flex-col gap-2 rounded-md border border-amber-500/40 bg-amber-500/10 px-3 py-2.5 text-xs">
-						<p className="font-medium text-foreground">Git is required</p>
+						<p className="font-medium text-foreground">
+							{t("newAgentDialog.gitRequired")}
+						</p>
 						<p className="text-muted-foreground">
-							Creating an agent sets up a git repository, and Git isn't installed.
-							Install Apple's Command Line Tools, then re-check:
+							{t("newAgentDialog.gitRequiredBody")}
 						</p>
 						<code className="select-all rounded bg-background/60 px-2 py-1 font-mono">
 							xcode-select --install
@@ -323,17 +330,21 @@ export function NewAgentModal() {
 							<HiArrowPath
 								className={`h-3 w-3 ${isFetching ? "animate-spin" : ""}`}
 							/>
-							{isFetching ? "Checking…" : "Re-check"}
+							{isFetching
+								? t("newAgentDialog.checking")
+								: t("newAgentDialog.recheck")}
 						</button>
 					</div>
 				)}
 
 				<div className="flex justify-end gap-2">
 					<Button variant="ghost" onClick={() => closeModal()}>
-						Cancel
+						{t("common.cancel")}
 					</Button>
 					<Button onClick={handleCreate} disabled={!canCreate}>
-						{createAgent.isPending ? "Creating…" : "Create agent"}
+						{createAgent.isPending
+							? t("newAgentDialog.creating")
+							: t("newAgentDialog.createAgent")}
 					</Button>
 				</div>
 

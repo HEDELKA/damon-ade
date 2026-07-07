@@ -7,6 +7,7 @@ import {
 	AlertDialogTitle,
 } from "@superset/ui/alert-dialog";
 import { Button } from "@superset/ui/button";
+import { useTranslation } from "react-i18next";
 
 interface CloseProjectDialogProps {
 	projectName: string;
@@ -23,6 +24,7 @@ export function CloseProjectDialog({
 	onOpenChange,
 	onConfirm,
 }: CloseProjectDialogProps) {
+	const { t } = useTranslation();
 	const handleConfirm = () => {
 		onOpenChange(false);
 		onConfirm();
@@ -33,17 +35,15 @@ export function CloseProjectDialog({
 			<AlertDialogContent className="max-w-[340px] gap-0 p-0">
 				<AlertDialogHeader className="px-4 pt-4 pb-2">
 					<AlertDialogTitle className="font-medium">
-						Close team "{projectName}"?
+						{t("rail.closeTeamDialog.title", { name: projectName })}
 					</AlertDialogTitle>
 					<AlertDialogDescription asChild>
 						<div className="text-muted-foreground space-y-1.5">
 							<span className="block">
-								This will close {workspaceCount} agent
-								{workspaceCount !== 1 ? "s" : ""} and kill all active terminals
-								in this team.
+								{t("rail.closeTeamDialog.body", { count: workspaceCount })}
 							</span>
 							<span className="block">
-								Your files and git history will remain on disk.
+								{t("rail.closeTeamDialog.filesRemain")}
 							</span>
 						</div>
 					</AlertDialogDescription>
@@ -56,7 +56,7 @@ export function CloseProjectDialog({
 						className="h-7 px-3 text-xs"
 						onClick={() => onOpenChange(false)}
 					>
-						Cancel
+						{t("common.cancel")}
 					</Button>
 					<Button
 						variant="destructive"
@@ -64,7 +64,7 @@ export function CloseProjectDialog({
 						className="h-7 px-3 text-xs"
 						onClick={handleConfirm}
 					>
-						Close Team
+						{t("rail.menu.closeTeam")}
 					</Button>
 				</AlertDialogFooter>
 			</AlertDialogContent>

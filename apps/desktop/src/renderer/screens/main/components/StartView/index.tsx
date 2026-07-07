@@ -1,5 +1,6 @@
 import { Button } from "@superset/ui/button";
 import { cn } from "@superset/ui/utils";
+import { useTranslation } from "react-i18next";
 import { LuFolderPlus } from "react-icons/lu";
 import { SupersetLogo } from "renderer/components/SupersetLogo";
 import { useOpenNewCategoryModal } from "renderer/stores/new-category-modal";
@@ -11,14 +12,13 @@ import { useOpenNewCategoryModal } from "renderer/stores/new-category-modal";
  */
 export function StartView() {
 	const openNewCategory = useOpenNewCategoryModal();
+	const { t } = useTranslation();
 
 	return (
 		<div className="flex flex-col h-full w-full relative overflow-hidden bg-background">
 			<div className="relative flex flex-1 items-center justify-center">
 				<div className="flex flex-col items-center w-full max-w-md px-6">
-					<SupersetLogo
-						className={cn("h-8 w-auto mb-12 opacity-80")}
-					/>
+					<SupersetLogo className={cn("h-8 w-auto mb-12 opacity-80")} />
 
 					<div className="w-full flex flex-col items-center gap-4">
 						<button
@@ -34,11 +34,11 @@ export function StartView() {
 								<div className="flex items-center gap-3">
 									<LuFolderPlus className="w-7 h-7 text-muted-foreground group-hover:text-primary transition-colors" />
 									<span className="text-lg font-medium text-foreground">
-										Create a team
+										{t("startScreen.createTeam")}
 									</span>
 								</div>
 								<div className="text-sm pt-3 text-muted-foreground">
-									Teams group your agents. Add agents once you have one.
+									{t("startScreen.teamsGroupAgents")}
 								</div>
 							</div>
 						</button>
@@ -50,7 +50,7 @@ export function StartView() {
 							className="text-sm"
 						>
 							<LuFolderPlus className="size-3.5" />
-							New team
+							{t("startScreen.newTeam")}
 						</Button>
 					</div>
 				</div>

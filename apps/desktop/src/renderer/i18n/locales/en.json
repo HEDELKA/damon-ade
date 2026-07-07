@@ -26,5 +26,147 @@
 			"en": "English",
 			"ru": "Russian"
 		}
+	},
+	"binaryInstall": {
+		"checking": "Checking…",
+		"clipboardFailed": "Could not copy to clipboard",
+		"copyCommand": "Copy command",
+		"description": "{{tool}} isn't installed on this machine. Run the command below in a terminal, then re-check.",
+		"done": "Done",
+		"install": "Install",
+		"installLabel": "Install {{label}}",
+		"recheck": "Re-check",
+		"thisTool": "This tool"
+	},
+	"newAgentDialog": {
+		"checking": "Checking…",
+		"createAgent": "Create agent",
+		"creating": "Creating…",
+		"gitRequired": "Git is required",
+		"gitRequiredBody": "Creating an agent sets up a git repository, and Git isn't installed. Install Apple's Command Line Tools, then re-check:",
+		"install": "Install",
+		"namePlaceholder": "e.g. Scout",
+		"notInstalled": "not installed",
+		"photo": "Photo",
+		"recheck": "Re-check",
+		"repoClone": "Clone from URL",
+		"repoInit": "New empty repo",
+		"repoLocal": "Clone from local path",
+		"repository": "Repository",
+		"role": "Role",
+		"rolePlaceholder": "What is this agent? (optional — you can also just talk with the agent and shape it together)",
+		"runtime": "Runtime",
+		"runtimeMissing": "{{runtime}}'s CLI isn't installed — the agent will be created, but you'll need it to run sessions.",
+		"title": "New agent",
+		"toast": {
+			"created": "Agent \"{{name}}\" created",
+			"createFailed": "Failed to create agent",
+			"imageLoadFailed": "Could not load image"
+		}
+	},
+	"newTeamDialog": {
+		"createTeam": "Create category",
+		"creating": "Creating…",
+		"namePlaceholder": "e.g. Newsletter",
+		"photo": "Photo",
+		"title": "New category",
+		"toast": {
+			"created": "Category \"{{name}}\" created",
+			"createFailed": "Failed to create category",
+			"imageLoadFailed": "Could not load image"
+		}
+	},
+	"rail": {
+		"agentCount_one": "{{count}} agent",
+		"agentCount_other": "{{count}} agents",
+		"closeAgentAction": "Close agent",
+		"createFirstTeam": "Create your first team",
+		"localLabel": "local",
+		"newAgent": "New agent",
+		"newTeam": "New team",
+		"noTeamsYet": "No teams yet",
+		"teams": "Teams",
+		"closeTeamDialog": {
+			"body_one": "This will close {{count}} agent and kill all active terminals in this team.",
+			"body_other": "This will close {{count}} agents and kill all active terminals in this team.",
+			"filesRemain": "Your files and git history will remain on disk.",
+			"title": "Close team \"{{name}}\"?"
+		},
+		"deleteAgentDialog": {
+			"alsoDeleteBranch": "Also delete local branch",
+			"checkingStatus": "Checking status…",
+			"closeBody": "This will close the agent and kill any active terminals. Your branch and commits will remain in the repository.",
+			"closeTitle": "Close agent \"{{name}}\"?",
+			"deleteTooltip": "Permanently delete agent and git worktree from disk.",
+			"hasChanges": "Has uncommitted changes",
+			"hasChangesAndCommits": "Has uncommitted changes and unpushed commits",
+			"hasCommits": "Has unpushed commits",
+			"hide": "Hide",
+			"removeBody": "Deleting will permanently remove the worktree. You can hide instead to keep files on disk.",
+			"removeTitle": "Remove agent \"{{name}}\"?"
+		},
+		"dropzone": {
+			"addingTeam": "Adding team…",
+			"dismissError": "Dismiss error",
+			"dropToAdd": "Drop to add team",
+			"openTeamFailed": "Failed to open team",
+			"pathError": "Could not get path from dropped item",
+			"releaseToOpen": "Release to open folder"
+		},
+		"menu": {
+			"changePhoto": "Change Photo",
+			"clearStatus": "Clear Status",
+			"closeTeam": "Close Team",
+			"closeWorktree": "Close Worktree",
+			"closing": "Closing…",
+			"copyPath": "Copy Path",
+			"hideImage": "Hide Image",
+			"markAsRead": "Mark as Read",
+			"markAsUnread": "Mark as Unread",
+			"openInFinder": "Open in Finder",
+			"projectSettings": "Project Settings",
+			"removePhoto": "Remove Photo",
+			"rename": "Rename",
+			"setColor": "Set Color",
+			"showImage": "Show Image",
+			"teamSettings": "Team Settings"
+		},
+		"ports": {
+			"clickToOpen": "Click to open workspace",
+			"closeAll": "Close all ports",
+			"closePort": "Close {{name}}",
+			"learnMore": "Learn about static port configuration",
+			"openInBrowser": "Open {{name}} in browser",
+			"portFallback": "port {{port}}",
+			"title": "Ports"
+		},
+		"toast": {
+			"agentHidden": "Agent hidden",
+			"closeTeamFailed": "Failed to close category: {{message}}",
+			"colorUpdateFailed": "Failed to update color: {{message}}",
+			"hideFailed": "Failed to hide",
+			"hiding": "Hiding…",
+			"imageLoadFailed": "Could not load image",
+			"openFailed": "Failed to open: {{message}}",
+			"pathCopied": "Path copied to clipboard",
+			"pathCopyFailed": "Failed to copy path",
+			"photoFailed": "Failed to set photo: {{message}}",
+			"reorderAgentFailed": "Failed to reorder agent: {{message}}",
+			"reorderFailed": "Failed to reorder: {{message}}",
+			"terminalWarning": "Terminal warning",
+			"unreadUpdateFailed": "Failed to update unread status: {{message}}"
+		},
+		"tooltip": {
+			"localAgent": "Local agent",
+			"localAgentDescription": "Changes are made directly in the main repository",
+			"worktreeAgent": "Worktree agent",
+			"worktreeAgentDescription": "Isolated copy for parallel development"
+		}
+	},
+	"startScreen": {
+		"createTeam": "Create a team",
+		"newTeam": "New team",
+		"opening": "Opening…",
+		"teamsGroupAgents": "Teams group your agents. Add agents once you have one."
 	}
 }

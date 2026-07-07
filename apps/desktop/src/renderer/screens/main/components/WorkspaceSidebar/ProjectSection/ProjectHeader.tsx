@@ -13,6 +13,7 @@ import { Tooltip, TooltipContent, TooltipTrigger } from "@superset/ui/tooltip";
 import { cn } from "@superset/ui/utils";
 import { useNavigate, useParams } from "@tanstack/react-router";
 import { useState } from "react";
+import { useTranslation } from "react-i18next";
 import { HiChevronRight, HiMiniPlus } from "react-icons/hi2";
 import {
 	LuFolderOpen,
@@ -69,6 +70,7 @@ export function ProjectHeader({
 }: ProjectHeaderProps) {
 	const utils = electronTrpc.useUtils();
 	const navigate = useNavigate();
+	const { t } = useTranslation();
 	const params = useParams({ strict: false }) as { workspaceId?: string };
 	const [isCloseDialogOpen, setIsCloseDialogOpen] = useState(false);
 	const rename = useProjectRename(projectId, projectName);
@@ -116,12 +118,13 @@ export function ProjectHeader({
 			}
 		},
 		onError: (error) => {
-			toast.error(`Failed to close category: ${error.message}`);
+			toast.error(t("rail.toast.closeTeamFailed", { message: error.message }));
 		},
 	});
 
 	const openInFinder = electronTrpc.external.openInFinder.useMutation({
-		onError: (error) => toast.error(`Failed to open: ${error.message}`),
+		onError: (error) =>
+			toast.error(t("rail.toast.openFailed", { message: error.message })),
 	});
 
 	const handleCloseProject = () => {
@@ -141,7 +144,10 @@ export function ProjectHeader({
 	};
 
 	const updateProject = useUpdateProject({
-		onError: (error) => toast.error(`Failed to update color: ${error.message}`),
+		onError: (error) =>
+			toast.error(
+				t("rail.toast.colorUpdateFailed", { message: error.message }),
+			),
 	});
 
 	const handleColorChange = (color: string) => {
@@ -157,7 +163,7 @@ export function ProjectHeader({
 		<ContextMenuSub>
 			<ContextMenuSubTrigger>
 				<LuPalette className="size-4 mr-2" strokeWidth={STROKE_WIDTH} />
-				Set Color
+				{t("rail.menu.setColor")}
 			</ContextMenuSubTrigger>
 			<ContextMenuSubContent className="w-36">
 				{PROJECT_COLORS.map((color) => {
@@ -215,14 +221,14 @@ export function ProjectHeader({
 						<TooltipContent className="flex flex-col gap-0.5">
 							<span className="font-medium">{projectName}</span>
 							<span className="text-xs text-muted-foreground">
-								{workspaceCount} agent{workspaceCount !== 1 ? "s" : ""}
+								{t("rail.agentCount", { count: workspaceCount })}
 							</span>
 						</TooltipContent>
 					</Tooltip>
 					<ContextMenuContent>
 						<ContextMenuItem onSelect={rename.startRename}>
 							<LuPencil className="size-4 mr-2" strokeWidth={STROKE_WIDTH} />
-							Rename
+							{t("rail.menu.rename")}
 						</ContextMenuItem>
 						<ContextMenuSeparator />
 						<ContextMenuItem onSelect={handleOpenInFinder}>
@@ -230,11 +236,11 @@ export function ProjectHeader({
 								className="size-4 mr-2"
 								strokeWidth={STROKE_WIDTH}
 							/>
-							Open in Finder
+							{t("rail.menu.openInFinder")}
 						</ContextMenuItem>
 						<ContextMenuItem onSelect={handleOpenSettings}>
 							<LuSettings className="size-4 mr-2" strokeWidth={STROKE_WIDTH} />
-							Team Settings
+							{t("rail.menu.teamSettings")}
 						</ContextMenuItem>
 						{colorPickerSubmenu}
 						<ContextMenuSeparator />
@@ -247,7 +253,9 @@ export function ProjectHeader({
 								className="size-4 mr-2 text-destructive"
 								strokeWidth={STROKE_WIDTH}
 							/>
-							{closeProject.isPending ? "Closing..." : "Close Team"}
+							{closeProject.isPending
+								? t("rail.menu.closing")
+								: t("rail.menu.closeTeam")}
 						</ContextMenuItem>
 					</ContextMenuContent>
 				</ContextMenu>
@@ -330,7 +338,7 @@ export function ProjectHeader({
 								</button>
 							</TooltipTrigger>
 							<TooltipContent side="bottom" sideOffset={4}>
-								New agent
+								{t("rail.newAgent")}
 							</TooltipContent>
 						</Tooltip>
 
@@ -354,16 +362,16 @@ export function ProjectHeader({
 				<ContextMenuContent>
 					<ContextMenuItem onSelect={rename.startRename}>
 						<LuPencil className="size-4 mr-2" strokeWidth={STROKE_WIDTH} />
-						Rename
+						{t("rail.menu.rename")}
 					</ContextMenuItem>
 					<ContextMenuSeparator />
 					<ContextMenuItem onSelect={handleOpenInFinder}>
 						<LuFolderOpen className="size-4 mr-2" strokeWidth={STROKE_WIDTH} />
-						Open in Finder
+						{t("rail.menu.openInFinder")}
 					</ContextMenuItem>
 					<ContextMenuItem onSelect={handleOpenSettings}>
 						<LuSettings className="size-4 mr-2" strokeWidth={STROKE_WIDTH} />
-						Project Settings
+						{t("rail.menu.projectSettings")}
 					</ContextMenuItem>
 					{colorPickerSubmenu}
 					<ContextMenuItem onSelect={handleToggleImage}>
@@ -372,7 +380,7 @@ export function ProjectHeader({
 						) : (
 							<LuImageOff className="size-4 mr-2" strokeWidth={STROKE_WIDTH} />
 						)}
-						{hideImage ? "Show Image" : "Hide Image"}
+						{hideImage ? t("rail.menu.showImage") : t("rail.menu.hideImage")}
 					</ContextMenuItem>
 					<ContextMenuSeparator />
 					<ContextMenuItem
@@ -384,7 +392,9 @@ export function ProjectHeader({
 							className="size-4 mr-2 text-destructive"
 							strokeWidth={STROKE_WIDTH}
 						/>
-						{closeProject.isPending ? "Closing..." : "Close Team"}
+						{closeProject.isPending
+							? t("rail.menu.closing")
+							: t("rail.menu.closeTeam")}
 					</ContextMenuItem>
 				</ContextMenuContent>
 			</ContextMenu>

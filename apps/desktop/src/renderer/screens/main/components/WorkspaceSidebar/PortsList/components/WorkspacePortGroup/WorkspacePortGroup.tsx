@@ -1,5 +1,6 @@
 import { Tooltip, TooltipContent, TooltipTrigger } from "@superset/ui/tooltip";
 import { useNavigate } from "@tanstack/react-router";
+import { useTranslation } from "react-i18next";
 import { LuX } from "react-icons/lu";
 import { navigateToWorkspace } from "renderer/routes/_authenticated/_dashboard/utils/workspace-navigation";
 import { STROKE_WIDTH } from "../../../constants";
@@ -12,6 +13,7 @@ interface WorkspacePortGroupProps {
 }
 
 export function WorkspacePortGroup({ group }: WorkspacePortGroupProps) {
+	const { t } = useTranslation();
 	const navigate = useNavigate();
 	const { killPorts } = useKillPort();
 
@@ -44,7 +46,7 @@ export function WorkspacePortGroup({ group }: WorkspacePortGroupProps) {
 						</button>
 					</TooltipTrigger>
 					<TooltipContent side="top" sideOffset={4}>
-						<p className="text-xs">Close all ports</p>
+						<p className="text-xs">{t("rail.ports.closeAll")}</p>
 					</TooltipContent>
 				</Tooltip>
 			</div>

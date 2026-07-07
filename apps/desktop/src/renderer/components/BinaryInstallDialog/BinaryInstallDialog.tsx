@@ -13,6 +13,7 @@ import {
 } from "@superset/ui/dialog";
 import { toast } from "@superset/ui/sonner";
 import { useState } from "react";
+import { useTranslation } from "react-i18next";
 import {
 	HiArrowPath,
 	HiOutlineArrowTopRightOnSquare,
@@ -43,6 +44,7 @@ export function BinaryInstallDialog({
 	onRecheck,
 	isRechecking,
 }: BinaryInstallDialogProps) {
+	const { t } = useTranslation();
 	const openUrl = electronTrpc.external.openUrl.useMutation();
 	const [copied, setCopied] = useState(false);
 
@@ -55,7 +57,7 @@ export function BinaryInstallDialog({
 			setCopied(true);
 			setTimeout(() => setCopied(false), 1500);
 		} catch {
-			toast.error("Could not copy to clipboard");
+			toast.error(t("binaryInstall.clipboardFailed"));
 		}
 	};
 
@@ -63,10 +65,15 @@ export function BinaryInstallDialog({
 		<Dialog open={binary !== null} onOpenChange={onOpenChange}>
 			<DialogContent className="sm:max-w-[460px]">
 				<DialogHeader>
-					<DialogTitle>{info ? `Install ${info.label}` : "Install"}</DialogTitle>
+					<DialogTitle>
+						{info
+							? t("binaryInstall.installLabel", { label: info.label })
+							: t("binaryInstall.install")}
+					</DialogTitle>
 					<DialogDescription>
-						{info?.label ?? "This tool"} isn't installed on this machine. Run the
-						command below in a terminal, then re-check.
+						{t("binaryInstall.description", {
+							tool: info?.label ?? t("binaryInstall.thisTool"),
+						})}
 					</DialogDescription>
 				</DialogHeader>
 
@@ -79,7 +86,7 @@ export function BinaryInstallDialog({
 							<Button
 								variant="outline"
 								size="icon"
-								aria-label="Copy command"
+								aria-label={t("binaryInstall.copyCommand")}
 								onClick={handleCopy}
 							>
 								{copied ? (
@@ -114,13 +121,15 @@ export function BinaryInstallDialog({
 							<HiArrowPath
 								className={`h-4 w-4 ${isRechecking ? "animate-spin" : ""}`}
 							/>
-							{isRechecking ? "Checking…" : "Re-check"}
+							{isRechecking
+								? t("binaryInstall.checking")
+								: t("binaryInstall.recheck")}
 						</Button>
 					) : (
 						<span />
 					)}
 					<Button variant="ghost" onClick={() => onOpenChange(false)}>
-						Done
+						{t("binaryInstall.done")}
 					</Button>
 				</DialogFooter>
 			</DialogContent>

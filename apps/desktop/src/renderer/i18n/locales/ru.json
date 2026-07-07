@@ -26,5 +26,149 @@
 			"en": "Английский",
 			"ru": "Русский"
 		}
+	},
+	"binaryInstall": {
+		"checking": "Проверка…",
+		"clipboardFailed": "Не удалось скопировать в буфер обмена",
+		"copyCommand": "Скопировать команду",
+		"description": "{{tool}} не установлен на этом компьютере. Выполните команду ниже в терминале, затем проверьте снова.",
+		"done": "Готово",
+		"install": "Установить",
+		"installLabel": "Установить {{label}}",
+		"recheck": "Проверить снова",
+		"thisTool": "Этот инструмент"
+	},
+	"newAgentDialog": {
+		"checking": "Проверка…",
+		"createAgent": "Создать агента",
+		"creating": "Создание…",
+		"gitRequired": "Требуется Git",
+		"gitRequiredBody": "При создании агента настраивается git-репозиторий, а Git не установлен. Установите Apple Command Line Tools, затем проверьте снова:",
+		"install": "Установить",
+		"namePlaceholder": "напр. Scout",
+		"notInstalled": "не установлен",
+		"photo": "Фото",
+		"recheck": "Проверить снова",
+		"repoClone": "Клонировать по URL",
+		"repoInit": "Новый пустой репозиторий",
+		"repoLocal": "Клонировать из локальной папки",
+		"repository": "Репозиторий",
+		"role": "Роль",
+		"rolePlaceholder": "Что это за агент? (необязательно — можно просто пообщаться с агентом и настроить его вместе)",
+		"runtime": "Runtime",
+		"runtimeMissing": "CLI для {{runtime}} не установлен — агент будет создан, но для запуска сессий он понадобится.",
+		"title": "Новый агент",
+		"toast": {
+			"created": "Агент «{{name}}» создан",
+			"createFailed": "Не удалось создать агента",
+			"imageLoadFailed": "Не удалось загрузить изображение"
+		}
+	},
+	"newTeamDialog": {
+		"createTeam": "Создать команду",
+		"creating": "Создание…",
+		"namePlaceholder": "напр. Рассылка",
+		"photo": "Фото",
+		"title": "Новая команда",
+		"toast": {
+			"created": "Команда «{{name}}» создана",
+			"createFailed": "Не удалось создать команду",
+			"imageLoadFailed": "Не удалось загрузить изображение"
+		}
+	},
+	"rail": {
+		"agentCount_one": "{{count}} агент",
+		"agentCount_few": "{{count}} агента",
+		"agentCount_many": "{{count}} агентов",
+		"closeAgentAction": "Закрыть агента",
+		"createFirstTeam": "Создать первую команду",
+		"localLabel": "локальный",
+		"newAgent": "Новый агент",
+		"newTeam": "Новая команда",
+		"noTeamsYet": "Пока нет команд",
+		"teams": "Команды",
+		"closeTeamDialog": {
+			"body_one": "Это закроет {{count}} агента и завершит все активные терминалы в этой команде.",
+			"body_few": "Это закроет {{count}} агента и завершит все активные терминалы в этой команде.",
+			"body_many": "Это закроет {{count}} агентов и завершит все активные терминалы в этой команде.",
+			"filesRemain": "Ваши файлы и история git останутся на диске.",
+			"title": "Закрыть команду «{{name}}»?"
+		},
+		"deleteAgentDialog": {
+			"alsoDeleteBranch": "Также удалить локальную ветку",
+			"checkingStatus": "Проверка статуса…",
+			"closeBody": "Это закроет агента и завершит все активные терминалы. Ваша ветка и коммиты останутся в репозитории.",
+			"closeTitle": "Закрыть агента «{{name}}»?",
+			"deleteTooltip": "Безвозвратно удалить агента и git worktree с диска.",
+			"hasChanges": "Есть незакоммиченные изменения",
+			"hasChangesAndCommits": "Есть незакоммиченные изменения и незапушенные коммиты",
+			"hasCommits": "Есть незапушенные коммиты",
+			"hide": "Скрыть",
+			"removeBody": "Удаление безвозвратно уберёт worktree. Можно вместо этого скрыть, чтобы сохранить файлы на диске.",
+			"removeTitle": "Удалить агента «{{name}}»?"
+		},
+		"dropzone": {
+			"addingTeam": "Добавление команды…",
+			"dismissError": "Скрыть ошибку",
+			"dropToAdd": "Отпустите, чтобы добавить команду",
+			"openTeamFailed": "Не удалось открыть команду",
+			"pathError": "Не удалось получить путь из перетащенного элемента",
+			"releaseToOpen": "Отпустите, чтобы открыть папку"
+		},
+		"menu": {
+			"changePhoto": "Изменить фото",
+			"clearStatus": "Сбросить статус",
+			"closeTeam": "Закрыть команду",
+			"closeWorktree": "Закрыть worktree",
+			"closing": "Закрытие…",
+			"copyPath": "Скопировать путь",
+			"hideImage": "Скрыть изображение",
+			"markAsRead": "Отметить прочитанным",
+			"markAsUnread": "Отметить непрочитанным",
+			"openInFinder": "Открыть в Finder",
+			"projectSettings": "Настройки проекта",
+			"removePhoto": "Удалить фото",
+			"rename": "Переименовать",
+			"setColor": "Выбрать цвет",
+			"showImage": "Показать изображение",
+			"teamSettings": "Настройки команды"
+		},
+		"ports": {
+			"clickToOpen": "Нажмите, чтобы открыть рабочую область",
+			"closeAll": "Закрыть все порты",
+			"closePort": "Закрыть {{name}}",
+			"learnMore": "Подробнее о настройке статических портов",
+			"openInBrowser": "Открыть {{name}} в браузере",
+			"portFallback": "порт {{port}}",
+			"title": "Порты"
+		},
+		"toast": {
+			"agentHidden": "Агент скрыт",
+			"closeTeamFailed": "Не удалось закрыть команду: {{message}}",
+			"colorUpdateFailed": "Не удалось обновить цвет: {{message}}",
+			"hideFailed": "Не удалось скрыть",
+			"hiding": "Скрытие…",
+			"imageLoadFailed": "Не удалось загрузить изображение",
+			"openFailed": "Не удалось открыть: {{message}}",
+			"pathCopied": "Путь скопирован в буфер обмена",
+			"pathCopyFailed": "Не удалось скопировать путь",
+			"photoFailed": "Не удалось установить фото: {{message}}",
+			"reorderAgentFailed": "Не удалось изменить порядок агентов: {{message}}",
+			"reorderFailed": "Не удалось изменить порядок: {{message}}",
+			"terminalWarning": "Предупреждение терминала",
+			"unreadUpdateFailed": "Не удалось обновить статус непрочитанного: {{message}}"
+		},
+		"tooltip": {
+			"localAgent": "Локальный агент",
+			"localAgentDescription": "Изменения вносятся прямо в основной репозиторий",
+			"worktreeAgent": "Агент worktree",
+			"worktreeAgentDescription": "Изолированная копия для параллельной разработки"
+		}
+	},
+	"startScreen": {
+		"createTeam": "Создать команду",
+		"newTeam": "Новая команда",
+		"opening": "Открытие…",
+		"teamsGroupAgents": "Команды объединяют ваших агентов. Добавьте агентов, когда команда появится."
 	}
 }

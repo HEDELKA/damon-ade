@@ -1,5 +1,6 @@
 import { Tooltip, TooltipContent, TooltipTrigger } from "@superset/ui/tooltip";
 import { useNavigate } from "@tanstack/react-router";
+import { useTranslation } from "react-i18next";
 import { LuExternalLink, LuX } from "react-icons/lu";
 import { navigateToWorkspace } from "renderer/routes/_authenticated/_dashboard/utils/workspace-navigation";
 import { useTabsStore } from "renderer/stores/tabs/store";
@@ -12,6 +13,7 @@ interface MergedPortBadgeProps {
 }
 
 export function MergedPortBadge({ port }: MergedPortBadgeProps) {
+	const { t } = useTranslation();
 	const navigate = useNavigate();
 	const setActiveTab = useTabsStore((s) => s.setActiveTab);
 	const setFocusedPane = useTabsStore((s) => s.setFocusedPane);
@@ -51,6 +53,9 @@ export function MergedPortBadge({ port }: MergedPortBadgeProps) {
 		killPort(port);
 	};
 
+	const portName =
+		port.label || t("rail.ports.portFallback", { port: port.port });
+
 	return (
 		<Tooltip>
 			<TooltipTrigger asChild>
@@ -66,7 +71,7 @@ export function MergedPortBadge({ port }: MergedPortBadgeProps) {
 					<button
 						type="button"
 						onClick={handleOpenInBrowser}
-						aria-label={`Open ${port.label || `port ${port.port}`} in browser`}
+						aria-label={t("rail.ports.openInBrowser", { name: portName })}
 						className="opacity-0 group-hover:opacity-100 transition-opacity text-muted-foreground hover:text-primary focus-visible:opacity-100 focus-visible:outline-none"
 					>
 						<LuExternalLink className="size-3.5" strokeWidth={STROKE_WIDTH} />
@@ -74,7 +79,7 @@ export function MergedPortBadge({ port }: MergedPortBadgeProps) {
 					<button
 						type="button"
 						onClick={handleClose}
-						aria-label={`Close ${port.label || `port ${port.port}`}`}
+						aria-label={t("rail.ports.closePort", { name: portName })}
 						className="opacity-0 group-hover:opacity-100 pr-1 transition-opacity text-muted-foreground hover:text-primary focus-visible:opacity-100 focus-visible:outline-none"
 					>
 						<LuX className="size-3.5" strokeWidth={STROKE_WIDTH} />
@@ -97,7 +102,7 @@ export function MergedPortBadge({ port }: MergedPortBadgeProps) {
 					)}
 					{canJumpToTerminal && (
 						<div className="text-muted-foreground/70 text-[10px]">
-							Click to open workspace
+							{t("rail.ports.clickToOpen")}
 						</div>
 					)}
 				</div>

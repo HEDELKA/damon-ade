@@ -13,6 +13,7 @@ import {
 import { Tooltip, TooltipContent, TooltipTrigger } from "@superset/ui/tooltip";
 import { cn } from "@superset/ui/utils";
 import { type RefObject, useMemo, useState } from "react";
+import { useTranslation } from "react-i18next";
 import { LuCopy, LuX } from "react-icons/lu";
 import { createContextMenuDeleteDialogCoordinator } from "renderer/react-query/workspaces/useWorkspaceDeleteHandler";
 import type { ActivePaneStatus } from "shared/tabs-types";
@@ -60,6 +61,7 @@ export function CollapsedWorkspaceItem({
 	onDeleteClick,
 	onCopyPath,
 }: CollapsedWorkspaceItemProps) {
+	const { t } = useTranslation();
 	const isBranchWorkspace = type === "branch";
 	const deleteDialogCoordinator = useMemo(
 		() => createContextMenuDeleteDialogCoordinator(onDeleteClick),
@@ -105,7 +107,9 @@ export function CollapsedWorkspaceItem({
 				<Tooltip delayDuration={300}>
 					<TooltipTrigger asChild>{collapsedButton}</TooltipTrigger>
 					<TooltipContent side="right" className="flex flex-col gap-0.5">
-						<span className="font-medium">{role ? name : "local"}</span>
+						<span className="font-medium">
+							{role ? name : t("rail.localLabel")}
+						</span>
 						<span
 							className={cn(
 								"text-xs text-muted-foreground",
@@ -145,7 +149,7 @@ export function CollapsedWorkspaceItem({
 					>
 						<ContextMenuItem onSelect={onCopyPath}>
 							<LuCopy className="size-4 mr-2" strokeWidth={STROKE_WIDTH} />
-							Copy Path
+							{t("rail.menu.copyPath")}
 						</ContextMenuItem>
 						<ContextMenuSeparator />
 						<ContextMenuItem
@@ -154,7 +158,7 @@ export function CollapsedWorkspaceItem({
 							}}
 						>
 							<LuX className="size-4 mr-2" strokeWidth={STROKE_WIDTH} />
-							Close Worktree
+							{t("rail.menu.closeWorktree")}
 						</ContextMenuItem>
 					</ContextMenuContent>
 				</ContextMenu>

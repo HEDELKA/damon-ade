@@ -18,6 +18,7 @@ import { useMatchRoute, useNavigate } from "@tanstack/react-router";
 import type { ChangeEvent } from "react";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { useDrag, useDrop } from "react-dnd";
+import { useTranslation } from "react-i18next";
 import { HiMiniXMark } from "react-icons/hi2";
 import {
 	LuBellOff,
@@ -97,6 +98,7 @@ export function WorkspaceListItem({
 	isCollapsed = false,
 }: WorkspaceListItemProps) {
 	const isBranchWorkspace = type === "branch";
+	const { t } = useTranslation();
 	const navigate = useNavigate();
 	const matchRoute = useMatchRoute();
 	const reorderWorkspaces = useReorderWorkspaces();
@@ -125,20 +127,26 @@ export function WorkspaceListItem({
 	}, [isActive]);
 
 	const openInFinder = electronTrpc.external.openInFinder.useMutation({
-		onError: (error) => toast.error(`Failed to open: ${error.message}`),
+		onError: (error) =>
+			toast.error(t("rail.toast.openFailed", { message: error.message })),
 	});
 	const setUnread = electronTrpc.workspaces.setUnread.useMutation({
 		onSuccess: () => utils.workspaces.getAllGrouped.invalidate(),
 		onError: (error) =>
-			toast.error(`Failed to update unread status: ${error.message}`),
+			toast.error(
+				t("rail.toast.unreadUpdateFailed", { message: error.message }),
+			),
 	});
 
 	// Agent avatar (circular rail bust) photo upload.
 	const photoInputRef = useRef<HTMLInputElement>(null);
-	const setWorkspaceIcon = electronTrpc.workspaces.setWorkspaceIcon.useMutation({
-		onSuccess: () => utils.workspaces.getAllGrouped.invalidate(),
-		onError: (error) => toast.error(`Failed to set photo: ${error.message}`),
-	});
+	const setWorkspaceIcon = electronTrpc.workspaces.setWorkspaceIcon.useMutation(
+		{
+			onSuccess: () => utils.workspaces.getAllGrouped.invalidate(),
+			onError: (error) =>
+				toast.error(t("rail.toast.photoFailed", { message: error.message })),
+		},
+	);
 	const handlePhotoFileChange = async (
 		e: React.ChangeEvent<HTMLInputElement>,
 	) => {
@@ -149,7 +157,9 @@ export function WorkspaceListItem({
 			const icon = await downscaleImageToDataUrl(file);
 			setWorkspaceIcon.mutate({ id, icon });
 		} catch (err) {
-			toast.error(err instanceof Error ? err.message : "Could not load image");
+			toast.error(
+				err instanceof Error ? err.message : t("rail.toast.imageLoadFailed"),
+			);
 		}
 	};
 
@@ -236,9 +246,9 @@ export function WorkspaceListItem({
 		if (!worktreePath) return;
 		try {
 			await navigator.clipboard.writeText(worktreePath);
-			toast.success("Path copied to clipboard");
+			toast.success(t("rail.toast.pathCopied"));
 		} catch {
-			toast.error("Failed to copy path");
+			toast.error(t("rail.toast.pathCopyFailed"));
 		}
 	};
 
@@ -252,7 +262,9 @@ export function WorkspaceListItem({
 			},
 			{
 				onError: (error) =>
-					toast.error(`Failed to reorder agent: ${error.message}`),
+					toast.error(
+						t("rail.toast.reorderAgentFailed", { message: error.message }),
+					),
 				onSettled: () => utils.workspaces.getAllGrouped.invalidate(),
 			},
 		);
@@ -372,10 +384,10 @@ export function WorkspaceListItem({
 					<div
 						className={cn(
 							"relative shrink-0 flex items-center justify-center mr-2.5",
-								// Photo avatars get a larger slot; glyph icons keep the compact
-								// one. The slot must match the img size or the reset's max-width
-								// squeezes the circle into an oval.
-								iconUrl ? "size-8" : "size-5",
+							// Photo avatars get a larger slot; glyph icons keep the compact
+							// one. The slot must match the img size or the reset's max-width
+							// squeezes the circle into an oval.
+							iconUrl ? "size-8" : "size-5",
 							hasSubtitle && "mt-0.5",
 						)}
 					>
@@ -393,16 +405,20 @@ export function WorkspaceListItem({
 				<TooltipContent side="right" sideOffset={8}>
 					{isBranchWorkspace ? (
 						<>
-							<p className="text-xs font-medium">Local agent</p>
+							<p className="text-xs font-medium">
+								{t("rail.tooltip.localAgent")}
+							</p>
 							<p className="text-xs text-muted-foreground">
-								Changes are made directly in the main repository
+								{t("rail.tooltip.localAgentDescription")}
 							</p>
 						</>
 					) : (
 						<>
-							<p className="text-xs font-medium">Worktree agent</p>
+							<p className="text-xs font-medium">
+								{t("rail.tooltip.worktreeAgent")}
+							</p>
 							<p className="text-xs text-muted-foreground">
-								Isolated copy for parallel development
+								{t("rail.tooltip.worktreeAgentDescription")}
 							</p>
 						</>
 					)}
@@ -436,7 +452,7 @@ export function WorkspaceListItem({
 										: "text-foreground/80",
 								)}
 							>
-								{isBranchWorkspace ? "local" : name || branch}
+								{isBranchWorkspace ? t("rail.localLabel") : name || branch}
 							</span>
 
 							{isBranchWorkspace && aheadBehind && (
@@ -471,13 +487,13 @@ export function WorkspaceListItem({
 														handleDeleteClick();
 													}}
 													className="flex items-center justify-center text-muted-foreground hover:text-foreground"
-													aria-label="Close agent"
+													aria-label={t("rail.closeAgentAction")}
 												>
 													<HiMiniXMark className="size-3.5" />
 												</button>
 											</TooltipTrigger>
 											<TooltipContent side="top" sideOffset={4}>
-												Close agent
+												{t("rail.closeAgentAction")}
 											</TooltipContent>
 										</Tooltip>
 									)}
@@ -508,12 +524,12 @@ export function WorkspaceListItem({
 			{isUnread ? (
 				<>
 					<LuEye className="size-4 mr-2" strokeWidth={STROKE_WIDTH} />
-					Mark as Read
+					{t("rail.menu.markAsRead")}
 				</>
 			) : (
 				<>
 					<LuEyeOff className="size-4 mr-2" strokeWidth={STROKE_WIDTH} />
-					Mark as Unread
+					{t("rail.menu.markAsUnread")}
 				</>
 			)}
 		</ContextMenuItem>
@@ -523,18 +539,18 @@ export function WorkspaceListItem({
 		<>
 			<ContextMenuItem onSelect={handleOpenInFinder}>
 				<LuFolderOpen className="size-4 mr-2" strokeWidth={STROKE_WIDTH} />
-				Open in Finder
+				{t("rail.menu.openInFinder")}
 			</ContextMenuItem>
 			<ContextMenuItem onSelect={handleCopyPath}>
 				<LuCopy className="size-4 mr-2" strokeWidth={STROKE_WIDTH} />
-				Copy Path
+				{t("rail.menu.copyPath")}
 			</ContextMenuItem>
 			<ContextMenuSeparator />
 			{unreadMenuItem}
 			{workspaceStatus && (
 				<ContextMenuItem onSelect={() => resetWorkspaceStatus(id)}>
 					<LuBellOff className="size-4 mr-2" strokeWidth={STROKE_WIDTH} />
-					Clear Status
+					{t("rail.menu.clearStatus")}
 				</ContextMenuItem>
 			)}
 		</>
@@ -572,20 +588,18 @@ export function WorkspaceListItem({
 					<ContextMenuContent>
 						<ContextMenuItem onSelect={rename.startRename}>
 							<LuPencil className="size-4 mr-2" strokeWidth={STROKE_WIDTH} />
-							Rename
+							{t("rail.menu.rename")}
 						</ContextMenuItem>
-						<ContextMenuItem
-							onSelect={() => photoInputRef.current?.click()}
-						>
+						<ContextMenuItem onSelect={() => photoInputRef.current?.click()}>
 							<LuImage className="size-4 mr-2" strokeWidth={STROKE_WIDTH} />
-							Change Photo
+							{t("rail.menu.changePhoto")}
 						</ContextMenuItem>
 						{iconUrl && (
 							<ContextMenuItem
 								onSelect={() => setWorkspaceIcon.mutate({ id, icon: null })}
 							>
 								<LuTrash2 className="size-4 mr-2" strokeWidth={STROKE_WIDTH} />
-								Remove Photo
+								{t("rail.menu.removePhoto")}
 							</ContextMenuItem>
 						)}
 						<ContextMenuSeparator />

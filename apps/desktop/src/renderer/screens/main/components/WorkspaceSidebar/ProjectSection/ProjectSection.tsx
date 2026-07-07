@@ -2,6 +2,7 @@ import { toast } from "@superset/ui/sonner";
 import { cn } from "@superset/ui/utils";
 import { AnimatePresence, motion } from "framer-motion";
 import { useDrag, useDrop } from "react-dnd";
+import { useTranslation } from "react-i18next";
 import { electronTrpc } from "renderer/lib/electron-trpc";
 import { useReorderProjects } from "renderer/react-query/projects";
 import { useWorkspaceSidebarStore } from "renderer/stores";
@@ -60,6 +61,7 @@ export function ProjectSection({
 	const openModal = useOpenNewWorkspaceModal();
 	const reorderProjects = useReorderProjects();
 	const utils = electronTrpc.useUtils();
+	const { t } = useTranslation();
 
 	const isCollapsed = isProjectCollapsed(projectId);
 
@@ -79,7 +81,9 @@ export function ProjectSection({
 						{ fromIndex: item.originalIndex, toIndex: item.index },
 						{
 							onError: (error) =>
-								toast.error(`Failed to reorder: ${error.message}`),
+								toast.error(
+									t("rail.toast.reorderFailed", { message: error.message }),
+								),
 							onSettled: () => utils.workspaces.getAllGrouped.invalidate(),
 						},
 					);
@@ -120,7 +124,9 @@ export function ProjectSection({
 					{ fromIndex: item.originalIndex, toIndex: item.index },
 					{
 						onError: (error) =>
-							toast.error(`Failed to reorder: ${error.message}`),
+							toast.error(
+								t("rail.toast.reorderFailed", { message: error.message }),
+							),
 						onSettled: () => utils.workspaces.getAllGrouped.invalidate(),
 					},
 				);
