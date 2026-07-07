@@ -1,3 +1,9 @@
+import {
+	commandLaunchesClaude,
+	insertClaudeArgs,
+} from "@superset/shared/agent-command";
+import { electronTrpcClient as trpcClient } from "renderer/lib/trpc-client";
+
 interface TerminalCreateOrAttachInput {
 	paneId: string;
 	tabId: string;
@@ -64,6 +70,46 @@ export async function writeCommandsInPane({
 	await writeCommandInPane({ paneId, command, write });
 }
 
+/**
+ * Pin a fresh Claude Code session id into any launch command that starts
+ * `claude`, and record it (plus the un-pinned base command) in the pane's
+ * terminal-history meta. This is the single choke point every preset launch
+ * flows through — agent sessions, model bar, presets bar, auto-apply presets —
+ * so every Claude session becomes resumable after a reboot or power loss,
+ * even if the notify hook never reports the id.
+ */
+function pinClaudeSessionIntoCommand(
+	paneId: string,
+	workspaceId: string,
+	command: string,
+): string {
+	if (!commandLaunchesClaude(command)) return command;
+	// Respect explicit session management in the user's own command.
+	if (command.includes("--session-id") || command.includes("--resume")) {
+		return command;
+	}
+
+	const sessionId = crypto.randomUUID();
+	const pinned = insertClaudeArgs(command, `--session-id ${sessionId}`);
+	if (!pinned) return command;
+
+	trpcClient.terminal.setClaudeSessionId
+		.mutate({
+			paneId,
+			workspaceId,
+			claudeSessionId: sessionId,
+			claudeLaunchCommand: command,
+		})
+		.catch((error) => {
+			console.warn(
+				"[launch-command] Failed to record pinned Claude session id:",
+				error instanceof Error ? error.message : String(error),
+			);
+		});
+
+	return pinned;
+}
+
 export async function launchCommandInPane({
 	paneId,
 	tabId,
@@ -78,5 +124,11 @@ export async function launchCommandInPane({
 		workspaceId,
 	});
 
-	await writeCommandInPane({ paneId, command, write });
+	const effectiveCommand = pinClaudeSessionIntoCommand(
+		paneId,
+		workspaceId,
+		command,
+	);
+
+	await writeCommandInPane({ paneId, command: effectiveCommand, write });
 }
