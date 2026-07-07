@@ -13,6 +13,7 @@ import { cn } from "@superset/ui/utils";
 import { useEffect, useRef, useState } from "react";
 import { useDrag, useDrop } from "react-dnd";
 import { getEmptyImage } from "react-dnd-html5-backend";
+import { useTranslation } from "react-i18next";
 import { HiMiniXMark } from "react-icons/hi2";
 import { LuCheck, LuPalette, LuPencil } from "react-icons/lu";
 import { MosaicDragType } from "react-mosaic-component";
@@ -52,14 +53,13 @@ export function GroupItem({
 	onPaneDrop,
 	onReorder,
 }: GroupItemProps) {
+	const { t } = useTranslation();
 	const displayName = getTabDisplayName(tab);
 	const focusedPaneId = useTabsStore((s) => s.focusedPaneIds[tab.id]);
 	const focusedPane = useTabsStore((s) =>
 		focusedPaneId ? s.panes[focusedPaneId] : undefined,
 	);
-	const setPaneTerminalProfile = useTabsStore(
-		(s) => s.setPaneTerminalProfile,
-	);
+	const setPaneTerminalProfile = useTabsStore((s) => s.setPaneTerminalProfile);
 	const isTerminalTab = focusedPane?.type === "terminal";
 	const currentProfileId = focusedPane?.terminalProfileId;
 	const [isEditing, setIsEditing] = useState(false);
@@ -258,13 +258,13 @@ export function GroupItem({
 											onClose();
 										}}
 										className="cursor-pointer size-6 hover:bg-muted"
-										aria-label="Close pane"
+										aria-label={t("tabs.closePane")}
 									>
 										<HiMiniXMark className="size-4" />
 									</Button>
 								</TooltipTrigger>
 								<TooltipContent side="top" showArrow={false}>
-									Close pane
+									{t("tabs.closePane")}
 								</TooltipContent>
 							</Tooltip>
 						</div>
@@ -274,13 +274,13 @@ export function GroupItem({
 			<ContextMenuContent>
 				<ContextMenuItem onSelect={startEditing}>
 					<LuPencil className="size-4 mr-2" />
-					Rename
+					{t("common.rename")}
 				</ContextMenuItem>
 				{isTerminalTab && focusedPaneId && (
 					<ContextMenuSub>
 						<ContextMenuSubTrigger>
 							<LuPalette className="size-4 mr-2" />
-							Terminal Profile
+							{t("tabs.terminalProfile")}
 						</ContextMenuSubTrigger>
 						<ContextMenuSubContent>
 							<ContextMenuItem
@@ -288,11 +288,9 @@ export function GroupItem({
 									setPaneTerminalProfile(focusedPaneId, undefined)
 								}
 							>
-								{!currentProfileId && (
-									<LuCheck className="size-3 mr-2" />
-								)}
+								{!currentProfileId && <LuCheck className="size-3 mr-2" />}
 								<span className={!currentProfileId ? "" : "ml-5"}>
-									Default
+									{t("tabs.terminalProfileDefault")}
 								</span>
 							</ContextMenuItem>
 							{TERMINAL_PROFILES.map((profile) => (
@@ -306,9 +304,7 @@ export function GroupItem({
 										<LuCheck className="size-3 mr-2" />
 									)}
 									<span
-										className={
-											currentProfileId === profile.id ? "" : "ml-5"
-										}
+										className={currentProfileId === profile.id ? "" : "ml-5"}
 									>
 										{profile.name}
 									</span>
@@ -325,7 +321,7 @@ export function GroupItem({
 				)}
 				<ContextMenuItem onSelect={onClose}>
 					<HiMiniXMark className="size-4 mr-2" />
-					Close
+					{t("common.close")}
 				</ContextMenuItem>
 			</ContextMenuContent>
 		</ContextMenu>

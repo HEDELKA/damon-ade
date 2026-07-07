@@ -8,6 +8,7 @@ import { WebglAddon } from "@xterm/addon-webgl";
 import type { ITheme } from "@xterm/xterm";
 import { Terminal as XTerm } from "@xterm/xterm";
 import { debounce } from "lodash";
+import i18n from "renderer/i18n";
 import { electronTrpcClient as trpcClient } from "renderer/lib/trpc-client";
 import { getHotkeyKeys, isAppHotkeyEvent } from "renderer/stores/hotkeys";
 import { toXtermTheme } from "renderer/stores/theme/utils";
@@ -260,11 +261,11 @@ export function createTerminalInstance(
 		}
 		trpcClient.external.openUrl.mutate(uri).catch((error) => {
 			console.error("[Terminal] Failed to open URL:", uri, error);
-			toast.error("Failed to open URL", {
+			toast.error(i18n.t("terminal.toast.openUrlFailed"), {
 				description:
 					error instanceof Error
 						? error.message
-						: "Could not open URL in browser",
+						: i18n.t("terminal.toast.openUrlFailedDescription"),
 			});
 		});
 	});

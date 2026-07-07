@@ -168,5 +168,93 @@
 		"newTeam": "New team",
 		"opening": "Opening…",
 		"teamsGroupAgents": "Teams group your agents. Add agents once you have one."
+	},
+	"modelBar": {
+		"addProvider": "Add provider",
+		"defaultTooltip": "{{label}} · default",
+		"dialog": {
+			"apiKeyLabel": "OpenRouter API key",
+			"applyNote": "Applies to new sessions. Restart a running session to pick up a changed key.",
+			"connectTitle": "Connect OpenRouter",
+			"done": "Done",
+			"launchDescription": "{{model}} runs through OpenRouter. Paste your API key to launch — get one at ",
+			"launching": "Launching…",
+			"manageConfiguredDescription": "An OpenRouter key is configured. Replace or remove it below — keys are managed at ",
+			"manageDescription": "Add an OpenRouter API key to unlock the OpenRouter-proxied models — get one at ",
+			"manageTitle": "OpenRouter",
+			"newApiKey": "New API key",
+			"removeKey": "Remove key",
+			"removing": "Removing…",
+			"replaceKey": "Replace key",
+			"saveAndLaunch": "Save & Launch",
+			"saveKey": "Save key",
+			"saving": "Saving…",
+			"thisModel": "This model"
+		},
+		"newSessionAria": "New session — {{label}}",
+		"notDetectedAria": "{{label}} — not detected, click to install",
+		"notDetectedTooltip": "{{label}} not detected — click to install",
+		"toast": {
+			"keyRemoved": "OpenRouter key removed",
+			"keySaved": "OpenRouter key saved",
+			"removeFailed": "Could not remove the key",
+			"saveFailed": "Could not save the key"
+		}
+	},
+	"tabs": {
+		"addBrowser": "Browser",
+		"addNote": "Note",
+		"addSession": "Session",
+		"clearTerminal": "Clear Terminal",
+		"closePane": "Close pane",
+		"closePaneMenu": "Close Pane",
+		"compactButton": "Use Compact Button",
+		"moveToSession": "Move to Session",
+		"newSession": "New Session",
+		"newTerminal": "New Terminal",
+		"noTerminalOpen": "No terminal open",
+		"openInApp": "Open in App",
+		"paste": "Paste",
+		"plainShell": "Plain Shell",
+		"scrollToBottom": "Scroll to Bottom",
+		"splitHorizontally": "Split Horizontally",
+		"splitVertically": "Split Vertically",
+		"terminalProfile": "Terminal Profile",
+		"terminalProfileDefault": "Default"
+	},
+	"terminal": {
+		"banner": {
+			"connectionLost": "[Connection lost. Reconnecting...]",
+			"contentsRestored": "─── Session Contents Restored ───",
+			"pressAnyKey": "[Press any key to restart]",
+			"processExited": "[Process exited with code {{code}}]",
+			"reconnected": "[Reconnected]",
+			"restartToStart": "[Restart to start a new session]",
+			"sessionKilled": "[Session killed]"
+		},
+		"killed": {
+			"description": "You terminated this shell session",
+			"title": "Session killed"
+		},
+		"restart": "Restart",
+		"restored": {
+			"description": "Previous scrollback preserved after restart",
+			"startShell": "Start Shell",
+			"title": "Session restored"
+		},
+		"scrollToBottom": "Scroll to bottom",
+		"search": {
+			"close": "Close (Esc)",
+			"matchCase": "Match case",
+			"next": "Next (Enter)",
+			"noResults": "No results",
+			"placeholder": "Find",
+			"previous": "Previous (Shift+Enter)"
+		},
+		"toast": {
+			"error": "Terminal error",
+			"openUrlFailed": "Failed to open URL",
+			"openUrlFailedDescription": "Could not open URL in browser"
+		}
 	}
 }

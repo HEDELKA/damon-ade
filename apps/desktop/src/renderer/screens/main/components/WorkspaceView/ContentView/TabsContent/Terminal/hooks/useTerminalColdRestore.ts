@@ -5,6 +5,7 @@ import {
 import type { FitAddon } from "@xterm/addon-fit";
 import type { Terminal as XTerm } from "@xterm/xterm";
 import { useCallback, useRef, useState } from "react";
+import i18n from "renderer/i18n";
 import { electronTrpcClient as trpcClient } from "renderer/lib/trpc-client";
 import { consumeSyncedPane } from "renderer/stores/tabs/syncedPaneRegistry";
 import { coldRestoreState } from "../state";
@@ -102,7 +103,9 @@ export function useTerminalColdRestore({
 					if (!currentXterm) return;
 
 					setConnectionError(null);
-					currentXterm.writeln("\x1b[90m[Reconnected]\x1b[0m");
+					currentXterm.writeln(
+						`\x1b[90m${i18n.t("terminal.banner.reconnected")}\x1b[0m`,
+					);
 
 					if (result.isColdRestore) {
 						const scrollback =
@@ -209,7 +212,9 @@ export function useTerminalColdRestore({
 		});
 
 		// Add visual separator
-		xterm.write("\r\n\x1b[90m─── Session Contents Restored ───\x1b[0m\r\n\r\n");
+		xterm.write(
+			`\r\n\x1b[90m${i18n.t("terminal.banner.contentsRestored")}\x1b[0m\r\n\r\n`,
+		);
 
 		// Reset state for new session
 		isStreamReadyRef.current = false;

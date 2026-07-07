@@ -11,6 +11,7 @@ import {
 } from "@superset/ui/context-menu";
 import type { ReactNode } from "react";
 import { useState } from "react";
+import { useTranslation } from "react-i18next";
 import {
 	LuArrowDownToLine,
 	LuClipboard,
@@ -59,8 +60,9 @@ export function TabContentContextMenu({
 	availableTabs,
 	onMoveToTab,
 	onMoveToNewTab,
-	closeLabel = "Close Pane",
+	closeLabel,
 }: TabContentContextMenuProps) {
+	const { t } = useTranslation();
 	// Filter out current tab from available targets
 	const targetTabs = availableTabs.filter((t) => t.id !== currentTabId);
 	const clearShortcut = useHotkeyText("CLEAR_TERMINAL");
@@ -107,30 +109,30 @@ export function TabContentContextMenu({
 				{getSelection && (
 					<ContextMenuItem disabled={!hasSelection} onSelect={handleCopy}>
 						<LuClipboardCopy className="size-4" />
-						Copy
+						{t("common.copy")}
 						<ContextMenuShortcut>{modKey}C</ContextMenuShortcut>
 					</ContextMenuItem>
 				)}
 				{onPaste && (
 					<ContextMenuItem disabled={!hasClipboard} onSelect={handlePaste}>
 						<LuClipboard className="size-4" />
-						Paste
+						{t("tabs.paste")}
 						<ContextMenuShortcut>{modKey}V</ContextMenuShortcut>
 					</ContextMenuItem>
 				)}
 				{(getSelection || onPaste) && <ContextMenuSeparator />}
 				<ContextMenuItem onSelect={onSplitHorizontal}>
 					<LuRows2 className="size-4" />
-					Split Horizontally
+					{t("tabs.splitHorizontally")}
 				</ContextMenuItem>
 				<ContextMenuItem onSelect={onSplitVertical}>
 					<LuColumns2 className="size-4" />
-					Split Vertically
+					{t("tabs.splitVertically")}
 				</ContextMenuItem>
 				{onClearTerminal && (
 					<ContextMenuItem onSelect={onClearTerminal}>
 						<LuEraser className="size-4" />
-						Clear Terminal
+						{t("tabs.clearTerminal")}
 						{showClearShortcut && (
 							<ContextMenuShortcut>{clearShortcut}</ContextMenuShortcut>
 						)}
@@ -139,7 +141,7 @@ export function TabContentContextMenu({
 				{onScrollToBottom && (
 					<ContextMenuItem onSelect={onScrollToBottom}>
 						<LuArrowDownToLine className="size-4" />
-						Scroll to Bottom
+						{t("tabs.scrollToBottom")}
 						{showScrollToBottomShortcut && (
 							<ContextMenuShortcut>
 								{scrollToBottomShortcut}
@@ -151,7 +153,7 @@ export function TabContentContextMenu({
 				<ContextMenuSub>
 					<ContextMenuSubTrigger className="gap-2">
 						<LuMoveRight className="size-4" />
-						Move to Session
+						{t("tabs.moveToSession")}
 					</ContextMenuSubTrigger>
 					<ContextMenuSubContent>
 						{targetTabs.map((tab) => (
@@ -165,14 +167,14 @@ export function TabContentContextMenu({
 						{targetTabs.length > 0 && <ContextMenuSeparator />}
 						<ContextMenuItem onSelect={onMoveToNewTab}>
 							<LuPlus className="size-4" />
-							New Session
+							{t("tabs.newSession")}
 						</ContextMenuItem>
 					</ContextMenuSubContent>
 				</ContextMenuSub>
 				<ContextMenuSeparator />
 				<ContextMenuItem variant="destructive" onSelect={onClosePane}>
 					<LuX className="size-4" />
-					{closeLabel}
+					{closeLabel ?? t("tabs.closePaneMenu")}
 				</ContextMenuItem>
 			</ContextMenuContent>
 		</ContextMenu>

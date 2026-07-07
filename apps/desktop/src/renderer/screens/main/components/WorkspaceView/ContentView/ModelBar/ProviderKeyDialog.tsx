@@ -11,6 +11,7 @@ import { Input } from "@superset/ui/input";
 import { Label } from "@superset/ui/label";
 import { toast } from "@superset/ui/sonner";
 import { useEffect, useState } from "react";
+import { useTranslation } from "react-i18next";
 import { electronTrpc } from "renderer/lib/electron-trpc";
 import { useProviderKeys } from "renderer/stores/model-bar/useProviderKeys";
 
@@ -42,6 +43,7 @@ export function ProviderKeyDialog({
 	modelLabel,
 	onSaved,
 }: ProviderKeyDialogProps) {
+	const { t } = useTranslation();
 	const { openrouterConfigured, setKey, clearKey, isSaving, isClearing } =
 		useProviderKeys();
 	const openUrl = electronTrpc.external.openUrl.useMutation();
@@ -64,11 +66,11 @@ export function ProviderKeyDialog({
 				onOpenChange(false);
 				onSaved?.();
 			} else {
-				toast.success("OpenRouter key saved");
+				toast.success(t("modelBar.toast.keySaved"));
 			}
 		} catch (err) {
 			toast.error(
-				err instanceof Error ? err.message : "Could not save the key",
+				err instanceof Error ? err.message : t("modelBar.toast.saveFailed"),
 			);
 		}
 	};
@@ -77,10 +79,10 @@ export function ProviderKeyDialog({
 		try {
 			await clearKey();
 			setKeyInput("");
-			toast.success("OpenRouter key removed");
+			toast.success(t("modelBar.toast.keyRemoved"));
 		} catch (err) {
 			toast.error(
-				err instanceof Error ? err.message : "Could not remove the key",
+				err instanceof Error ? err.message : t("modelBar.toast.removeFailed"),
 			);
 		}
 	};
@@ -88,38 +90,31 @@ export function ProviderKeyDialog({
 	const isLaunch = mode === "launch";
 	const saveLabel = isLaunch
 		? isSaving
-			? "Launching…"
-			: "Save & Launch"
+			? t("modelBar.dialog.launching")
+			: t("modelBar.dialog.saveAndLaunch")
 		: isSaving
-			? "Saving…"
+			? t("modelBar.dialog.saving")
 			: openrouterConfigured
-				? "Replace key"
-				: "Save key";
+				? t("modelBar.dialog.replaceKey")
+				: t("modelBar.dialog.saveKey");
 
 	return (
 		<Dialog open={open} onOpenChange={onOpenChange}>
 			<DialogContent className="sm:max-w-[440px]">
 				<DialogHeader>
 					<DialogTitle>
-						{isLaunch ? "Connect OpenRouter" : "OpenRouter"}
+						{isLaunch
+							? t("modelBar.dialog.connectTitle")
+							: t("modelBar.dialog.manageTitle")}
 					</DialogTitle>
 					<DialogDescription>
-						{isLaunch ? (
-							<>
-								{modelLabel ? `${modelLabel} runs` : "This model runs"} through
-								OpenRouter. Paste your API key to launch — get one at{" "}
-							</>
-						) : openrouterConfigured ? (
-							<>
-								An OpenRouter key is configured. Replace or remove it below — keys
-								are managed at{" "}
-							</>
-						) : (
-							<>
-								Add an OpenRouter API key to unlock the OpenRouter-proxied models
-								— get one at{" "}
-							</>
-						)}
+						{isLaunch
+							? t("modelBar.dialog.launchDescription", {
+									model: modelLabel ?? t("modelBar.dialog.thisModel"),
+								})
+							: openrouterConfigured
+								? t("modelBar.dialog.manageConfiguredDescription")
+								: t("modelBar.dialog.manageDescription")}
 						<button
 							type="button"
 							className="text-foreground underline underline-offset-2 hover:no-underline"
@@ -134,8 +129,8 @@ export function ProviderKeyDialog({
 				<div className="flex flex-col gap-1.5 py-1">
 					<Label htmlFor="openrouter-key">
 						{openrouterConfigured && !isLaunch
-							? "New API key"
-							: "OpenRouter API key"}
+							? t("modelBar.dialog.newApiKey")
+							: t("modelBar.dialog.apiKeyLabel")}
 					</Label>
 					<Input
 						id="openrouter-key"
@@ -153,8 +148,7 @@ export function ProviderKeyDialog({
 					/>
 					{!isLaunch && (
 						<p className="text-xs text-muted-foreground">
-							Applies to new sessions. Restart a running session to pick up a
-							changed key.
+							{t("modelBar.dialog.applyNote")}
 						</p>
 					)}
 				</div>
@@ -167,14 +161,16 @@ export function ProviderKeyDialog({
 							onClick={handleClear}
 							disabled={isClearing}
 						>
-							{isClearing ? "Removing…" : "Remove key"}
+							{isClearing
+								? t("modelBar.dialog.removing")
+								: t("modelBar.dialog.removeKey")}
 						</Button>
 					) : (
 						<span />
 					)}
 					<div className="flex justify-end gap-2">
 						<Button variant="ghost" onClick={() => onOpenChange(false)}>
-							{isLaunch ? "Cancel" : "Done"}
+							{isLaunch ? t("common.cancel") : t("modelBar.dialog.done")}
 						</Button>
 						<Button onClick={handleSave} disabled={!canSave}>
 							{saveLabel}

@@ -2,6 +2,7 @@ import { Tooltip, TooltipContent, TooltipTrigger } from "@superset/ui/tooltip";
 import { cn } from "@superset/ui/utils";
 import type { Terminal } from "@xterm/xterm";
 import { useCallback, useEffect, useState } from "react";
+import { useTranslation } from "react-i18next";
 import { HiArrowDown } from "react-icons/hi2";
 import { useHotkeyText } from "renderer/stores/hotkeys";
 import { scrollToBottom } from "../utils";
@@ -11,6 +12,7 @@ interface ScrollToBottomButtonProps {
 }
 
 export function ScrollToBottomButton({ terminal }: ScrollToBottomButtonProps) {
+	const { t } = useTranslation();
 	const [isVisible, setIsVisible] = useState(false);
 	const shortcutText = useHotkeyText("SCROLL_TO_BOTTOM");
 	const showShortcut = shortcutText !== "Unassigned";
@@ -62,7 +64,8 @@ export function ScrollToBottomButton({ terminal }: ScrollToBottomButtonProps) {
 					</button>
 				</TooltipTrigger>
 				<TooltipContent side="left">
-					Scroll to bottom{showShortcut && ` (${shortcutText})`}
+					{t("terminal.scrollToBottom")}
+					{showShortcut && ` (${shortcutText})`}
 				</TooltipContent>
 			</Tooltip>
 		</div>

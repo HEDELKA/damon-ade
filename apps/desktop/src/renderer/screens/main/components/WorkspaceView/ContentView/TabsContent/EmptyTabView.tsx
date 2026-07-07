@@ -1,14 +1,16 @@
 import { Kbd, KbdGroup } from "@superset/ui/kbd";
+import { useTranslation } from "react-i18next";
 import { HiMiniCommandLine } from "react-icons/hi2";
 import { useHotkeyDisplay } from "renderer/stores/hotkeys";
 
 export function EmptyTabView() {
+	const { t } = useTranslation();
 	const newGroupDisplay = useHotkeyDisplay("NEW_GROUP");
 	const openInAppDisplay = useHotkeyDisplay("OPEN_IN_APP");
 
 	const shortcuts = [
-		{ label: "New Terminal", display: newGroupDisplay },
-		{ label: "Open in App", display: openInAppDisplay },
+		{ label: t("tabs.newTerminal"), display: newGroupDisplay },
+		{ label: t("tabs.openInApp"), display: openInAppDisplay },
 	];
 
 	return (
@@ -17,7 +19,9 @@ export function EmptyTabView() {
 				<HiMiniCommandLine className="size-8 text-muted-foreground" />
 			</div>
 
-			<p className="text-sm text-muted-foreground">No terminal open</p>
+			<p className="text-sm text-muted-foreground">
+				{t("tabs.noTerminalOpen")}
+			</p>
 
 			<div className="flex items-center gap-4 text-xs text-muted-foreground">
 				{shortcuts.map((shortcut) => (

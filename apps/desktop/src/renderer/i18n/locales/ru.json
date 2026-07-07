@@ -170,5 +170,93 @@
 		"newTeam": "Новая команда",
 		"opening": "Открытие…",
 		"teamsGroupAgents": "Команды объединяют ваших агентов. Добавьте агентов, когда команда появится."
+	},
+	"modelBar": {
+		"addProvider": "Добавить провайдера",
+		"defaultTooltip": "{{label}} · по умолчанию",
+		"dialog": {
+			"apiKeyLabel": "API-ключ OpenRouter",
+			"applyNote": "Применяется к новым сессиям. Перезапустите активную сессию, чтобы использовать новый ключ.",
+			"connectTitle": "Подключить OpenRouter",
+			"done": "Готово",
+			"launchDescription": "{{model}} работает через OpenRouter. Вставьте свой API-ключ, чтобы запустить — получить можно на ",
+			"launching": "Запуск…",
+			"manageConfiguredDescription": "Ключ OpenRouter настроен. Замените или удалите его ниже — ключами можно управлять на ",
+			"manageDescription": "Добавьте API-ключ OpenRouter, чтобы разблокировать модели через OpenRouter — получить можно на ",
+			"manageTitle": "OpenRouter",
+			"newApiKey": "Новый API-ключ",
+			"removeKey": "Удалить ключ",
+			"removing": "Удаление…",
+			"replaceKey": "Заменить ключ",
+			"saveAndLaunch": "Сохранить и запустить",
+			"saveKey": "Сохранить ключ",
+			"saving": "Сохранение…",
+			"thisModel": "Эта модель"
+		},
+		"newSessionAria": "Новая сессия — {{label}}",
+		"notDetectedAria": "{{label}} — не найден, нажмите, чтобы установить",
+		"notDetectedTooltip": "{{label}} не найден — нажмите, чтобы установить",
+		"toast": {
+			"keyRemoved": "Ключ OpenRouter удалён",
+			"keySaved": "Ключ OpenRouter сохранён",
+			"removeFailed": "Не удалось удалить ключ",
+			"saveFailed": "Не удалось сохранить ключ"
+		}
+	},
+	"tabs": {
+		"addBrowser": "Браузер",
+		"addNote": "Заметка",
+		"addSession": "Сессия",
+		"clearTerminal": "Очистить терминал",
+		"closePane": "Закрыть панель",
+		"closePaneMenu": "Закрыть панель",
+		"compactButton": "Компактная кнопка",
+		"moveToSession": "Переместить в сессию",
+		"newSession": "Новая сессия",
+		"newTerminal": "Новый терминал",
+		"noTerminalOpen": "Нет открытых терминалов",
+		"openInApp": "Открыть в приложении",
+		"paste": "Вставить",
+		"plainShell": "Обычная оболочка",
+		"scrollToBottom": "Прокрутить вниз",
+		"splitHorizontally": "Разделить по горизонтали",
+		"splitVertically": "Разделить по вертикали",
+		"terminalProfile": "Профиль терминала",
+		"terminalProfileDefault": "По умолчанию"
+	},
+	"terminal": {
+		"banner": {
+			"connectionLost": "[Соединение потеряно. Переподключение...]",
+			"contentsRestored": "─── Содержимое сессии восстановлено ───",
+			"pressAnyKey": "[Нажмите любую клавишу для перезапуска]",
+			"processExited": "[Процесс завершился с кодом {{code}}]",
+			"reconnected": "[Переподключено]",
+			"restartToStart": "[Перезапустите, чтобы начать новую сессию]",
+			"sessionKilled": "[Сессия завершена]"
+		},
+		"killed": {
+			"description": "Вы завершили эту сессию оболочки",
+			"title": "Сессия завершена"
+		},
+		"restart": "Перезапустить",
+		"restored": {
+			"description": "Прокрутка предыдущей сессии сохранена после перезапуска",
+			"startShell": "Запустить оболочку",
+			"title": "Сессия восстановлена"
+		},
+		"scrollToBottom": "Прокрутить вниз",
+		"search": {
+			"close": "Закрыть (Esc)",
+			"matchCase": "Учитывать регистр",
+			"next": "Далее (Enter)",
+			"noResults": "Ничего не найдено",
+			"placeholder": "Найти",
+			"previous": "Назад (Shift+Enter)"
+		},
+		"toast": {
+			"error": "Ошибка терминала",
+			"openUrlFailed": "Не удалось открыть URL",
+			"openUrlFailedDescription": "Не удалось открыть URL в браузере"
+		}
 	}
 }

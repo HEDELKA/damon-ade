@@ -6,6 +6,7 @@ import {
 import { Tooltip, TooltipContent, TooltipTrigger } from "@superset/ui/tooltip";
 import { useParams } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
+import { useTranslation } from "react-i18next";
 import { HiOutlinePlus } from "react-icons/hi2";
 import {
 	getPresetIcon,
@@ -16,7 +17,7 @@ import { electronTrpc } from "renderer/lib/electron-trpc";
 import { useProviderKeys } from "renderer/stores/model-bar/useProviderKeys";
 import { useRuntimeAvailability } from "renderer/stores/model-bar/useRuntimeAvailability";
 import { useAgentSession } from "renderer/stores/tabs/useAgentSession";
-import { type ModelDescriptor, MODEL_BAR_MODELS } from "./models";
+import { MODEL_BAR_MODELS, type ModelDescriptor } from "./models";
 import {
 	ProviderKeyDialog,
 	type ProviderKeyDialogMode,
@@ -29,6 +30,7 @@ import {
  * OpenRouter key; the trailing "+" manages that key.
  */
 export function ModelBar() {
+	const { t } = useTranslation();
 	const { workspaceId } = useParams({ strict: false });
 	const isDark = useIsDarkTheme();
 	const { spawnAgentSession } = useAgentSession();
@@ -101,8 +103,12 @@ export function ModelBar() {
 									type="button"
 									aria-label={
 										missing
-											? `${model.label} — not detected, click to install`
-											: `New session — ${model.label}`
+											? t("modelBar.notDetectedAria", {
+													label: model.label,
+												})
+											: t("modelBar.newSessionAria", {
+													label: model.label,
+												})
 									}
 									disabled={!ready}
 									onClick={() => handleModelClick(model)}
@@ -135,8 +141,14 @@ export function ModelBar() {
 							</TooltipTrigger>
 							<TooltipContent side="bottom" showArrow={false}>
 								{missing
-									? `${model.label} not detected — click to install`
-									: `${model.label}${model.isDefault ? " · default" : ""}`}
+									? t("modelBar.notDetectedTooltip", {
+											label: model.label,
+										})
+									: model.isDefault
+										? t("modelBar.defaultTooltip", {
+												label: model.label,
+											})
+										: model.label}
 							</TooltipContent>
 						</Tooltip>
 					);
@@ -149,7 +161,7 @@ export function ModelBar() {
 				<TooltipTrigger asChild>
 					<button
 						type="button"
-						aria-label="Add provider"
+						aria-label={t("modelBar.addProvider")}
 						onClick={() => setDialog({ mode: "manage" })}
 						className="flex h-7 w-7 items-center justify-center rounded-md text-muted-foreground/70 transition-colors hover:bg-muted hover:text-foreground"
 					>
@@ -157,7 +169,7 @@ export function ModelBar() {
 					</button>
 				</TooltipTrigger>
 				<TooltipContent side="bottom" showArrow={false}>
-					Add provider
+					{t("modelBar.addProvider")}
 				</TooltipContent>
 			</Tooltip>
 

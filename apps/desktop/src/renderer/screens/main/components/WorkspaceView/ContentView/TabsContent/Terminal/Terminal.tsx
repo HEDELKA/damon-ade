@@ -3,6 +3,7 @@ import type { SearchAddon } from "@xterm/addon-search";
 import type { Terminal as XTerm } from "@xterm/xterm";
 import "@xterm/xterm/css/xterm.css";
 import { useEffect, useRef, useState } from "react";
+import i18n from "renderer/i18n";
 import { electronTrpc } from "renderer/lib/electron-trpc";
 import { useTabsStore } from "renderer/stores/tabs/store";
 import { useTerminalTheme } from "renderer/stores/theme";
@@ -299,7 +300,7 @@ export const Terminal = ({ paneId, tabId, workspaceId }: TerminalProps) => {
 
 		if (retryCountRef.current === 0) {
 			xtermRef.current?.writeln(
-				"\r\n\x1b[90m[Connection lost. Reconnecting...]\x1b[0m",
+				`\r\n\x1b[90m${i18n.t("terminal.banner.connectionLost")}\x1b[0m`,
 			);
 		}
 

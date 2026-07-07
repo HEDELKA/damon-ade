@@ -7,6 +7,7 @@ import {
 	DropdownMenuSeparator,
 	DropdownMenuTrigger,
 } from "@superset/ui/dropdown-menu";
+import { useTranslation } from "react-i18next";
 import { BsTerminalPlus } from "react-icons/bs";
 import { HiMiniChevronDown } from "react-icons/hi2";
 import { LuFileText, LuPlus } from "react-icons/lu";
@@ -36,6 +37,7 @@ export function AddTabButton({
 	onAddNote,
 	onToggleCompactAddButton,
 }: AddTabButtonProps) {
+	const { t } = useTranslation();
 	const showBigAddButton = !useCompactAddButton;
 
 	return (
@@ -50,7 +52,7 @@ export function AddTabButton({
 								onClick={onAddTerminal}
 							>
 								<BsTerminalPlus className="size-3.5" />
-								Session
+								{t("tabs.addSession")}
 							</Button>
 							<Button
 								variant="outline"
@@ -58,7 +60,7 @@ export function AddTabButton({
 								onClick={onAddBrowser}
 							>
 								<TbWorld className="size-3.5" />
-								Browser
+								{t("tabs.addBrowser")}
 							</Button>
 							<Button
 								variant="outline"
@@ -66,7 +68,7 @@ export function AddTabButton({
 								onClick={onAddNote}
 							>
 								<LuFileText className="size-3.5" />
-								Note
+								{t("tabs.addNote")}
 							</Button>
 							<DropdownMenuTrigger asChild>
 								<Button
@@ -95,7 +97,7 @@ export function AddTabButton({
 						<>
 							<DropdownMenuItem onClick={onAddShell} className="gap-2">
 								<BsTerminalPlus className="size-4" />
-								<span>Plain Shell</span>
+								<span>{t("tabs.plainShell")}</span>
 							</DropdownMenuItem>
 							<DropdownMenuSeparator />
 						</>
@@ -104,17 +106,17 @@ export function AddTabButton({
 						<>
 							<DropdownMenuItem onClick={onAddTerminal} className="gap-2">
 								<BsTerminalPlus className="size-4" />
-								<span>Session</span>
+								<span>{t("tabs.addSession")}</span>
 								<HotkeyMenuShortcut hotkeyId="NEW_GROUP" />
 							</DropdownMenuItem>
 							<DropdownMenuItem onClick={onAddBrowser} className="gap-2">
 								<TbWorld className="size-4" />
-								<span>Browser</span>
+								<span>{t("tabs.addBrowser")}</span>
 								<HotkeyMenuShortcut hotkeyId="NEW_BROWSER" />
 							</DropdownMenuItem>
 							<DropdownMenuItem onClick={onAddNote} className="gap-2">
 								<LuFileText className="size-4" />
-								<span>Note</span>
+								<span>{t("tabs.addNote")}</span>
 							</DropdownMenuItem>
 							<DropdownMenuSeparator />
 						</>
@@ -126,7 +128,7 @@ export function AddTabButton({
 						}
 						onSelect={(e) => e.preventDefault()}
 					>
-						Use Compact Button
+						{t("tabs.compactButton")}
 					</DropdownMenuCheckboxItem>
 				</DropdownMenuContent>
 			</DropdownMenu>

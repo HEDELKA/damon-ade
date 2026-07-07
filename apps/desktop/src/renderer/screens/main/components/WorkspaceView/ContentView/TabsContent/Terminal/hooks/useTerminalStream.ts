@@ -1,6 +1,7 @@
 import { toast } from "@superset/ui/sonner";
 import type { Terminal as XTerm } from "@xterm/xterm";
 import { useCallback, useRef } from "react";
+import i18n from "renderer/i18n";
 import { useTabsStore } from "renderer/stores/tabs/store";
 import { DEBUG_TERMINAL } from "../config";
 import type { TerminalExitReason, TerminalStreamEvent } from "../types";
@@ -62,11 +63,13 @@ export function useTerminalStream({
 			setExitStatus(wasKilledByUser ? "killed" : "exited");
 
 			if (wasKilledByUser) {
-				xterm.writeln("\r\n\r\n[Session killed]");
-				xterm.writeln("[Restart to start a new session]");
+				xterm.writeln(`\r\n\r\n${i18n.t("terminal.banner.sessionKilled")}`);
+				xterm.writeln(i18n.t("terminal.banner.restartToStart"));
 			} else {
-				xterm.writeln(`\r\n\r\n[Process exited with code ${exitCode}]`);
-				xterm.writeln("[Press any key to restart]");
+				xterm.writeln(
+					`\r\n\r\n${i18n.t("terminal.banner.processExited", { code: exitCode })}`,
+				);
+				xterm.writeln(i18n.t("terminal.banner.pressAnyKey"));
 			}
 
 			// Clear transient pane status on terminal exit
@@ -111,7 +114,7 @@ export function useTerminalStream({
 				return;
 			}
 
-			toast.error("Terminal error", { description: message });
+			toast.error(i18n.t("terminal.toast.error"), { description: message });
 
 			if (event.code === "WRITE_QUEUE_FULL" || event.code === "WRITE_FAILED") {
 				xterm.writeln(`\r\n[Terminal] ${message}`);
