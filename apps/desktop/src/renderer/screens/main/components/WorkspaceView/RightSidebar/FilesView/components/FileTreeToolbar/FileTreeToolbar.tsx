@@ -2,6 +2,7 @@ import { Button } from "@superset/ui/button";
 import { Input } from "@superset/ui/input";
 import { Tooltip, TooltipContent, TooltipTrigger } from "@superset/ui/tooltip";
 import { useCallback, useEffect, useRef, useState } from "react";
+import { useTranslation } from "react-i18next";
 import {
 	LuChevronsDownUp,
 	LuEye,
@@ -36,6 +37,7 @@ export function FileTreeToolbar({
 	onToggleHiddenFiles,
 	isRefreshing = false,
 }: FileTreeToolbarProps) {
+	const { t } = useTranslation();
 	const [localSearchTerm, setLocalSearchTerm] = useState(searchTerm);
 	const debounceTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
@@ -86,7 +88,7 @@ export function FileTreeToolbar({
 			<div className="relative">
 				<Input
 					type="text"
-					placeholder="Search files..."
+					placeholder={t("workspaceView.files.searchPlaceholder")}
 					value={localSearchTerm}
 					onChange={handleSearchChange}
 					className="h-7 text-xs pr-7"
@@ -114,7 +116,9 @@ export function FileTreeToolbar({
 							<LuFilePlus className="size-3.5" />
 						</Button>
 					</TooltipTrigger>
-					<TooltipContent side="bottom">New File</TooltipContent>
+					<TooltipContent side="bottom">
+						{t("workspaceView.files.newFile")}
+					</TooltipContent>
 				</Tooltip>
 
 				<Tooltip>
@@ -128,7 +132,9 @@ export function FileTreeToolbar({
 							<LuFolderPlus className="size-3.5" />
 						</Button>
 					</TooltipTrigger>
-					<TooltipContent side="bottom">New Folder</TooltipContent>
+					<TooltipContent side="bottom">
+						{t("workspaceView.files.newFolder")}
+					</TooltipContent>
 				</Tooltip>
 
 				<div className="flex-1" />
@@ -149,7 +155,9 @@ export function FileTreeToolbar({
 						</Button>
 					</TooltipTrigger>
 					<TooltipContent side="bottom">
-						{showHiddenFiles ? "Hide Hidden Files" : "Show Hidden Files"}
+						{showHiddenFiles
+							? t("workspaceView.files.hideHidden")
+							: t("workspaceView.files.showHidden")}
 					</TooltipContent>
 				</Tooltip>
 
@@ -164,7 +172,9 @@ export function FileTreeToolbar({
 							<LuChevronsDownUp className="size-3.5" />
 						</Button>
 					</TooltipTrigger>
-					<TooltipContent side="bottom">Collapse All</TooltipContent>
+					<TooltipContent side="bottom">
+						{t("workspaceView.files.collapseAll")}
+					</TooltipContent>
 				</Tooltip>
 
 				<Tooltip>
@@ -181,7 +191,9 @@ export function FileTreeToolbar({
 							/>
 						</Button>
 					</TooltipTrigger>
-					<TooltipContent side="bottom">Refresh</TooltipContent>
+					<TooltipContent side="bottom">
+						{t("workspaceView.files.refresh")}
+					</TooltipContent>
 				</Tooltip>
 			</div>
 		</div>

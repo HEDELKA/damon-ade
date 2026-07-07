@@ -788,5 +788,94 @@
 			"openUrlFailed": "Не удалось открыть URL",
 			"openUrlFailedDescription": "Не удалось открыть URL в браузере"
 		}
+	},
+	"workspaceView": {
+		"browser": {
+			"goBack": "Назад",
+			"goForward": "Вперёд",
+			"loading": "Загрузка...",
+			"reload": "Обновить",
+			"urlPlaceholder": "Введите URL или запрос..."
+		},
+		"devtools": {
+			"connecting": "Подключение к DevTools..."
+		},
+		"diff": {
+			"againstBase": "Относительно {{branch}}",
+			"commits": "Коммиты",
+			"filesCount": "Файлов: {{total}}",
+			"focusMode": "Режим фокуса",
+			"focusModeAria": "Режим фокуса (по одному файлу)",
+			"generatedHidden": "Сгенерированный файл скрыт",
+			"hideUnchanged": "Скрыть неизменённые участки",
+			"largeDiffHidden": "Большой diff скрыт — изменено строк: {{lines}}",
+			"loadDiff": "Загрузить diff",
+			"loadingDiff": "Загрузка различий...",
+			"loadingEditor": "Загрузка редактора...",
+			"next": "Далее",
+			"nextFile": "Следующий файл",
+			"noChanges": "Изменений не обнаружено",
+			"prev": "Назад",
+			"previousFile": "Предыдущий файл",
+			"showAllFiles": "Показать все файлы",
+			"showAllLines": "Показать все строки",
+			"staged": "Проиндексировано",
+			"switchToInline": "Встроенный вид различий",
+			"switchToSideBySide": "Вид различий бок о бок",
+			"unableToLoad": "Не удалось загрузить diff",
+			"unstaged": "Не проиндексировано",
+			"viewedCount": "Просмотрено {{viewed}}/{{total}}"
+		},
+		"files": {
+			"collapseAll": "Свернуть все",
+			"hideHidden": "Скрыть скрытые файлы",
+			"newFile": "Новый файл",
+			"newFolder": "Новая папка",
+			"refresh": "Обновить",
+			"searchPlaceholder": "Поиск файлов...",
+			"showHidden": "Показать скрытые файлы"
+		},
+		"sidebar": {
+			"agentFiles": "Файлы агента",
+			"allFiles": "Все файлы",
+			"close": "Закрыть панель",
+			"collapse": "Свернуть панель",
+			"expand": "Развернуть панель"
+		},
+		"viewer": {
+			"binaryNotSupported": "Предпросмотр бинарного файла не поддерживается",
+			"closePane": "Закрыть панель",
+			"fileNotFound": "Файл не найден",
+			"fileTooLarge": "Файл слишком большой для предпросмотра",
+			"imageAlt": "Изображение",
+			"imageNotFound": "Изображение не найдено",
+			"imageTooLarge": "Изображение слишком большое для предпросмотра (макс. 10 МБ)",
+			"loading": "Загрузка...",
+			"loadingDiff": "Загрузка различий...",
+			"loadingEditor": "Загрузка редактора...",
+			"loadingImage": "Загрузка изображения...",
+			"noDiff": "Различия недоступны",
+			"notImage": "Неподдерживаемый формат изображения",
+			"outsideWorktree": "Файл находится за пределами worktree",
+			"splitPane": "Разделить панель",
+			"symlinkEscape": "Файл является символической ссылкой за пределы worktree",
+			"unsaved": {
+				"cancel": "Отмена",
+				"description": "У вас есть несохранённые изменения. Что вы хотите сделать?",
+				"discard": "Отменить и перейти",
+				"save": "Сохранить и перейти",
+				"saving": "Сохранение...",
+				"title": "Несохранённые изменения"
+			},
+			"search": {
+				"close": "Закрыть (Esc)",
+				"matchCase": "Учитывать регистр",
+				"matchCount": "{{current}} из {{total}}",
+				"next": "Далее (Enter)",
+				"noResults": "Ничего не найдено",
+				"placeholder": "Найти",
+				"previous": "Назад (Shift+Enter)"
+			}
+		}
 	}
 }

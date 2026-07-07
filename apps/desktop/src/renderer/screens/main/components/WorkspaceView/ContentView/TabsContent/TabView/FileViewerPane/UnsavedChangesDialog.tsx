@@ -9,6 +9,7 @@ import {
 	AlertDialogTitle,
 } from "@superset/ui/alert-dialog";
 import { Button } from "@superset/ui/button";
+import { useTranslation } from "react-i18next";
 import { LuLoader } from "react-icons/lu";
 
 interface UnsavedChangesDialogProps {
@@ -26,6 +27,7 @@ export function UnsavedChangesDialog({
 	onDiscardAndSwitch,
 	isSaving = false,
 }: UnsavedChangesDialogProps) {
+	const { t } = useTranslation();
 	const handleSaveAndSwitch = (e: React.MouseEvent) => {
 		e.preventDefault();
 		onSaveAndSwitch();
@@ -42,29 +44,33 @@ export function UnsavedChangesDialog({
 		<AlertDialog open={open} onOpenChange={isSaving ? undefined : onOpenChange}>
 			<AlertDialogContent>
 				<AlertDialogHeader>
-					<AlertDialogTitle>Unsaved Changes</AlertDialogTitle>
+					<AlertDialogTitle>
+						{t("workspaceView.viewer.unsaved.title")}
+					</AlertDialogTitle>
 					<AlertDialogDescription>
-						You have unsaved changes. What would you like to do?
+						{t("workspaceView.viewer.unsaved.description")}
 					</AlertDialogDescription>
 				</AlertDialogHeader>
 				<AlertDialogFooter>
-					<AlertDialogCancel disabled={isSaving}>Cancel</AlertDialogCancel>
+					<AlertDialogCancel disabled={isSaving}>
+						{t("workspaceView.viewer.unsaved.cancel")}
+					</AlertDialogCancel>
 					<Button
 						variant="outline"
 						onClick={handleDiscardAndSwitch}
 						disabled={isSaving}
 						className="border-destructive/50 text-destructive hover:bg-destructive/10"
 					>
-						Discard & Switch
+						{t("workspaceView.viewer.unsaved.discard")}
 					</Button>
 					<AlertDialogAction onClick={handleSaveAndSwitch} disabled={isSaving}>
 						{isSaving ? (
 							<>
 								<LuLoader className="mr-2 h-4 w-4 animate-spin" />
-								Saving...
+								{t("workspaceView.viewer.unsaved.saving")}
 							</>
 						) : (
-							"Save & Switch"
+							t("workspaceView.viewer.unsaved.save")
 						)}
 					</AlertDialogAction>
 				</AlertDialogFooter>

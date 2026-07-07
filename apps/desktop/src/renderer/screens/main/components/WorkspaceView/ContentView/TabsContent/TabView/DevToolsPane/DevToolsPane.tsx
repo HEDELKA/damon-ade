@@ -1,3 +1,4 @@
+import { useTranslation } from "react-i18next";
 import type { MosaicBranch } from "react-mosaic-component";
 import { electronTrpc } from "renderer/lib/electron-trpc";
 import { BasePaneWindow, PaneToolbarActions } from "../components";
@@ -26,6 +27,7 @@ export function DevToolsPane({
 	removePane,
 	setFocusedPane,
 }: DevToolsPaneProps) {
+	const { t } = useTranslation();
 	// Query the CDP debug server for the DevTools frontend URL.
 	// Poll every 1s until a URL is obtained (the browser webview may still be loading).
 	const { data } = electronTrpc.browser.getDevToolsUrl.useQuery(
@@ -67,7 +69,7 @@ export function DevToolsPane({
 				/>
 			) : (
 				<div className="flex h-full w-full items-center justify-center text-muted-foreground text-xs">
-					Connecting to DevTools...
+					{t("workspaceView.devtools.connecting")}
 				</div>
 			)}
 		</BasePaneWindow>

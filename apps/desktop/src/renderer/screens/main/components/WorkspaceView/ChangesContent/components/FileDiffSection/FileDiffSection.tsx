@@ -1,14 +1,12 @@
 import { Button } from "@superset/ui/button";
 import { Collapsible, CollapsibleContent } from "@superset/ui/collapsible";
 import { useCallback, useEffect, useRef, useState } from "react";
+import { useTranslation } from "react-i18next";
 import { LuFileCode, LuLoader } from "react-icons/lu";
 import { electronTrpc } from "renderer/lib/electron-trpc";
 import { useChangesStore } from "renderer/stores/changes";
 import type { ChangeCategory, ChangedFile } from "shared/changes-types";
-import {
-	getStatusColor,
-	getStatusIndicator,
-} from "../../../shared/file-utils";
+import { getStatusColor, getStatusIndicator } from "../../../shared/file-utils";
 import { createFileKey, useScrollContext } from "../../context";
 import { DiffViewer } from "../DiffViewer";
 import { LightDiffViewer } from "../LightDiffViewer";
@@ -71,6 +69,7 @@ export function FileDiffSection({
 	onDiscard,
 	isActioning = false,
 }: FileDiffSectionProps) {
+	const { t } = useTranslation();
 	const sectionRef = useRef<HTMLDivElement>(null);
 	const copyTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 	const {
@@ -252,21 +251,23 @@ export function FileDiffSection({
 							<LuFileCode className="w-8 h-8" />
 							<p className="text-sm">
 								{isGenerated
-									? "Generated file hidden"
-									: `Large diff hidden — ${totalChanges.toLocaleString()} lines changed`}
+									? t("workspaceView.diff.generatedHidden")
+									: t("workspaceView.diff.largeDiffHidden", {
+											lines: totalChanges.toLocaleString(),
+										})}
 							</p>
 							<Button
 								variant="outline"
 								size="sm"
 								onClick={() => setLoadHiddenDiff(true)}
 							>
-								Load diff
+								{t("workspaceView.diff.loadDiff")}
 							</Button>
 						</div>
 					) : isLoadingDiff ? (
 						<div className="flex items-center justify-center h-24 text-muted-foreground bg-background">
 							<LuLoader className="w-4 h-4 animate-spin mr-2" />
-							<span>Loading diff...</span>
+							<span>{t("workspaceView.diff.loadingDiff")}</span>
 						</div>
 					) : shouldRenderEditor ? (
 						isEditing ? (
@@ -293,10 +294,10 @@ export function FileDiffSection({
 							{diffData ? (
 								<>
 									<LuLoader className="w-4 h-4 animate-spin mr-2" />
-									<span>Loading editor...</span>
+									<span>{t("workspaceView.diff.loadingEditor")}</span>
 								</>
 							) : (
-								"Unable to load diff"
+								t("workspaceView.diff.unableToLoad")
 							)}
 						</div>
 					)}

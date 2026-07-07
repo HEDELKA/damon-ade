@@ -1,5 +1,6 @@
 import { Tooltip, TooltipContent, TooltipTrigger } from "@superset/ui/tooltip";
 import { useCallback, useEffect, useRef, useState } from "react";
+import { useTranslation } from "react-i18next";
 import {
 	TbArrowLeft,
 	TbArrowRight,
@@ -38,6 +39,7 @@ export function BrowserToolbar({
 	onReload,
 	onNavigate,
 }: BrowserToolbarProps) {
+	const { t } = useTranslation();
 	const [isEditing, setIsEditing] = useState(false);
 	const [urlInputValue, setUrlInputValue] = useState("");
 	const inputRef = useRef<HTMLInputElement>(null);
@@ -126,7 +128,7 @@ export function BrowserToolbar({
 						</button>
 					</TooltipTrigger>
 					<TooltipContent side="bottom" showArrow={false}>
-						Go Back
+						{t("workspaceView.browser.goBack")}
 					</TooltipContent>
 				</Tooltip>
 				<Tooltip>
@@ -141,7 +143,7 @@ export function BrowserToolbar({
 						</button>
 					</TooltipTrigger>
 					<TooltipContent side="bottom" showArrow={false}>
-						Go Forward
+						{t("workspaceView.browser.goForward")}
 					</TooltipContent>
 				</Tooltip>
 				<Tooltip>
@@ -159,7 +161,9 @@ export function BrowserToolbar({
 						</button>
 					</TooltipTrigger>
 					<TooltipContent side="bottom" showArrow={false}>
-						{isLoading ? "Loading..." : "Reload"}
+						{isLoading
+							? t("workspaceView.browser.loading")
+							: t("workspaceView.browser.reload")}
 					</TooltipContent>
 				</Tooltip>
 			</div>
@@ -177,7 +181,7 @@ export function BrowserToolbar({
 							onChange={handleInputChange}
 							onBlur={exitEditMode}
 							onKeyDown={handleKeyDown}
-							placeholder="Enter URL or search..."
+							placeholder={t("workspaceView.browser.urlPlaceholder")}
 							className="h-[22px] w-full rounded-sm border border-ring bg-transparent px-2 text-xs text-foreground outline-none placeholder:text-muted-foreground/40"
 							spellCheck={false}
 							autoComplete="off"
@@ -191,7 +195,7 @@ export function BrowserToolbar({
 					>
 						{isBlank ? (
 							<span className="text-muted-foreground/40">
-								Enter URL or search...
+								{t("workspaceView.browser.urlPlaceholder")}
 							</span>
 						) : (
 							<>

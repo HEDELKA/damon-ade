@@ -1,5 +1,6 @@
 import { Tooltip, TooltipContent, TooltipTrigger } from "@superset/ui/tooltip";
 import { useEffect, useRef } from "react";
+import { useTranslation } from "react-i18next";
 import { HiChevronDown, HiChevronUp, HiMiniXMark } from "react-icons/hi2";
 import { PiTextAa } from "react-icons/pi";
 
@@ -28,6 +29,7 @@ export function MarkdownSearch({
 	onFindPrevious,
 	onClose,
 }: MarkdownSearchProps) {
+	const { t } = useTranslation();
 	const inputRef = useRef<HTMLInputElement>(null);
 
 	useEffect(() => {
@@ -61,14 +63,17 @@ export function MarkdownSearch({
 				value={query}
 				onChange={(e) => onQueryChange(e.target.value)}
 				onKeyDown={handleKeyDown}
-				placeholder="Find"
+				placeholder={t("workspaceView.viewer.search.placeholder")}
 				className="h-6 min-w-0 w-28 flex-shrink bg-transparent text-sm text-foreground placeholder:text-muted-foreground focus:outline-none"
 			/>
 			{query && (
 				<span className="text-xs text-muted-foreground whitespace-nowrap px-1">
 					{matchCount === 0
-						? "No results"
-						: `${activeMatchIndex + 1} of ${matchCount}`}
+						? t("workspaceView.viewer.search.noResults")
+						: t("workspaceView.viewer.search.matchCount", {
+								current: activeMatchIndex + 1,
+								total: matchCount,
+							})}
 				</span>
 			)}
 			<div className="flex items-center shrink-0">
@@ -86,7 +91,9 @@ export function MarkdownSearch({
 							<PiTextAa className="size-3.5" />
 						</button>
 					</TooltipTrigger>
-					<TooltipContent side="bottom">Match case</TooltipContent>
+					<TooltipContent side="bottom">
+						{t("workspaceView.viewer.search.matchCase")}
+					</TooltipContent>
 				</Tooltip>
 				<Tooltip>
 					<TooltipTrigger asChild>
@@ -98,7 +105,9 @@ export function MarkdownSearch({
 							<HiChevronUp className="size-3.5" />
 						</button>
 					</TooltipTrigger>
-					<TooltipContent side="bottom">Previous (Shift+Enter)</TooltipContent>
+					<TooltipContent side="bottom">
+						{t("workspaceView.viewer.search.previous")}
+					</TooltipContent>
 				</Tooltip>
 				<Tooltip>
 					<TooltipTrigger asChild>
@@ -110,7 +119,9 @@ export function MarkdownSearch({
 							<HiChevronDown className="size-3.5" />
 						</button>
 					</TooltipTrigger>
-					<TooltipContent side="bottom">Next (Enter)</TooltipContent>
+					<TooltipContent side="bottom">
+						{t("workspaceView.viewer.search.next")}
+					</TooltipContent>
 				</Tooltip>
 				<Tooltip>
 					<TooltipTrigger asChild>
@@ -122,7 +133,9 @@ export function MarkdownSearch({
 							<HiMiniXMark className="size-3.5" />
 						</button>
 					</TooltipTrigger>
-					<TooltipContent side="bottom">Close (Esc)</TooltipContent>
+					<TooltipContent side="bottom">
+						{t("workspaceView.viewer.search.close")}
+					</TooltipContent>
 				</Tooltip>
 			</div>
 		</div>

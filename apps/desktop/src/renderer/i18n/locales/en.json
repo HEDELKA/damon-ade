@@ -786,5 +786,94 @@
 			"openUrlFailed": "Failed to open URL",
 			"openUrlFailedDescription": "Could not open URL in browser"
 		}
+	},
+	"workspaceView": {
+		"browser": {
+			"goBack": "Go Back",
+			"goForward": "Go Forward",
+			"loading": "Loading...",
+			"reload": "Reload",
+			"urlPlaceholder": "Enter URL or search..."
+		},
+		"devtools": {
+			"connecting": "Connecting to DevTools..."
+		},
+		"diff": {
+			"againstBase": "Against {{branch}}",
+			"commits": "Commits",
+			"filesCount": "{{total}} files",
+			"focusMode": "Focus mode",
+			"focusModeAria": "Focus mode (one file at a time)",
+			"generatedHidden": "Generated file hidden",
+			"hideUnchanged": "Hide unchanged regions",
+			"largeDiffHidden": "Large diff hidden — {{lines}} lines changed",
+			"loadDiff": "Load diff",
+			"loadingDiff": "Loading diff...",
+			"loadingEditor": "Loading editor...",
+			"next": "Next",
+			"nextFile": "Next file",
+			"noChanges": "No changes detected",
+			"prev": "Prev",
+			"previousFile": "Previous file",
+			"showAllFiles": "Show all files",
+			"showAllLines": "Show all lines",
+			"staged": "Staged",
+			"switchToInline": "Switch to inline diff",
+			"switchToSideBySide": "Switch to side by side diff",
+			"unableToLoad": "Unable to load diff",
+			"unstaged": "Unstaged",
+			"viewedCount": "{{viewed}}/{{total}} viewed"
+		},
+		"files": {
+			"collapseAll": "Collapse All",
+			"hideHidden": "Hide Hidden Files",
+			"newFile": "New File",
+			"newFolder": "New Folder",
+			"refresh": "Refresh",
+			"searchPlaceholder": "Search files...",
+			"showHidden": "Show Hidden Files"
+		},
+		"sidebar": {
+			"agentFiles": "Agent Files",
+			"allFiles": "All files",
+			"close": "Close sidebar",
+			"collapse": "Collapse sidebar",
+			"expand": "Expand sidebar"
+		},
+		"viewer": {
+			"binaryNotSupported": "Binary file preview not supported",
+			"closePane": "Close pane",
+			"fileNotFound": "File not found",
+			"fileTooLarge": "File is too large to preview",
+			"imageAlt": "Image",
+			"imageNotFound": "Image not found",
+			"imageTooLarge": "Image is too large to preview (max 10MB)",
+			"loading": "Loading...",
+			"loadingDiff": "Loading diff...",
+			"loadingEditor": "Loading editor...",
+			"loadingImage": "Loading image...",
+			"noDiff": "No diff available",
+			"notImage": "Not a supported image format",
+			"outsideWorktree": "File is outside worktree",
+			"splitPane": "Split pane",
+			"symlinkEscape": "File is a symlink pointing outside worktree",
+			"unsaved": {
+				"cancel": "Cancel",
+				"description": "You have unsaved changes. What would you like to do?",
+				"discard": "Discard & Switch",
+				"save": "Save & Switch",
+				"saving": "Saving...",
+				"title": "Unsaved Changes"
+			},
+			"search": {
+				"close": "Close (Esc)",
+				"matchCase": "Match case",
+				"matchCount": "{{current}} of {{total}}",
+				"next": "Next (Enter)",
+				"noResults": "No results",
+				"placeholder": "Find",
+				"previous": "Previous (Shift+Enter)"
+			}
+		}
 	}
 }

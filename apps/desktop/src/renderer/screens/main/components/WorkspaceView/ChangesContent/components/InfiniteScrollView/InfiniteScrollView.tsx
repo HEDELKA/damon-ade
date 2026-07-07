@@ -1,4 +1,5 @@
 import { useCallback, useMemo, useState } from "react";
+import { useTranslation } from "react-i18next";
 import { useChangesStore } from "renderer/stores/changes";
 import type { GitChangesStatus } from "shared/changes-types";
 import { useScrollContext } from "../../context";
@@ -22,6 +23,7 @@ export function InfiniteScrollView({
 	worktreePath,
 	baseBranch,
 }: InfiniteScrollViewProps) {
+	const { t } = useTranslation();
 	const { containerRef, viewedCount } = useScrollContext();
 	const {
 		viewMode: diffViewMode,
@@ -130,7 +132,7 @@ export function InfiniteScrollView({
 	if (!hasChanges) {
 		return (
 			<div className="flex items-center justify-center h-full text-muted-foreground">
-				No changes detected
+				{t("workspaceView.diff.noChanges")}
 			</div>
 		);
 	}
@@ -183,7 +185,9 @@ export function InfiniteScrollView({
 					{sortedAgainstBase.length > 0 && (
 						<>
 							<CategoryHeader
-								title={`Against ${baseBranch}`}
+								title={t("workspaceView.diff.againstBase", {
+									branch: baseBranch,
+								})}
 								count={sortedAgainstBase.length}
 								isExpanded={expandedCategories["against-base"]}
 								onToggle={() => toggleCategory("against-base")}
@@ -205,7 +209,7 @@ export function InfiniteScrollView({
 					{status.commits.length > 0 && (
 						<>
 							<CategoryHeader
-								title="Commits"
+								title={t("workspaceView.diff.commits")}
 								count={status.commits.length}
 								isExpanded={expandedCategories.committed}
 								onToggle={() => toggleCategory("committed")}
@@ -230,7 +234,7 @@ export function InfiniteScrollView({
 					{sortedStaged.length > 0 && (
 						<>
 							<CategoryHeader
-								title="Staged"
+								title={t("workspaceView.diff.staged")}
 								count={sortedStaged.length}
 								isExpanded={expandedCategories.staged}
 								onToggle={() => toggleCategory("staged")}
@@ -259,7 +263,7 @@ export function InfiniteScrollView({
 					{sortedUnstaged.length > 0 && (
 						<>
 							<CategoryHeader
-								title="Unstaged"
+								title={t("workspaceView.diff.unstaged")}
 								count={sortedUnstaged.length}
 								isExpanded={expandedCategories.unstaged}
 								onToggle={() => toggleCategory("unstaged")}

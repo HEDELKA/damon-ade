@@ -1,6 +1,7 @@
 import { DiffEditor, type DiffOnMount } from "@monaco-editor/react";
 import type * as Monaco from "monaco-editor";
 import { useCallback, useEffect, useRef, useState } from "react";
+import { useTranslation } from "react-i18next";
 import { LuLoader } from "react-icons/lu";
 import {
 	registerSaveAction,
@@ -71,6 +72,7 @@ export function DiffViewer({
 	captureScroll = true,
 	fitContent = false,
 }: DiffViewerProps) {
+	const { t } = useTranslation();
 	const isMonacoReady = useMonacoReady();
 	const monacoEditorOptions = useMonacoEditorOptions();
 	const diffEditorRef = useRef<Monaco.editor.IStandaloneDiffEditor | null>(
@@ -269,7 +271,7 @@ export function DiffViewer({
 			loading={
 				<div className="flex items-center justify-center h-full text-muted-foreground">
 					<LuLoader className="w-4 h-4 animate-spin mr-2" />
-					<span>Loading editor...</span>
+					<span>{t("workspaceView.diff.loadingEditor")}</span>
 				</div>
 			}
 			options={{

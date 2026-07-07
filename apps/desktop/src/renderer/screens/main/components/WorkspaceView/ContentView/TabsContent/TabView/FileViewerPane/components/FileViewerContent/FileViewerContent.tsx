@@ -7,6 +7,7 @@ import {
 	useEffect,
 	useRef,
 } from "react";
+import { useTranslation } from "react-i18next";
 import { LuLoader } from "react-icons/lu";
 import { MarkdownRenderer } from "renderer/components/MarkdownRenderer";
 import {
@@ -146,6 +147,7 @@ export function FileViewerContent({
 	markdownContainerRef,
 	markdownSearch,
 }: FileViewerContentProps) {
+	const { t } = useTranslation();
 	const isImage = isImageFile(filePath);
 	const isMonacoReady = useMonacoReady();
 	const monacoEditorOptions = useMonacoEditorOptions();
@@ -221,14 +223,14 @@ export function FileViewerContent({
 		if (isLoadingDiff) {
 			return (
 				<div className="flex items-center justify-center h-full text-muted-foreground">
-					Loading diff...
+					{t("workspaceView.viewer.loadingDiff")}
 				</div>
 			);
 		}
 		if (!diffData) {
 			return (
 				<div className="flex items-center justify-center h-full text-muted-foreground">
-					No diff available
+					{t("workspaceView.viewer.noDiff")}
 				</div>
 			);
 		}
@@ -265,7 +267,7 @@ export function FileViewerContent({
 			return (
 				<div className="flex items-center justify-center h-full text-muted-foreground">
 					<LuLoader className="w-4 h-4 animate-spin mr-2" />
-					<span>Loading image...</span>
+					<span>{t("workspaceView.viewer.loadingImage")}</span>
 				</div>
 			);
 		}
@@ -273,14 +275,14 @@ export function FileViewerContent({
 		if (!imageData?.ok) {
 			const errorMessage =
 				imageData?.reason === "too-large"
-					? "Image is too large to preview (max 10MB)"
+					? t("workspaceView.viewer.imageTooLarge")
 					: imageData?.reason === "outside-worktree"
-						? "File is outside worktree"
+						? t("workspaceView.viewer.outsideWorktree")
 						: imageData?.reason === "symlink-escape"
-							? "File is a symlink pointing outside worktree"
+							? t("workspaceView.viewer.symlinkEscape")
 							: imageData?.reason === "not-image"
-								? "Not a supported image format"
-								: "Image not found";
+								? t("workspaceView.viewer.notImage")
+								: t("workspaceView.viewer.imageNotFound");
 			return (
 				<div className="flex items-center justify-center h-full text-muted-foreground">
 					{errorMessage}
@@ -292,7 +294,7 @@ export function FileViewerContent({
 			<div className="flex items-center justify-center h-full overflow-auto p-4 bg-[#0d0d0d]">
 				<img
 					src={imageData.dataUrl}
-					alt={filePath.split("/").pop() || "Image"}
+					alt={filePath.split("/").pop() || t("workspaceView.viewer.imageAlt")}
 					className="max-w-full max-h-full object-contain"
 					style={{ imageRendering: "auto" }}
 				/>
@@ -303,7 +305,7 @@ export function FileViewerContent({
 	if (isLoadingRaw) {
 		return (
 			<div className="flex items-center justify-center h-full text-muted-foreground">
-				Loading...
+				{t("workspaceView.viewer.loading")}
 			</div>
 		);
 	}
@@ -311,14 +313,14 @@ export function FileViewerContent({
 	if (!rawFileData?.ok) {
 		const errorMessage =
 			rawFileData?.reason === "too-large"
-				? "File is too large to preview"
+				? t("workspaceView.viewer.fileTooLarge")
 				: rawFileData?.reason === "binary"
-					? "Binary file preview not supported"
+					? t("workspaceView.viewer.binaryNotSupported")
 					: rawFileData?.reason === "outside-worktree"
-						? "File is outside worktree"
+						? t("workspaceView.viewer.outsideWorktree")
 						: rawFileData?.reason === "symlink-escape"
-							? "File is a symlink pointing outside worktree"
-							: "File not found";
+							? t("workspaceView.viewer.symlinkEscape")
+							: t("workspaceView.viewer.fileNotFound");
 		return (
 			<div className="flex items-center justify-center h-full text-muted-foreground">
 				{errorMessage}
@@ -352,7 +354,7 @@ export function FileViewerContent({
 		return (
 			<div className="flex items-center justify-center h-full text-muted-foreground">
 				<LuLoader className="w-4 h-4 animate-spin mr-2" />
-				<span>Loading editor...</span>
+				<span>{t("workspaceView.viewer.loadingEditor")}</span>
 			</div>
 		);
 	}
@@ -381,7 +383,7 @@ export function FileViewerContent({
 					loading={
 						<div className="flex items-center justify-center h-full text-muted-foreground">
 							<LuLoader className="w-4 h-4 animate-spin mr-2" />
-							<span>Loading editor...</span>
+							<span>{t("workspaceView.viewer.loadingEditor")}</span>
 						</div>
 					}
 					options={{

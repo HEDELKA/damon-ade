@@ -1,4 +1,5 @@
 import { Tooltip, TooltipContent, TooltipTrigger } from "@superset/ui/tooltip";
+import { useTranslation } from "react-i18next";
 import { HiMiniXMark } from "react-icons/hi2";
 import { TbLayoutColumns, TbLayoutRows } from "react-icons/tb";
 import { HotkeyTooltipContent } from "renderer/components/HotkeyTooltipContent";
@@ -21,6 +22,7 @@ export function PaneToolbarActions({
 	leadingActions,
 	closeHotkeyId = "CLOSE_PANE",
 }: PaneToolbarActionsProps) {
+	const { t } = useTranslation();
 	const splitIcon =
 		splitOrientation === "vertical" ? (
 			<TbLayoutColumns className="size-3.5" />
@@ -42,7 +44,10 @@ export function PaneToolbarActions({
 					</button>
 				</TooltipTrigger>
 				<TooltipContent side="bottom" showArrow={false}>
-					<HotkeyTooltipContent label="Split pane" hotkeyId="SPLIT_AUTO" />
+					<HotkeyTooltipContent
+						label={t("workspaceView.viewer.splitPane")}
+						hotkeyId="SPLIT_AUTO"
+					/>
 				</TooltipContent>
 			</Tooltip>
 			<Tooltip>
@@ -56,7 +61,10 @@ export function PaneToolbarActions({
 					</button>
 				</TooltipTrigger>
 				<TooltipContent side="bottom" showArrow={false}>
-					<HotkeyTooltipContent label="Close pane" hotkeyId={closeHotkeyId} />
+					<HotkeyTooltipContent
+						label={t("workspaceView.viewer.closePane")}
+						hotkeyId={closeHotkeyId}
+					/>
 				</TooltipContent>
 			</Tooltip>
 		</div>

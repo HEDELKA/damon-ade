@@ -2,6 +2,7 @@ import { Button } from "@superset/ui/button";
 import { Tooltip, TooltipContent, TooltipTrigger } from "@superset/ui/tooltip";
 import { cn } from "@superset/ui/utils";
 import { useState } from "react";
+import { useTranslation } from "react-i18next";
 import { LuBrain, LuExpand, LuFile, LuShrink, LuX } from "react-icons/lu";
 import { HotkeyTooltipContent } from "renderer/components/HotkeyTooltipContent";
 import { electronTrpc } from "renderer/lib/electron-trpc";
@@ -67,6 +68,7 @@ function TabButton({
 }
 
 export function RightSidebar() {
+	const { t } = useTranslation();
 	const { currentMode, toggleSidebar, setMode } = useSidebarStore();
 	const isExpanded = currentMode === SidebarMode.Changes;
 	const [panelTab, setPanelTab] = useState<PanelTab>("all-files");
@@ -89,14 +91,14 @@ export function RightSidebar() {
 						isActive={activeTab === "all-files"}
 						onClick={() => setPanelTab("all-files")}
 						icon={<LuFile className="size-3.5" />}
-						label="All files"
+						label={t("workspaceView.sidebar.allFiles")}
 					/>
 					{showAgentFiles && (
 						<TabButton
 							isActive={activeTab === "agent-files"}
 							onClick={() => setPanelTab("agent-files")}
 							icon={<LuBrain className="size-3.5" />}
-							label="Agent Files"
+							label={t("workspaceView.sidebar.agentFiles")}
 						/>
 					)}
 				</div>
@@ -118,7 +120,11 @@ export function RightSidebar() {
 						</TooltipTrigger>
 						<TooltipContent side="bottom" showArrow={false}>
 							<HotkeyTooltipContent
-								label={isExpanded ? "Collapse sidebar" : "Expand sidebar"}
+								label={
+									isExpanded
+										? t("workspaceView.sidebar.collapse")
+										: t("workspaceView.sidebar.expand")
+								}
 								hotkeyId="TOGGLE_EXPAND_SIDEBAR"
 							/>
 						</TooltipContent>
@@ -136,7 +142,7 @@ export function RightSidebar() {
 						</TooltipTrigger>
 						<TooltipContent side="bottom" showArrow={false}>
 							<HotkeyTooltipContent
-								label="Close sidebar"
+								label={t("workspaceView.sidebar.close")}
 								hotkeyId="TOGGLE_SIDEBAR"
 							/>
 						</TooltipContent>

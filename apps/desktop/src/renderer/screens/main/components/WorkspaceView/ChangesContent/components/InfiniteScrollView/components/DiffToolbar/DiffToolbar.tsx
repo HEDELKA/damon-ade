@@ -6,6 +6,7 @@ import {
 } from "@superset/ui/dropdown-menu";
 import { Tooltip, TooltipContent, TooltipTrigger } from "@superset/ui/tooltip";
 import { cn } from "@superset/ui/utils";
+import { useTranslation } from "react-i18next";
 import {
 	LuArrowDown,
 	LuArrowUp,
@@ -68,15 +69,19 @@ export function DiffToolbar({
 	isFirstFile,
 	isLastFile,
 }: DiffToolbarProps) {
+	const { t } = useTranslation();
 	return (
 		<div className="flex items-center gap-3 px-3 py-2.5 border-b border-r border-border bg-background sticky top-0 z-30">
 			<div className="flex items-center gap-3 text-xs text-muted-foreground flex-1">
 				<span>
-					{viewedCount}/{totalFiles} viewed
+					{t("workspaceView.diff.viewedCount", {
+						viewed: viewedCount,
+						total: totalFiles,
+					})}
 				</span>
 				{!focusMode && (
 					<span className="flex items-center gap-1 font-mono">
-						{totalFiles} files
+						{t("workspaceView.diff.filesCount", { total: totalFiles })}
 						{totalAdditions > 0 && (
 							<span className="text-green-600 dark:text-green-500">
 								+{totalAdditions}
@@ -114,10 +119,10 @@ export function DiffToolbar({
 						onClick={onNavigatePrev}
 						disabled={isFirstFile}
 						className="flex items-center gap-1 rounded px-2 py-0.5 text-xs text-muted-foreground transition-colors hover:text-foreground hover:bg-accent disabled:opacity-30 disabled:pointer-events-none"
-						aria-label="Previous file"
+						aria-label={t("workspaceView.diff.previousFile")}
 					>
 						<LuChevronUp className="size-3.5" />
-						Prev
+						{t("workspaceView.diff.prev")}
 					</button>
 
 					<DropdownMenu>
@@ -159,9 +164,9 @@ export function DiffToolbar({
 						onClick={onNavigateNext}
 						disabled={isLastFile}
 						className="flex items-center gap-1 rounded px-2 py-0.5 text-xs text-muted-foreground transition-colors hover:text-foreground hover:bg-accent disabled:opacity-30 disabled:pointer-events-none"
-						aria-label="Next file"
+						aria-label={t("workspaceView.diff.nextFile")}
 					>
-						Next
+						{t("workspaceView.diff.next")}
 						<LuChevronDown className="size-3.5" />
 					</button>
 				</div>
@@ -180,7 +185,9 @@ export function DiffToolbar({
 									: "text-muted-foreground/60 hover:text-muted-foreground",
 							)}
 							aria-label={
-								focusMode ? "Show all files" : "Focus mode (one file at a time)"
+								focusMode
+									? t("workspaceView.diff.showAllFiles")
+									: t("workspaceView.diff.focusModeAria")
 							}
 							aria-pressed={focusMode}
 						>
@@ -188,7 +195,9 @@ export function DiffToolbar({
 						</button>
 					</TooltipTrigger>
 					<TooltipContent side="bottom" showArrow={false}>
-						{focusMode ? "Show all files" : "Focus mode"}
+						{focusMode
+							? t("workspaceView.diff.showAllFiles")
+							: t("workspaceView.diff.focusMode")}
 					</TooltipContent>
 				</Tooltip>
 				<Tooltip>
@@ -203,8 +212,8 @@ export function DiffToolbar({
 							className="rounded p-1 text-muted-foreground/60 transition-colors hover:text-muted-foreground hover:bg-accent"
 							aria-label={
 								diffViewMode === "side-by-side"
-									? "Switch to inline diff"
-									: "Switch to side-by-side diff"
+									? t("workspaceView.diff.switchToInline")
+									: t("workspaceView.diff.switchToSideBySide")
 							}
 						>
 							{diffViewMode === "side-by-side" ? (
@@ -216,8 +225,8 @@ export function DiffToolbar({
 					</TooltipTrigger>
 					<TooltipContent side="bottom" showArrow={false}>
 						{diffViewMode === "side-by-side"
-							? "Switch to inline diff"
-							: "Switch to side by side diff"}
+							? t("workspaceView.diff.switchToInline")
+							: t("workspaceView.diff.switchToSideBySide")}
 					</TooltipContent>
 				</Tooltip>
 				<Tooltip>
@@ -233,8 +242,8 @@ export function DiffToolbar({
 							)}
 							aria-label={
 								hideUnchangedRegions
-									? "Show all lines"
-									: "Hide unchanged regions"
+									? t("workspaceView.diff.showAllLines")
+									: t("workspaceView.diff.hideUnchanged")
 							}
 							aria-pressed={hideUnchangedRegions}
 						>
@@ -242,7 +251,9 @@ export function DiffToolbar({
 						</button>
 					</TooltipTrigger>
 					<TooltipContent side="bottom" showArrow={false}>
-						{hideUnchangedRegions ? "Show all lines" : "Hide unchanged regions"}
+						{hideUnchangedRegions
+							? t("workspaceView.diff.showAllLines")
+							: t("workspaceView.diff.hideUnchanged")}
 					</TooltipContent>
 				</Tooltip>
 			</div>
