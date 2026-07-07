@@ -115,7 +115,7 @@ export function useTerminalColdRestore({
 							cwd: result.previousCwd || null,
 							scrollback,
 							claudeSessionId: result.claudeSessionId || null,
-							claudeLaunchCommand: result.claudeLaunchCommand || null,
+							launchCommand: result.launchCommand || null,
 						});
 						setIsRestoredMode(true);
 						setRestoredCwd(result.previousCwd || null);
@@ -182,7 +182,7 @@ export function useTerminalColdRestore({
 		// Capture Claude session ID before clearing cold restore state
 		const savedColdState = coldRestoreState.get(paneId);
 		const claudeSessionId = savedColdState?.claudeSessionId;
-		const claudeLaunchCommand = savedColdState?.claudeLaunchCommand;
+		const launchCommand = savedColdState?.launchCommand;
 		console.log(
 			"[ColdRestore] handleStartShell",
 			JSON.stringify({
@@ -244,34 +244,46 @@ export function useTerminalColdRestore({
 					setIsRestoredMode(false);
 					coldRestoreState.delete(paneId);
 
-					// Auto-resume Claude Code session if detected
-					if (claudeSessionId) {
+					// Auto-resume Claude Code session if detected; otherwise re-run the
+					// pane's recorded launch command so preset tabs (codex, opencode,
+					// custom commands) come back alive instead of as a bare shell.
+					if (claudeSessionId || launchCommand) {
 						// Synced-from-peer panes stage the command without pressing Enter.
 						const stagedNewline = consumeSyncedPane(paneId) ? "" : "\n";
 						setTimeout(async () => {
-							// Prefer the exact command that launched this pane's session
-							// (recorded at spawn — keeps OpenRouter models on OpenRouter).
-							// Fall back to the user's "claude" terminal preset flags.
-							const claudeBaseCommand =
-								claudeLaunchCommand ??
-								(await trpcClient.settings.getTerminalPresets
-									.query()
-									.then(
-										(presets) =>
-											presets
-												.find((p) => p.name.trim().toLowerCase() === "claude")
-												?.commands.find(commandLaunchesClaude) ?? null,
-									)
-									.catch(() => null));
+							let commandToRun: string;
+							if (claudeSessionId) {
+								// Prefer the exact command that launched this pane's session
+								// (recorded at spawn — keeps OpenRouter models on OpenRouter).
+								// Fall back to the user's "claude" terminal preset flags.
+								const claudeBaseCommand =
+									launchCommand ??
+									(await trpcClient.settings.getTerminalPresets
+										.query()
+										.then(
+											(presets) =>
+												presets
+													.find((p) => p.name.trim().toLowerCase() === "claude")
+													?.commands.find(commandLaunchesClaude) ?? null,
+										)
+										.catch(() => null));
+								commandToRun = buildClaudeResumeCommand(
+									claudeBaseCommand,
+									claudeSessionId,
+								);
+							} else {
+								// launchCommand is set (guard above) — fresh relaunch.
+								commandToRun = launchCommand as string;
+							}
 
 							trpcClient.terminal.write
 								.mutate({
 									paneId,
-									data: `${buildClaudeResumeCommand(claudeBaseCommand, claudeSessionId)}${stagedNewline}`,
+									data: `${commandToRun}${stagedNewline}`,
 								})
 								.catch((err) => {
 									console.warn(
-										"[Terminal] Failed to auto-resume Claude session:",
+										"[Terminal] Failed to relaunch restored session:",
 										err,
 									);
 								});

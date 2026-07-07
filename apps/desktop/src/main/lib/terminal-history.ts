@@ -60,7 +60,7 @@ export interface SessionMetadata {
 	exitCode?: number;
 	claudeSessionId?: string;
 	/** Exact command that launched this pane's Claude session (with flags/env). */
-	claudeLaunchCommand?: string;
+	launchCommand?: string;
 }
 
 // =============================================================================
@@ -172,8 +172,8 @@ export class HistoryWriter {
 			if (prev.claudeSessionId && !this.metadata.claudeSessionId) {
 				this.metadata.claudeSessionId = prev.claudeSessionId;
 			}
-			if (prev.claudeLaunchCommand && !this.metadata.claudeLaunchCommand) {
-				this.metadata.claudeLaunchCommand = prev.claudeLaunchCommand;
+			if (prev.launchCommand && !this.metadata.launchCommand) {
+				this.metadata.launchCommand = prev.launchCommand;
 			}
 		} catch {
 			// meta.json doesn't exist or is invalid — that's fine, fresh start
@@ -539,7 +539,7 @@ export class HistoryReader {
 		cwd: string;
 		endedAt?: string;
 		claudeSessionId?: string;
-		claudeLaunchCommand?: string;
+		launchCommand?: string;
 	} | null> {
 		try {
 			const content = await fs.readFile(this.metaPath, "utf8");
@@ -551,7 +551,7 @@ export class HistoryReader {
 				cwd: metadata.cwd,
 				endedAt: metadata.endedAt,
 				claudeSessionId: metadata.claudeSessionId,
-				claudeLaunchCommand: metadata.claudeLaunchCommand,
+				launchCommand: metadata.launchCommand,
 			};
 		} catch {
 			return null;
@@ -600,7 +600,7 @@ export async function writeClaudeSessionIdToHistory(
 	workspaceId: string,
 	paneId: string,
 	claudeSessionId: string,
-	claudeLaunchCommand?: string,
+	launchCommand?: string,
 ): Promise<void> {
 	const dir = getHistoryDir(workspaceId, paneId);
 	const metaPath = getMetadataPath(workspaceId, paneId);
@@ -618,17 +618,57 @@ export async function writeClaudeSessionIdToHistory(
 	// No-op if the values already match to avoid needless writes.
 	if (
 		meta.claudeSessionId === claudeSessionId &&
-		(!claudeLaunchCommand || meta.claudeLaunchCommand === claudeLaunchCommand)
+		(!launchCommand || meta.launchCommand === launchCommand)
 	) {
 		return;
 	}
 
 	meta.claudeSessionId = claudeSessionId;
-	if (claudeLaunchCommand) {
-		meta.claudeLaunchCommand = claudeLaunchCommand;
+	if (launchCommand) {
+		meta.launchCommand = launchCommand;
 	}
 	// Ensure required fields exist with sane defaults so the JSON satisfies
 	// SessionMetadata for downstream readers.
+	if (typeof meta.cwd !== "string") meta.cwd = homedir();
+	if (typeof meta.cols !== "number") meta.cols = 80;
+	if (typeof meta.rows !== "number") meta.rows = 24;
+	if (typeof meta.startedAt !== "string") {
+		meta.startedAt = new Date().toISOString();
+	}
+
+	await fs.writeFile(metaPath, JSON.stringify(meta, null, 2), {
+		mode: HISTORY_FILE_MODE,
+	});
+	await fs.chmod(metaPath, HISTORY_FILE_MODE).catch(() => {});
+}
+
+/**
+ * Persist only the launch command of a pane (no Claude session id) — used for
+ * non-claude preset launches (codex, opencode, custom commands) so cold
+ * restore can re-run the pane's command after a reboot instead of dropping
+ * the user into a bare shell.
+ */
+export async function writeLaunchCommandToHistory(
+	workspaceId: string,
+	paneId: string,
+	launchCommand: string,
+): Promise<void> {
+	const dir = getHistoryDir(workspaceId, paneId);
+	const metaPath = getMetadataPath(workspaceId, paneId);
+
+	await fs.mkdir(dir, { recursive: true, mode: HISTORY_DIR_MODE });
+
+	let meta: Partial<SessionMetadata> = {};
+	try {
+		const existing = await fs.readFile(metaPath, "utf8");
+		meta = JSON.parse(existing) as Partial<SessionMetadata>;
+	} catch {
+		// meta.json doesn't exist or is invalid — start fresh.
+	}
+
+	if (meta.launchCommand === launchCommand) return;
+
+	meta.launchCommand = launchCommand;
 	if (typeof meta.cwd !== "string") meta.cwd = homedir();
 	if (typeof meta.cols !== "number") meta.cols = 80;
 	if (typeof meta.rows !== "number") meta.rows = 24;

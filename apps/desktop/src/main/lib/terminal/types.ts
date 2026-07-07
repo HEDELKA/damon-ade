@@ -74,7 +74,7 @@ export interface SessionResult {
 	 * recorded at spawn time. Used to rebuild the resume command after reboot
 	 * so OpenRouter-proxied models resume with the same backend and flags.
 	 */
-	claudeLaunchCommand?: string;
+	launchCommand?: string;
 	/** Snapshot from daemon (if using daemon mode) */
 	snapshot?: {
 		snapshotAnsi: string;

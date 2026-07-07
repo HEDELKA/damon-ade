@@ -469,7 +469,7 @@ export function useTerminalLifecycle({
 										cwd: result.previousCwd || null,
 										scrollback,
 										claudeSessionId: result.claudeSessionId || null,
-										claudeLaunchCommand: result.claudeLaunchCommand || null,
+										launchCommand: result.launchCommand || null,
 									});
 									setIsRestoredMode(true);
 									setRestoredCwd(result.previousCwd || null);

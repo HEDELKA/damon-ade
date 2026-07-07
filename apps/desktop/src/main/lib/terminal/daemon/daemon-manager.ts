@@ -336,7 +336,7 @@ export class DaemonTerminalManager extends EventEmitter {
 						isColdRestore: true,
 						previousCwd: stickyRestore.previousCwd,
 						claudeSessionId: stickyRestore.claudeSessionId,
-						claudeLaunchCommand: stickyRestore.claudeLaunchCommand,
+						launchCommand: stickyRestore.launchCommand,
 						snapshot: {
 							snapshotAnsi: stickyRestore.scrollback,
 							rehydrateSequences: "",
@@ -484,7 +484,7 @@ export class DaemonTerminalManager extends EventEmitter {
 					const reader = new HistoryReader(workspaceId, paneId);
 					const prevMeta = await reader.readMetadata();
 					previousClaudeSessionId = prevMeta?.claudeSessionId;
-					previousClaudeLaunchCommand = prevMeta?.claudeLaunchCommand;
+					previousClaudeLaunchCommand = prevMeta?.launchCommand;
 				} catch {
 					// meta.json doesn't exist or invalid — no previous session to auto-resume
 				}
@@ -495,7 +495,7 @@ export class DaemonTerminalManager extends EventEmitter {
 				scrollback: "",
 				wasRecovered: response.wasRecovered,
 				claudeSessionId: previousClaudeSessionId,
-				claudeLaunchCommand: previousClaudeLaunchCommand,
+				launchCommand: previousClaudeLaunchCommand,
 				snapshot: {
 					snapshotAnsi: response.snapshot.snapshotAnsi,
 					rehydrateSequences: response.snapshot.rehydrateSequences,
@@ -548,13 +548,13 @@ export class DaemonTerminalManager extends EventEmitter {
 		// Fall back to scrollback scanning if not stored
 		const claudeSessionId =
 			metadata.claudeSessionId || this.extractClaudeSessionId(scrollback);
-		const claudeLaunchCommand = metadata.claudeLaunchCommand;
+		const launchCommand = metadata.launchCommand;
 
 		this.coldRestoreInfo.set(paneId, {
 			scrollback,
 			previousCwd: metadata.cwd,
 			claudeSessionId,
-			claudeLaunchCommand,
+			launchCommand,
 			cols: metadata.cols || cols,
 			rows: metadata.rows || rows,
 		});
@@ -573,7 +573,7 @@ export class DaemonTerminalManager extends EventEmitter {
 			isColdRestore: true,
 			previousCwd: metadata.cwd,
 			claudeSessionId,
-			claudeLaunchCommand,
+			launchCommand,
 			snapshot: {
 				snapshotAnsi: scrollback,
 				rehydrateSequences: "",

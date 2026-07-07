@@ -83,7 +83,19 @@ function pinClaudeSessionIntoCommand(
 	workspaceId: string,
 	command: string,
 ): string {
-	if (!commandLaunchesClaude(command)) return command;
+	if (!commandLaunchesClaude(command)) {
+		// Not a Claude launch — still persist the command so cold restore can
+		// re-run it after a reboot instead of leaving a bare shell.
+		trpcClient.terminal.setPaneLaunchCommand
+			.mutate({ paneId, workspaceId, launchCommand: command })
+			.catch((error) => {
+				console.warn(
+					"[launch-command] Failed to record pane launch command:",
+					error instanceof Error ? error.message : String(error),
+				);
+			});
+		return command;
+	}
 	// Respect explicit session management in the user's own command.
 	if (command.includes("--session-id") || command.includes("--resume")) {
 		return command;
@@ -98,7 +110,7 @@ function pinClaudeSessionIntoCommand(
 			paneId,
 			workspaceId,
 			claudeSessionId: sessionId,
-			claudeLaunchCommand: command,
+			launchCommand: command,
 		})
 		.catch((error) => {
 			console.warn(

@@ -12,7 +12,10 @@ import {
 	TERMINAL_SESSION_KILLED_MESSAGE,
 	TerminalKilledError,
 } from "main/lib/terminal/errors";
-import { writeClaudeSessionIdToHistory } from "main/lib/terminal-history";
+import {
+	writeClaudeSessionIdToHistory,
+	writeLaunchCommandToHistory,
+} from "main/lib/terminal-history";
 import { getTerminalHostClient } from "main/lib/terminal-host/client";
 import { getWorkspaceRuntimeRegistry } from "main/lib/workspace-runtime";
 import { z } from "zod";
@@ -186,7 +189,7 @@ export const createTerminalRouter = () => {
 						isColdRestore: result.isColdRestore,
 						previousCwd: result.previousCwd,
 						claudeSessionId: result.claudeSessionId,
-						claudeLaunchCommand: result.claudeLaunchCommand,
+						launchCommand: result.launchCommand,
 						// Include snapshot for daemon mode (renderer can use for rehydration)
 						snapshot: result.snapshot,
 					};
@@ -276,7 +279,7 @@ export const createTerminalRouter = () => {
 					paneId: z.string(),
 					workspaceId: z.string(),
 					claudeSessionId: z.string().min(1),
-					claudeLaunchCommand: z.string().min(1).optional(),
+					launchCommand: z.string().min(1).optional(),
 				}),
 			)
 			.mutation(async ({ input }) => {
@@ -284,7 +287,24 @@ export const createTerminalRouter = () => {
 					input.workspaceId,
 					input.paneId,
 					input.claudeSessionId,
-					input.claudeLaunchCommand,
+					input.launchCommand,
+				);
+				return { success: true };
+			}),
+
+		setPaneLaunchCommand: publicProcedure
+			.input(
+				z.object({
+					paneId: z.string(),
+					workspaceId: z.string(),
+					launchCommand: z.string().min(1),
+				}),
+			)
+			.mutation(async ({ input }) => {
+				await writeLaunchCommandToHistory(
+					input.workspaceId,
+					input.paneId,
+					input.launchCommand,
 				);
 				return { success: true };
 			}),
