@@ -11,6 +11,7 @@ import { debounce } from "lodash";
 import { electronTrpcClient as trpcClient } from "renderer/lib/trpc-client";
 import { getHotkeyKeys, isAppHotkeyEvent } from "renderer/stores/hotkeys";
 import { toXtermTheme } from "renderer/stores/theme/utils";
+import { PLATFORM } from "shared/constants";
 import {
 	getCurrentPlatform,
 	hotkeyFromKeyboardEvent,
@@ -101,6 +102,14 @@ function getPreferredRenderer(): PreferredRenderer {
 		}
 	} catch {
 		// ignore
+	}
+
+	// Linux Electron frequently runs on software GL; the WebGL renderer loses
+	// its context when the terminal remounts on tab switches and leaves a blank
+	// canvas. Default to the reliable DOM renderer there — opting back in is
+	// localStorage.setItem("terminal-renderer", "webgl").
+	if (PLATFORM.IS_LINUX) {
+		return "dom";
 	}
 
 	return "auto";

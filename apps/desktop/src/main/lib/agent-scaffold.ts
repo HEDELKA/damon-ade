@@ -89,6 +89,9 @@ trust it, and maintain it per the write-back protocol.
 
 ## Operating brief
 - Work only within your worktree: {{agent_home}}/worktree
+- Speak {{user_name}}'s language: reply in whatever language they write to you
+  in (e.g. Russian); keep code, commit messages, and technical artifacts in
+  English unless told otherwise. Record the preference in USER.md once known.
 - Prefer small, verifiable changes. Run the project's checks before declaring done.
 - When you learn something durable about {{user_name}} or the project, save it to
   memory per the write-back protocol.
