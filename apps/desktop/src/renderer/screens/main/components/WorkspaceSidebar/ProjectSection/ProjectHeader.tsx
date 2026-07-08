@@ -22,6 +22,7 @@ import {
 	LuPalette,
 	LuPencil,
 	LuSettings,
+	LuText,
 	LuX,
 } from "react-icons/lu";
 import { electronTrpc } from "renderer/lib/electron-trpc";
@@ -33,6 +34,7 @@ import {
 	PROJECT_COLORS,
 } from "shared/constants/project-colors";
 import { STROKE_WIDTH } from "../constants";
+import { EditDescriptionDialog } from "../EditDescriptionDialog";
 import { RenameInput } from "../RenameInput";
 import { CloseProjectDialog } from "./CloseProjectDialog";
 import { ProjectThumbnail } from "./ProjectThumbnail";
@@ -40,6 +42,7 @@ import { ProjectThumbnail } from "./ProjectThumbnail";
 interface ProjectHeaderProps {
 	projectId: string;
 	projectName: string;
+	projectDescription: string | null;
 	projectColor: string;
 	githubOwner: string | null;
 	mainRepoPath: string;
@@ -57,6 +60,7 @@ interface ProjectHeaderProps {
 export function ProjectHeader({
 	projectId,
 	projectName,
+	projectDescription,
 	projectColor,
 	githubOwner,
 	mainRepoPath,
@@ -73,7 +77,19 @@ export function ProjectHeader({
 	const { t } = useTranslation();
 	const params = useParams({ strict: false }) as { workspaceId?: string };
 	const [isCloseDialogOpen, setIsCloseDialogOpen] = useState(false);
+	const [isDescriptionDialogOpen, setIsDescriptionDialogOpen] = useState(false);
 	const rename = useProjectRename(projectId, projectName);
+
+	const setDescription = electronTrpc.projects.setDescription.useMutation({
+		onSuccess: () => {
+			utils.workspaces.getAllGrouped.invalidate();
+			utils.projects.getRecents.invalidate();
+		},
+		onError: (error) =>
+			toast.error(
+				t("rail.toast.descriptionUpdateFailed", { message: error.message }),
+			),
+	});
 
 	const closeProject = electronTrpc.projects.close.useMutation({
 		onMutate: async ({ id }) => {
@@ -218,8 +234,13 @@ export function ProjectHeader({
 								</button>
 							</TooltipTrigger>
 						</ContextMenuTrigger>
-						<TooltipContent className="flex flex-col gap-0.5">
+						<TooltipContent className="flex flex-col gap-0.5 max-w-56">
 							<span className="font-medium">{projectName}</span>
+							{projectDescription && (
+								<span className="text-xs text-muted-foreground whitespace-pre-wrap">
+									{projectDescription}
+								</span>
+							)}
 							<span className="text-xs text-muted-foreground">
 								{t("rail.agentCount", { count: workspaceCount })}
 							</span>
@@ -229,6 +250,10 @@ export function ProjectHeader({
 						<ContextMenuItem onSelect={rename.startRename}>
 							<LuPencil className="size-4 mr-2" strokeWidth={STROKE_WIDTH} />
 							{t("rail.menu.rename")}
+						</ContextMenuItem>
+						<ContextMenuItem onSelect={() => setIsDescriptionDialogOpen(true)}>
+							<LuText className="size-4 mr-2" strokeWidth={STROKE_WIDTH} />
+							{t("rail.menu.editDescription")}
 						</ContextMenuItem>
 						<ContextMenuSeparator />
 						<ContextMenuItem onSelect={handleOpenInFinder}>
@@ -266,6 +291,16 @@ export function ProjectHeader({
 					open={isCloseDialogOpen}
 					onOpenChange={setIsCloseDialogOpen}
 					onConfirm={handleConfirmClose}
+				/>
+
+				<EditDescriptionDialog
+					open={isDescriptionDialogOpen}
+					onOpenChange={setIsDescriptionDialogOpen}
+					initialValue={projectDescription ?? ""}
+					isSaving={setDescription.isPending}
+					onSave={(description) =>
+						setDescription.mutate({ projectId, description })
+					}
 				/>
 			</>
 		);
@@ -315,7 +350,21 @@ export function ProjectHeader({
 									hideImage={hideImage}
 									iconUrl={iconUrl}
 								/>
-								<span className="truncate">{projectName}</span>
+								{projectDescription ? (
+									<Tooltip delayDuration={300}>
+										<TooltipTrigger asChild>
+											<span className="truncate">{projectName}</span>
+										</TooltipTrigger>
+										<TooltipContent
+											side="bottom"
+											className="max-w-56 whitespace-pre-wrap"
+										>
+											{projectDescription}
+										</TooltipContent>
+									</Tooltip>
+								) : (
+									<span className="truncate">{projectName}</span>
+								)}
 								<span className="text-xs text-muted-foreground tabular-nums font-normal">
 									({workspaceCount})
 								</span>
@@ -364,6 +413,10 @@ export function ProjectHeader({
 						<LuPencil className="size-4 mr-2" strokeWidth={STROKE_WIDTH} />
 						{t("rail.menu.rename")}
 					</ContextMenuItem>
+					<ContextMenuItem onSelect={() => setIsDescriptionDialogOpen(true)}>
+						<LuText className="size-4 mr-2" strokeWidth={STROKE_WIDTH} />
+						{t("rail.menu.editDescription")}
+					</ContextMenuItem>
 					<ContextMenuSeparator />
 					<ContextMenuItem onSelect={handleOpenInFinder}>
 						<LuFolderOpen className="size-4 mr-2" strokeWidth={STROKE_WIDTH} />
@@ -405,6 +458,16 @@ export function ProjectHeader({
 				open={isCloseDialogOpen}
 				onOpenChange={setIsCloseDialogOpen}
 				onConfirm={handleConfirmClose}
+			/>
+
+			<EditDescriptionDialog
+				open={isDescriptionDialogOpen}
+				onOpenChange={setIsDescriptionDialogOpen}
+				initialValue={projectDescription ?? ""}
+				isSaving={setDescription.isPending}
+				onSave={(description) =>
+					setDescription.mutate({ projectId, description })
+				}
 			/>
 		</>
 	);

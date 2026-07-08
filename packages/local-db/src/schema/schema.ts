@@ -30,6 +30,8 @@ export const projects = sqliteTable(
 		// real path here.
 		mainRepoPath: text("main_repo_path").notNull(),
 		name: text("name").notNull(),
+		// Optional user-editable description, shown as a hover tooltip in the rail.
+		description: text("description"),
 		color: text("color").notNull(),
 		tabOrder: integer("tab_order"),
 		lastOpenedAt: integer("last_opened_at")
@@ -109,6 +111,8 @@ export const workspaces = sqliteTable(
 		type: text("type").notNull().$type<WorkspaceType>(),
 		branch: text("branch").notNull(), // Branch name for both types
 		name: text("name").notNull(),
+		// Optional user-editable description, shown as a hover tooltip in the rail.
+		description: text("description"),
 		tabOrder: integer("tab_order").notNull(),
 		createdAt: integer("created_at")
 			.notNull()

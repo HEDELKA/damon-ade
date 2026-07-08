@@ -249,6 +249,7 @@ export const createQueryProcedures = () => {
 					project: {
 						id: string;
 						name: string;
+						description: string | null;
 						color: string;
 						tabOrder: number;
 						githubOwner: string | null;
@@ -264,6 +265,7 @@ export const createQueryProcedures = () => {
 						type: "worktree" | "branch";
 						branch: string;
 						name: string;
+						description: string | null;
 						tabOrder: number;
 						createdAt: number;
 						updatedAt: number;
@@ -282,6 +284,7 @@ export const createQueryProcedures = () => {
 					project: {
 						id: project.id,
 						name: project.name,
+						description: project.description ?? null,
 						color: project.color,
 						// biome-ignore lint/style/noNonNullAssertion: filter guarantees tabOrder is not null
 						tabOrder: project.tabOrder!,

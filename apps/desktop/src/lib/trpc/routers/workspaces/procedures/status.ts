@@ -156,6 +156,32 @@ export const createStatusProcedures = () => {
 				return { success: true, runtime: input.runtime };
 			}),
 
+		// ADE: set an agent's user-editable description, shown as a rail tooltip.
+		setDescription: publicProcedure
+			.input(
+				z.object({
+					workspaceId: z.string(),
+					description: z.string().nullable(),
+				}),
+			)
+			.mutation(({ input }) => {
+				const workspace = getWorkspaceNotDeleting(input.workspaceId);
+				if (!workspace) {
+					throw new Error(
+						`Workspace ${input.workspaceId} not found or is being deleted`,
+					);
+				}
+
+				const trimmed = input.description?.trim();
+				localDb
+					.update(workspaces)
+					.set({ description: trimmed ? trimmed : null })
+					.where(eq(workspaces.id, input.workspaceId))
+					.run();
+
+				return { success: true };
+			}),
+
 		setUnread: publicProcedure
 			.input(z.object({ id: z.string(), isUnread: z.boolean() }))
 			.mutation(({ input }) => {

@@ -20,6 +20,7 @@ interface Workspace {
 	type: "worktree" | "branch";
 	branch: string;
 	name: string;
+	description: string | null;
 	tabOrder: number;
 	isUnread: boolean;
 	iconUrl: string | null;
@@ -29,6 +30,7 @@ interface Workspace {
 interface ProjectSectionProps {
 	projectId: string;
 	projectName: string;
+	projectDescription: string | null;
 	projectColor: string;
 	githubOwner: string | null;
 	mainRepoPath: string;
@@ -46,6 +48,7 @@ interface ProjectSectionProps {
 export function ProjectSection({
 	projectId,
 	projectName,
+	projectDescription,
 	projectColor,
 	githubOwner,
 	mainRepoPath,
@@ -150,6 +153,7 @@ export function ProjectSection({
 				<ProjectHeader
 					projectId={projectId}
 					projectName={projectName}
+					projectDescription={projectDescription}
 					projectColor={projectColor}
 					githubOwner={githubOwner}
 					mainRepoPath={mainRepoPath}
@@ -178,6 +182,7 @@ export function ProjectSection({
 										projectId={workspace.projectId}
 										worktreePath={workspace.worktreePath}
 										name={workspace.name}
+										description={workspace.description}
 										branch={workspace.branch}
 										type={workspace.type}
 										isUnread={workspace.isUnread}
@@ -215,6 +220,7 @@ export function ProjectSection({
 			<ProjectHeader
 				projectId={projectId}
 				projectName={projectName}
+				projectDescription={projectDescription}
 				projectColor={projectColor}
 				githubOwner={githubOwner}
 				mainRepoPath={mainRepoPath}
@@ -244,6 +250,7 @@ export function ProjectSection({
 									projectId={workspace.projectId}
 									worktreePath={workspace.worktreePath}
 									name={workspace.name}
+									description={workspace.description}
 									branch={workspace.branch}
 									type={workspace.type}
 									isUnread={workspace.isUnread}

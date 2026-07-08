@@ -637,6 +637,10 @@
 			"removeBody": "Удаление безвозвратно уберёт worktree. Можно вместо этого скрыть, чтобы сохранить файлы на диске.",
 			"removeTitle": "Удалить агента «{{name}}»?"
 		},
+		"description": {
+			"placeholder": "Добавьте описание…",
+			"title": "Редактировать описание"
+		},
 		"dropzone": {
 			"addingTeam": "Добавление команды…",
 			"dismissError": "Скрыть ошибку",
@@ -652,6 +656,7 @@
 			"closeWorktree": "Закрыть worktree",
 			"closing": "Закрытие…",
 			"copyPath": "Скопировать путь",
+			"editDescription": "Редактировать описание",
 			"hideImage": "Скрыть изображение",
 			"markAsRead": "Отметить прочитанным",
 			"markAsUnread": "Отметить непрочитанным",
@@ -676,6 +681,7 @@
 			"agentHidden": "Агент скрыт",
 			"closeTeamFailed": "Не удалось закрыть команду: {{message}}",
 			"colorUpdateFailed": "Не удалось обновить цвет: {{message}}",
+			"descriptionUpdateFailed": "Не удалось обновить описание: {{message}}",
 			"hideFailed": "Не удалось скрыть",
 			"hiding": "Скрытие…",
 			"imageLoadFailed": "Не удалось загрузить изображение",

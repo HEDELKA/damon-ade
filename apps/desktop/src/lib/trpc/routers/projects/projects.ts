@@ -1192,7 +1192,8 @@ export const createProjectsRouter = (getWindow: () => BrowserWindow | null) => {
 			.mutation(({ input }) => {
 				const allProjects = localDb.select().from(projects).all();
 				const maxTabOrder = allProjects.reduce(
-					(max, p) => (p.tabOrder != null && p.tabOrder > max ? p.tabOrder : max),
+					(max, p) =>
+						p.tabOrder != null && p.tabOrder > max ? p.tabOrder : max,
 					-1,
 				);
 
@@ -1208,6 +1209,37 @@ export const createProjectsRouter = (getWindow: () => BrowserWindow | null) => {
 					.get();
 
 				return category;
+			}),
+
+		setDescription: publicProcedure
+			.input(
+				z.object({
+					projectId: z.string(),
+					description: z.string().nullable(),
+				}),
+			)
+			.mutation(({ input }) => {
+				const project = localDb
+					.select()
+					.from(projects)
+					.where(eq(projects.id, input.projectId))
+					.get();
+
+				if (!project) {
+					throw new TRPCError({
+						code: "NOT_FOUND",
+						message: `Project ${input.projectId} not found`,
+					});
+				}
+
+				const trimmed = input.description?.trim();
+				localDb
+					.update(projects)
+					.set({ description: trimmed ? trimmed : null })
+					.where(eq(projects.id, input.projectId))
+					.run();
+
+				return { success: true };
 			}),
 
 		setProjectIcon: publicProcedure

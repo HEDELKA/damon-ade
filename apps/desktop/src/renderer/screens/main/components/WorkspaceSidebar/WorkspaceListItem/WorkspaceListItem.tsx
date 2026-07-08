@@ -28,6 +28,7 @@ import {
 	LuFolderOpen,
 	LuImage,
 	LuPencil,
+	LuText,
 	LuTrash2,
 } from "react-icons/lu";
 import { downscaleImageToDataUrl } from "renderer/lib/downscale-image";
@@ -44,6 +45,7 @@ import { useTabsStore } from "renderer/stores/tabs/store";
 import { extractPaneIdsFromLayout } from "renderer/stores/tabs/utils";
 import { getHighestPriorityStatus } from "shared/tabs-types";
 import { STROKE_WIDTH } from "../constants";
+import { EditDescriptionDialog } from "../EditDescriptionDialog";
 import { CollapsedWorkspaceItem } from "./CollapsedWorkspaceItem";
 import { DeleteWorkspaceDialog, WorkspaceHoverCardContent } from "./components";
 import {
@@ -71,6 +73,7 @@ interface WorkspaceListItemProps {
 	projectId: string;
 	worktreePath: string;
 	name: string;
+	description?: string | null;
 	branch: string;
 	type: "worktree" | "branch";
 	isUnread?: boolean;
@@ -87,6 +90,7 @@ export function WorkspaceListItem({
 	projectId,
 	worktreePath,
 	name,
+	description,
 	branch,
 	type,
 	isUnread = false,
@@ -104,6 +108,7 @@ export function WorkspaceListItem({
 	const reorderWorkspaces = useReorderWorkspaces();
 	const [hasHovered, setHasHovered] = useState(false);
 	const [isContextMenuOpen, setIsContextMenuOpen] = useState(false);
+	const [isDescriptionDialogOpen, setIsDescriptionDialogOpen] = useState(false);
 	const rename = useWorkspaceRename(id, name, branch);
 	const tabs = useTabsStore((s) => s.tabs);
 	const panes = useTabsStore((s) => s.panes);
@@ -135,6 +140,13 @@ export function WorkspaceListItem({
 		onError: (error) =>
 			toast.error(
 				t("rail.toast.unreadUpdateFailed", { message: error.message }),
+			),
+	});
+	const setDescription = electronTrpc.workspaces.setDescription.useMutation({
+		onSuccess: () => utils.workspaces.getAllGrouped.invalidate(),
+		onError: (error) =>
+			toast.error(
+				t("rail.toast.descriptionUpdateFailed", { message: error.message }),
 			),
 	});
 
@@ -444,16 +456,42 @@ export function WorkspaceListItem({
 				) : (
 					<div className="flex flex-col gap-0.5">
 						<div className="flex items-center gap-1.5">
-							<span
-								className={cn(
-									"truncate text-[13px] leading-tight transition-colors flex-1",
-									isActive
-										? "text-foreground font-medium"
-										: "text-foreground/80",
-								)}
-							>
-								{isBranchWorkspace ? t("rail.localLabel") : name || branch}
-							</span>
+							{description ? (
+								<Tooltip delayDuration={500}>
+									<TooltipTrigger asChild>
+										<span
+											className={cn(
+												"truncate text-[13px] leading-tight transition-colors flex-1",
+												isActive
+													? "text-foreground font-medium"
+													: "text-foreground/80",
+											)}
+										>
+											{isBranchWorkspace
+												? t("rail.localLabel")
+												: name || branch}
+										</span>
+									</TooltipTrigger>
+									<TooltipContent
+										side="right"
+										sideOffset={8}
+										className="max-w-56 whitespace-pre-wrap"
+									>
+										{description}
+									</TooltipContent>
+								</Tooltip>
+							) : (
+								<span
+									className={cn(
+										"truncate text-[13px] leading-tight transition-colors flex-1",
+										isActive
+											? "text-foreground font-medium"
+											: "text-foreground/80",
+									)}
+								>
+									{isBranchWorkspace ? t("rail.localLabel") : name || branch}
+								</span>
+							)}
 
 							{isBranchWorkspace && aheadBehind && (
 								<WorkspaceAheadBehind
@@ -537,6 +575,10 @@ export function WorkspaceListItem({
 
 	const commonContextMenuItems = (
 		<>
+			<ContextMenuItem onSelect={() => setIsDescriptionDialogOpen(true)}>
+				<LuText className="size-4 mr-2" strokeWidth={STROKE_WIDTH} />
+				{t("rail.menu.editDescription")}
+			</ContextMenuItem>
 			<ContextMenuItem onSelect={handleOpenInFinder}>
 				<LuFolderOpen className="size-4 mr-2" strokeWidth={STROKE_WIDTH} />
 				{t("rail.menu.openInFinder")}
@@ -556,6 +598,18 @@ export function WorkspaceListItem({
 		</>
 	);
 
+	const descriptionDialog = (
+		<EditDescriptionDialog
+			open={isDescriptionDialogOpen}
+			onOpenChange={setIsDescriptionDialogOpen}
+			initialValue={description ?? ""}
+			isSaving={setDescription.isPending}
+			onSave={(value) =>
+				setDescription.mutate({ workspaceId: id, description: value })
+			}
+		/>
+	);
+
 	if (isBranchWorkspace) {
 		return (
 			<>
@@ -570,6 +624,7 @@ export function WorkspaceListItem({
 					open={showDeleteDialog}
 					onOpenChange={setShowDeleteDialog}
 				/>
+				{descriptionDialog}
 			</>
 		);
 	}
@@ -624,6 +679,7 @@ export function WorkspaceListItem({
 				open={showDeleteDialog}
 				onOpenChange={setShowDeleteDialog}
 			/>
+			{descriptionDialog}
 		</>
 	);
 }

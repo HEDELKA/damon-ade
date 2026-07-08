@@ -635,6 +635,10 @@
 			"removeBody": "Deleting will permanently remove the worktree. You can hide instead to keep files on disk.",
 			"removeTitle": "Remove agent \"{{name}}\"?"
 		},
+		"description": {
+			"placeholder": "Add a description…",
+			"title": "Edit description"
+		},
 		"dropzone": {
 			"addingTeam": "Adding team…",
 			"dismissError": "Dismiss error",
@@ -650,6 +654,7 @@
 			"closeWorktree": "Close Worktree",
 			"closing": "Closing…",
 			"copyPath": "Copy Path",
+			"editDescription": "Edit description",
 			"hideImage": "Hide Image",
 			"markAsRead": "Mark as Read",
 			"markAsUnread": "Mark as Unread",
@@ -674,6 +679,7 @@
 			"agentHidden": "Agent hidden",
 			"closeTeamFailed": "Failed to close category: {{message}}",
 			"colorUpdateFailed": "Failed to update color: {{message}}",
+			"descriptionUpdateFailed": "Failed to update description: {{message}}",
 			"hideFailed": "Failed to hide",
 			"hiding": "Hiding…",
 			"imageLoadFailed": "Could not load image",

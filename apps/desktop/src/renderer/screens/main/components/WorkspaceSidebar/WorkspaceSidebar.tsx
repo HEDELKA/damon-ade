@@ -62,6 +62,7 @@ export function WorkspaceSidebar({
 						key={group.project.id}
 						projectId={group.project.id}
 						projectName={group.project.name}
+						projectDescription={group.project.description}
 						projectColor={group.project.color}
 						githubOwner={group.project.githubOwner}
 						mainRepoPath={group.project.mainRepoPath}
