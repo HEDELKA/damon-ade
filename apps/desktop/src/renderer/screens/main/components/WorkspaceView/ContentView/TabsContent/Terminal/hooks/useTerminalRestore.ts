@@ -1,6 +1,7 @@
 import type { FitAddon } from "@xterm/addon-fit";
 import type { Terminal as XTerm } from "@xterm/xterm";
 import { useCallback, useRef } from "react";
+import { electronTrpcClient as trpcClient } from "renderer/lib/trpc-client";
 import { DEBUG_TERMINAL } from "../config";
 import type {
 	CreateOrAttachResult,
@@ -186,6 +187,24 @@ export function useTerminalRestore({
 					flushPendingEvents();
 
 					scheduleFitAndScroll();
+
+					// fit() alone can't wake the TUI: the kernel only delivers
+					// SIGWINCH on a REAL winsize change, and a remount keeps the
+					// same cols/rows — leaving apps like Claude Code blank until
+					// a keypress. Jiggle rows by one and back to force two real
+					// changes so the app repaints itself.
+					const { cols, rows } = xterm;
+					trpcClient.terminal.resize
+						.mutate({ paneId, cols, rows: Math.max(rows - 1, 1) })
+						.then(() =>
+							trpcClient.terminal.resize.mutate({ paneId, cols, rows }),
+						)
+						.catch((error) => {
+							console.warn(
+								"[Terminal] Failed to kick TUI redraw after reattach:",
+								error instanceof Error ? error.message : String(error),
+							);
+						});
 				});
 
 				if (result.snapshot?.cwd) {
