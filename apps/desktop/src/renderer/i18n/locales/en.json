@@ -568,6 +568,47 @@
 		"recheck": "Re-check",
 		"thisTool": "This tool"
 	},
+	"importer": {
+		"title": "Import projects",
+		"description": "Scan a folder and bring local projects into ADE — copied without dependency folders, git-initialized, and optionally pushed as a private GitHub repo.",
+		"folderPlaceholder": "/path/to/your/projects",
+		"browse": "Browse…",
+		"scan": "Scan",
+		"scanning": "Scanning…",
+		"browseDialogTitle": "Choose a folder with projects",
+		"empty": "No projects found in this folder.",
+		"scanHint": "Choose a folder that contains project subfolders, then scan.",
+		"dropHint": "Imported projects can be added as a team: drag the folder into the panel on the left.",
+		"noSelection": "Select at least one project to import.",
+		"readmeUnavailable": "No README",
+		"columns": {
+			"project": "Project",
+			"type": "Type",
+			"git": "Git",
+			"size": "Size",
+			"status": "Status"
+		},
+		"git": {
+			"repo": "repo",
+			"remote": "remote",
+			"none": "no repo"
+		},
+		"options": {
+			"privateRepos": "Create private GitHub repositories",
+			"trashSource": "Move sources to trash after import",
+			"trashHint": "Files go to the system trash and can be recovered."
+		},
+		"statuses": {
+			"pending": "Pending",
+			"importing": "Importing…",
+			"done": "Done",
+			"error": "Error"
+		},
+		"importSelected": "Import selected",
+		"importSelectedCount": "Import selected ({{count}})",
+		"importing": "Importing…",
+		"summary": "Imported {{done}}, errors {{failed}}"
+	},
 	"newAgentDialog": {
 		"checking": "Checking…",
 		"createAgent": "Create agent",

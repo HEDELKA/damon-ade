@@ -1,7 +1,9 @@
 import { Tooltip, TooltipContent, TooltipTrigger } from "@superset/ui/tooltip";
-import { useMemo } from "react";
+import { FolderInput } from "lucide-react";
+import { useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { LuPlus } from "react-icons/lu";
+import { ImportProjectsDialog } from "renderer/components/ImportProjectsDialog";
 import { useWorkspaceShortcuts } from "renderer/hooks/useWorkspaceShortcuts";
 import { useOpenNewCategoryModal } from "renderer/stores/new-category-modal";
 import { PortsList } from "./PortsList";
@@ -20,6 +22,7 @@ export function WorkspaceSidebar({
 	const { groups } = useWorkspaceShortcuts();
 	const openNewCategory = useOpenNewCategoryModal();
 	const { t } = useTranslation();
+	const [isImportOpen, setIsImportOpen] = useState(false);
 
 	// Calculate shortcut base indices for each project group using cumulative offsets
 	const projectShortcutIndices = useMemo(
@@ -89,7 +92,31 @@ export function WorkspaceSidebar({
 				)}
 			</div>
 
+			{!isCollapsed && (
+				<div className="px-3 py-2 border-t border-border">
+					<Tooltip delayDuration={300}>
+						<TooltipTrigger asChild>
+							<button
+								type="button"
+								onClick={() => setIsImportOpen(true)}
+								className="flex items-center gap-2 text-xs text-muted-foreground hover:text-foreground transition-colors"
+								aria-label={t("importer.title")}
+							>
+								<FolderInput className="size-4" />
+								{t("importer.title")}
+							</button>
+						</TooltipTrigger>
+						<TooltipContent side="top">{t("importer.title")}</TooltipContent>
+					</Tooltip>
+				</div>
+			)}
+
 			{!isCollapsed && <PortsList />}
+
+			<ImportProjectsDialog
+				open={isImportOpen}
+				onOpenChange={setIsImportOpen}
+			/>
 		</SidebarDropZone>
 	);
 }
